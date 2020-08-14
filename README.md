@@ -1,6 +1,6 @@
 # htaccess-capability-tester
 
-*** This library is under creation ***
+***This library is under creation***
 
 Detect if a given `.htaccess` feature works on the system through a live test.
 
@@ -12,14 +12,14 @@ This is what happens behind the scenes:
 
 As an example of how the test files works, here are the files generated for determining if setting a request header in a .htaccess file works:
 
-*.htaccess*
+**.htaccess**
 ```
 <IfModule mod_headers.c>
     RequestHeader set User-Agent "request-header-test"
 </IfModule>```
 ```
 
-*test.php*
+**test.php**
 ```php
 if (isset($_SERVER['HTTP_USER_AGENT'])) {
     echo  $_SERVER['HTTP_USER_AGENT'] == 'request-header-test' ? 1 : 0;
@@ -29,7 +29,12 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
 ```
 
 ## Usage:
+```php
+$tester = new SetRequestHeaderTester($baseDir, $baseUrl);
+$testResult = $tester->runTest();
+```
 
+## Full example:
 ```php
 require 'htaccess-capability-tester/vendor/autoload.php';
 
