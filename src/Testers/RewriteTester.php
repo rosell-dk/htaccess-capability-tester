@@ -2,19 +2,20 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use HtaccessCapabilityTester\AbstractHtaccessCapabilityTester;
-
 /**
  * Class for testing if rewriting works.
  *
- * @package    WebPConvert
+ * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since the beginning
  */
-class RewriteTester extends AbstractHtaccessCapabilityTester
+class RewriteTester extends AbstractStandardTester
 {
 
-    const subdir = 'rewrite-tester';
+    public function __construct($baseDir2, $baseUrl2)
+    {
+        parent::__construct($baseDir2, $baseUrl2, 'rewrite-tester');
+    }
 
     /**
      * Creates the neccessary test files.
@@ -37,42 +38,19 @@ class RewriteTester extends AbstractHtaccessCapabilityTester
 </IfModule>
 EOD;
 
-        self::putFile(self::subdir, '.htaccess', $file);
+        self::putFile('.htaccess', $file);
 
         $file = <<<'EOD'
 <?php
 echo '1';
 EOD;
-        self::putFile(self::subdir, '1.php', $file);
+        self::putFile('1.php', $file);
 
         $file = <<<'EOD'
 <?php
 echo '0';
 EOD;
-        self::putFile(self::subdir, 'test.php', $file);
+        self::putFile('test.php', $file);
 
-    }
-
-    /**
-     *  Run the test to see if a header can be successfully set using the .htaccess.
-     *
-     *  @return bool|null  Returns true if it can be established that it works, false if it can
-     *                       be established that it does not work, or null if nothing could be
-     *                       established due to some other failure
-     */
-    public function runTest() {
-
-        // TODO: Perhaps create a StandardTester class, which implements this method?
-        //$this->runStandardTest();
-
-        $this->createTestFiles();
-
-        $responseText = self::makeHTTPRequest($this->baseUrl . '/' . self::subdir . '/test.php');
-        if ($responseText == '1') {
-            return true;
-        };
-        if ($responseText == '0') {
-            return false;
-        };
     }
 }

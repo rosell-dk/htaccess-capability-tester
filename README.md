@@ -43,9 +43,9 @@ The library currently supports the following tests:
 
 - *SetRequestHeaderTester* : Tests if setting request headers in `.htaccess` works.
 - *RewriteTester* : Tests if rewriting works.
+- *GrantAllNotCrashTester* : Tests that `Require all granted` works (that it does not result in a 500 Internal Server Error)
 
 The following is on the way:
-- A test for examining if `Require all granted` works or results in 500 Internal Server Error
 - A test for examining if setting an environment variable in a rewrite rule works
 
 
