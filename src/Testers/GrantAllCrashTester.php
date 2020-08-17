@@ -18,7 +18,7 @@ namespace HtaccessCapabilityTester\Testers;
  */
 class GrantAllCrashTester extends AbstractCrashTester
 {
-
+    
     public function __construct($baseDir2, $baseUrl2)
     {
         parent::__construct($baseDir2, $baseUrl2, 'grant-all-not-crash-tester');

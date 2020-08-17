@@ -9,8 +9,10 @@ namespace HtaccessCapabilityTester\Testers;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since the beginning
  */
-class RewriteTester extends AbstractStandardTester
+class RewriteTester extends AbstractTester
 {
+
+    use TraitStandardTestRunner;
 
     public function __construct($baseDir2, $baseUrl2)
     {
@@ -18,13 +20,12 @@ class RewriteTester extends AbstractStandardTester
     }
 
     /**
-     * Creates the neccessary test files.
+     * Register the test files using the "registerTestFile" method
      *
      * @return  void
      */
-    public function createTestFiles() {
-
-        $file = <<<'EOD'
+    public function registerTestFiles() {
+        $htaccessFile = <<<'EOD'
 <IfModule mod_rewrite.c>
 
     # Testing for mod_rewrite
@@ -38,19 +39,10 @@ class RewriteTester extends AbstractStandardTester
 </IfModule>
 EOD;
 
-        self::putFile('.htaccess', $file);
-
-        $file = <<<'EOD'
-<?php
-echo '1';
-EOD;
-        self::putFile('1.php', $file);
-
-        $file = <<<'EOD'
-<?php
-echo '0';
-EOD;
-        self::putFile('test.php', $file);
+        $this->registerTestFile('.htaccess', $htaccessFile);
+        $this->registerTestFile('1.php', "<?php\n echo '1';");
+        $this->registerTestFile('test.php', "<?php\n echo '0';");
 
     }
+
 }

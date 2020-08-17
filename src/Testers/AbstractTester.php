@@ -4,6 +4,9 @@ namespace HtaccessCapabilityTester\Testers;
 
 abstract class AbstractTester
 {
+    use TraitTestFileCreator;
+
+
     /** @var string  The dir where the test files should be put */
     protected $baseDir;
 
@@ -13,25 +16,28 @@ abstract class AbstractTester
     /** @var string  A subdir */
     protected $subDir;
 
-    abstract protected function createTestFiles();
+    /** @var array  Test files for the test */
+    protected $testFiles;
+
+    /**
+     * Register the test files using the "registerTestFile" method
+     *
+     * @return  void
+     */
+    abstract protected function registerTestFiles();
+
+    protected function registerTestFile($fileName, $content, $subDir = '') {
+        $this->testFiles[] = [$fileName, $content, $subDir];
+    }
+
     abstract protected function runTest();
 
     public function __construct($baseDir2, $baseUrl2, $subDir = '') {
         $this->baseDir = $baseDir2;
         $this->baseUrl = $baseUrl2;
         $this->subDir = $subDir;
-    }
-
-    protected function putFile($fileName, $content, $subSubDir = '') {
-        $dir = $this->baseDir . '/' . $this->subDir;
-        if ($subSubDir != '') {
-            $dir .= '/' . $subSubDir;
-        }
-        $path = $dir . '/' . $fileName;
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-        return file_put_contents($path, $content);
+        $this->registerTestFiles();
+        $this->createTestFilesIfNeeded();
     }
 
     protected function makeHTTPRequest($url) {

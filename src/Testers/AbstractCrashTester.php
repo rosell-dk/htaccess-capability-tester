@@ -10,33 +10,35 @@ namespace HtaccessCapabilityTester\Testers;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since the beginning
  */
-abstract class AbstractCrashTester extends AbstractStandardTester
+abstract class AbstractCrashTester extends AbstractTester
 {
 
+    use TraitStandardTestRunner;
+
     /**
-     * Creates the neccessary test files.
+     * Register the test files using the "registerTestFile" method
      *
      * @return  void
      */
-    public function createTestFiles() {
+    public function registerTestFiles() {
 
 
         $file = $this->getHtaccessToCrashTest();
 
-        self::putFile('.htaccess', $file, 'subtest');
+        $this->registerTestFile('.htaccess', $file, 'subtest');
 
         $file = <<<'EOD'
 <?php
 echo '1';
 EOD;
-        self::putFile('subtest.php', $file, 'subtest');
+        $this->registerTestFile('subtest.php', $file, 'subtest');
 
         // The test.php file will test if the subtest "crashes" or not
         $file = '<?php' . "\n" .
             '$response = file_get_contents(\'' . $this->baseUrl . '/' . $this->subDir . '/subtest/subtest.php' . '\');' . "\n" .
             'echo ($response === false ? 0 : $response);' . "\n";
 
-        self::putFile('test.php', $file);
+        $this->registerTestFile('test.php', $file);
 
     }
 }

@@ -4,13 +4,18 @@ namespace HtaccessCapabilityTester\Testers;
 
 
 /**
- * Class for testing if setting request headers in an .htaccess file works.
+ * Trait for running standard tests
+ *
+ * A standard tester contains a "test.php" file, which outputs one of the following:
+ * - "1" if the feature works
+ * - "0" if the feature does not work
+ * - "null" if it could not be established if the feature works or not
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since the beginning
  */
-abstract class AbstractStandardTester extends AbstractTester
+trait TraitStandardTestRunner
 {
 
     /**
@@ -21,8 +26,6 @@ abstract class AbstractStandardTester extends AbstractTester
      *                       established due to some other failure
      */
     public function runTest() {
-        $this->createTestFiles();
-
         $responseText = self::makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/test.php');
         if ($responseText == '1') {
             return true;

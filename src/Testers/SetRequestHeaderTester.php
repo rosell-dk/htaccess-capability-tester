@@ -9,8 +9,10 @@ namespace HtaccessCapabilityTester\Testers;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since the beginning
  */
-class SetRequestHeaderTester extends AbstractStandardTester
+class SetRequestHeaderTester extends AbstractTester
 {
+
+    use TraitStandardTestRunner;
 
     public function __construct($baseDir2, $baseUrl2)
     {
@@ -18,11 +20,11 @@ class SetRequestHeaderTester extends AbstractStandardTester
     }
 
     /**
-     * Creates the neccessary test files.
+     * Register the test files using the "registerTestFile" method
      *
      * @return  void
      */
-    public function createTestFiles() {
+    public function registerTestFiles() {
 
 $file = <<<'EOD'
 <?php
@@ -32,7 +34,7 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
     echo 0;
 }
 EOD;
-        self::putFile('test.php', $file);
+        $this->registerTestFile('test.php', $file);
 
 $file = <<<'EOD'
 <IfModule mod_headers.c>
@@ -42,6 +44,6 @@ $file = <<<'EOD'
 </IfModule>
 EOD;
 
-        self::putFile('.htaccess', $file);
+        $this->registerTestFile('.htaccess', $file);
     }
 }

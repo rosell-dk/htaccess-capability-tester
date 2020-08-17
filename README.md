@@ -36,8 +36,12 @@ To for example run the request header test, do this:
 use HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
 
 $tester = new SetRequestHeaderTester($baseDir, $baseUrl);
+
 $testResult = $tester->runTest();
+
 ```
+PS: Notice that `runTest()` throws an exception if the test files cannot be created.
+
 
 The library currently supports the following tests:
 
