@@ -18,7 +18,7 @@ namespace HtaccessCapabilityTester\Testers;
  */
 class GrantAllCrashTester extends AbstractCrashTester
 {
-    
+
     public function __construct($baseDir2, $baseUrl2)
     {
         parent::__construct($baseDir2, $baseUrl2, 'grant-all-not-crash-tester');
@@ -27,9 +27,9 @@ class GrantAllCrashTester extends AbstractCrashTester
     /**
      * Get the .htaccess content to crash-test.
      *
-     * @return  void
+     * @return  string  The file content of the .htaccess
      */
-    public function getHtaccessToCrashTest() {
+    protected function getHtaccessToCrashTest() {
 
         $file = <<<'EOD'
 <FilesMatch "1\.php$">

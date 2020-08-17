@@ -11,7 +11,7 @@ class SetRequestHeaderTesterTest extends TestCase
 
     public function test1()
     {
-        $m = new SetRequestHeaderTester();
+        //$m = new SetRequestHeaderTester();
         //$m->putFiles('');
     }
 

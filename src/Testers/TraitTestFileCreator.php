@@ -42,7 +42,8 @@ trait TraitTestFileCreator
         }
         if ($content != $existingContent) {
             return file_put_contents($path, $content);
-        }        
+        }
+        return false;
     }
 
 }

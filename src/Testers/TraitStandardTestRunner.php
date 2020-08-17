@@ -33,5 +33,6 @@ trait TraitStandardTestRunner
         if ($responseText == '0') {
             return false;
         };
+        return null;
     }
 }

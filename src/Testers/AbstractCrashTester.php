@@ -16,6 +16,13 @@ abstract class AbstractCrashTester extends AbstractTester
     use TraitStandardTestRunner;
 
     /**
+     * Get the .htaccess content to crash-test.
+     *
+     * @return  string  The file content of the .htaccess
+     */
+    abstract protected function getHtaccessToCrashTest();
+
+    /**
      * Register the test files using the "registerTestFile" method
      *
      * @return  void
