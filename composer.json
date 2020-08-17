@@ -1,6 +1,6 @@
 {
   "name": "rosell-dk/htaccess-capability-tester",
-  "description": "Test the capabilities of .htaccess files on the server",
+  "description": "Test the capabilities of .htaccess files on the server using live tests",
   "type": "library",
   "license": "MIT",
   "keywords": [".htaccess", "apache", "litespeed"],

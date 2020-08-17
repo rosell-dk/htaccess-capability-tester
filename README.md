@@ -1,5 +1,7 @@
 # htaccess-capability-tester
 
+[![Build Status](https://travis-ci.org/rosell-dk/webp-convert.png?branch=master)](https://travis-ci.org/rosell-dk/htaccess-capability-tester)
+
 ***This library is under creation***
 
 Detect if a given `.htaccess` feature works on the system through a live test.
