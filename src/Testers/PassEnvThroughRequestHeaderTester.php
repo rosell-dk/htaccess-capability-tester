@@ -1,0 +1,56 @@
+<?php
+
+namespace HtaccessCapabilityTester\Testers;
+
+/**
+ * Class for testing if passing an environment variable through a request header in an .htaccess
+ * file works.
+ *
+ * @package    HtaccessCapabilityTester
+ * @author     Bjørn Rosell <it@rosell.dk>
+ * @since      Class available since the beginning
+ */
+class PassEnvThroughRequestHeaderTester extends AbstractTester
+{
+
+    use TraitStandardTestRunner;
+
+    public function __construct($baseDir2, $baseUrl2)
+    {
+        parent::__construct($baseDir2, $baseUrl2, 'pass-env-through-request-header-tester');
+    }
+
+    /**
+     * Register the test files using the "registerTestFile" method
+     *
+     * @return  void
+     */
+    public function registerTestFiles() {
+
+$file = <<<'EOD'
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Testing if we can pass an environment variable through a request header
+    # We pass document root, because that can easily be checked by the script
+
+    <IfModule mod_headers.c>
+      RequestHeader set PASSTHROUGHHEADER "%{PASSTHROUGHHEADER}e" env=PASSTHROUGHHEADER
+    </IfModule>
+    RewriteRule ^test\.php$ - [E=PASSTHROUGHHEADER:%{DOCUMENT_ROOT},L]
+
+</IfModule>
+EOD;
+        $this->registerTestFile('.htaccess', $file);
+
+$file = <<<'EOD'
+<?php
+if (isset($_SERVER['HTTP_PASSTHROUGHHEADER'])) {
+    echo ($_SERVER['HTTP_PASSTHROUGHHEADER'] == $_SERVER['DOCUMENT_ROOT'] ? 1 : 0);
+    exit;
+}
+echo '0';
+EOD;
+        $this->registerTestFile('test.php', $file);
+    }
+}

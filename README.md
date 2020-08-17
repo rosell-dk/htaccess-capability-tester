@@ -1,8 +1,6 @@
 # htaccess-capability-tester
 
-[![Build Status](https://travis-ci.org/rosell-dk/webp-convert.png?branch=master)](https://travis-ci.org/rosell-dk/htaccess-capability-tester)
-
-***This library is under creation***
+[![Build Status](https://travis-ci.org/rosell-dk/htaccess-capability-tester.png?branch=master)](https://travis-ci.org/rosell-dk/htaccess-capability-tester)
 
 Detect if a given `.htaccess` feature works on the system through a live test.
 
@@ -47,13 +45,11 @@ PS: Notice that `runTest()` throws an exception if the test files cannot be crea
 
 The library currently supports the following tests:
 
-- *SetRequestHeaderTester* : Tests if setting request headers in `.htaccess` works.
 - *RewriteTester* : Tests if rewriting works.
+- *SetRequestHeaderTester* : Tests if setting request headers in `.htaccess` works.
 - *GrantAllNotCrashTester* : Tests that `Require all granted` works (that it does not result in a 500 Internal Server Error)
-
-The following is on the way:
-- A test for examining if setting an environment variable in a rewrite rule works
-
+- *PassEnvThroughRequestHeaderTester* : Tests if passing an environment variable through a request header in an `.htaccess` file works.
+- *PassEnvThroughRewriteTester*: Tests if passing an environment variable by setting it in a REWRITE in an `.htaccess` file works.
 
 ## Full example:
 ```php
