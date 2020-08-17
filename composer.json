@@ -1,9 +1,9 @@
 {
   "name": "rosell-dk/htaccess-capability-tester",
-  "description": "Convert JPEG & PNG to WebP with PHP",
+  "description": "Test the capabilities of .htaccess files on the server",
   "type": "library",
   "license": "MIT",
-  "keywords": ["htaccess", "apache"],
+  "keywords": [".htaccess", "apache", "litespeed"],
   "scripts": {
     "ci": [
       "@test",
