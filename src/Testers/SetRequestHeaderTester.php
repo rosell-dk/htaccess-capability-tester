@@ -14,9 +14,15 @@ class SetRequestHeaderTester extends AbstractTester
 
     use TraitStandardTestRunner;
 
-    public function __construct($baseDir2, $baseUrl2)
+    /**
+     * Child classes must implement this method, which tells which subdir the
+     * test files are to be put.
+     *
+     * @return  string  A subdir for the test files
+     */
+    public function getSubDir()
     {
-        parent::__construct($baseDir2, $baseUrl2, 'set-request-header-tester');
+        return 'set-request-header-tester';
     }
 
     /**

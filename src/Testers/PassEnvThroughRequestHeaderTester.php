@@ -15,9 +15,15 @@ class PassEnvThroughRequestHeaderTester extends AbstractTester
 
     use TraitStandardTestRunner;
 
-    public function __construct($baseDir2, $baseUrl2)
+    /**
+     * Child classes must implement this method, which tells which subdir the
+     * test files are to be put.
+     *
+     * @return  string  A subdir for the test files
+     */
+    public function getSubDir()
     {
-        parent::__construct($baseDir2, $baseUrl2, 'pass-env-through-request-header-tester');
+        return 'pass-env-through-request-header-tester';
     }
 
     /**

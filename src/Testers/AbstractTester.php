@@ -26,16 +26,24 @@ abstract class AbstractTester
      */
     abstract protected function registerTestFiles();
 
+    /**
+     * Child classes must implement this method, which tells which subdir the
+     * test files are to be put.
+     *
+     * @return  string  A subdir for the test files
+     */
+    abstract protected function getSubDir();
+
     protected function registerTestFile($fileName, $content, $subDir = '') {
         $this->testFiles[] = [$fileName, $content, $subDir];
     }
 
     abstract protected function runTest();
 
-    public function __construct($baseDir2, $baseUrl2, $subDir = '') {
+    public function __construct($baseDir2, $baseUrl2) {
         $this->baseDir = $baseDir2;
         $this->baseUrl = $baseUrl2;
-        $this->subDir = $subDir;
+        $this->subDir = $this->getSubDir();
         $this->registerTestFiles();
         $this->createTestFilesIfNeeded();
     }

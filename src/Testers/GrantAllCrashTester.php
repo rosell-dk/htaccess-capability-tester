@@ -19,9 +19,14 @@ namespace HtaccessCapabilityTester\Testers;
 class GrantAllCrashTester extends AbstractCrashTester
 {
 
-    public function __construct($baseDir2, $baseUrl2)
+    /**
+     * Child classes must implement this method, which tells which subdir to put test files in.
+     *
+     * @return  string  A subdir for the test files
+     */
+    public function getSubDir()
     {
-        parent::__construct($baseDir2, $baseUrl2, 'grant-all-not-crash-tester');
+        return 'grant-all-crash-tester';
     }
 
     /**
@@ -29,7 +34,8 @@ class GrantAllCrashTester extends AbstractCrashTester
      *
      * @return  string  The file content of the .htaccess
      */
-    protected function getHtaccessToCrashTest() {
+    protected function getHtaccessToCrashTest()
+    {
 
         $file = <<<'EOD'
 <FilesMatch "1\.php$">
