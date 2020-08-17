@@ -1,6 +1,8 @@
 language: php
 os: linux
-dist: xenial
+dist:
+    - xenial
+    - trusty
 
 php:
   - 7.2
