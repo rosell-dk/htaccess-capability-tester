@@ -20,7 +20,8 @@ class TesterFactory
      * @param  string  $id
      * @param  string  $baseDir  Directory on the server where the test files can be put
      * @param  string  $baseUrl  The base URL of the test files
-     * @return string  A subdir for the test files
+     *
+     * @return AbstractTester|null  A Tester instance or null if not found
      */
     public static function create($id, $baseDir, $baseUrl)
     {
@@ -36,6 +37,7 @@ class TesterFactory
             case 'pass-env-through-rewrite-tester':
                 return new PassEnvThroughRewriteTester($baseDir, $baseUrl);
         }
+        return null;
     }
 
 }
