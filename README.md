@@ -34,7 +34,7 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
 To for example run the request header test, do this:
 
 ```php
-use HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
+use HtaccessCapabilityTester\SetRequestHeaderTester;
 
 $tester = new SetRequestHeaderTester($baseDir, $baseUrl);
 
@@ -52,12 +52,14 @@ The library currently supports the following tests:
 - *PassEnvThroughRewriteTester*: Tests if passing an environment variable by setting it in a REWRITE in an `.htaccess` file works.
 
 ### Running your own test
-It is not to define your own test by extending the "Testers/AbstractTester" class. You can use the code in one of the provided testers as a template (ie `Testers/SetRequestHeaderTester.php`).
+It is not to define your own test by extending the "AbstractTester" class. You can use the code in one of the provided testers as a template (ie `SetRequestHeaderTester.php`).
 
-If you are in need of a test that discovers if an `.htaccess` causes an 500 Internal Server error, it is even more simple: Just extend the *AbstractCrashTester* class and implement the *getHtaccessToCrashTest()* method (see `Testers/GrantAllCrashTester.php`)
+If you are in need of a test that discovers if an `.htaccess` causes an 500 Internal Server error, it is even more simple: Just extend the *AbstractCrashTester* class and implement the *getHtaccessToCrashTest()* method (see `GrantAllCrashTester.php`)
 
+### Using custom object for making the HTTP request
+This library simply uses `file_get_contents` to make the HTTP request. It can however be set to use another object for the HTTP Request. Use the `setHTTPRequestor` method for that. The requester must implement `iHTTPRequestor` interface, which simply consists of a single method: `makeHTTPRequest($url)`
 
-## Full example:
+## Full example of running a provided test:
 ```php
 require 'htaccess-capability-tester/vendor/autoload.php';
 

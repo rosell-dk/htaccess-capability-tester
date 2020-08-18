@@ -1,6 +1,6 @@
 <?php
 
-namespace HtaccessCapabilityTester\Testers;
+namespace HtaccessCapabilityTester;
 
 /**
  * Abstract class for making it easy to test if a .htaccess results in a 500 Internal Server Error

@@ -1,6 +1,6 @@
 <?php
 
-namespace HtaccessCapabilityTester\Testers;
+namespace HtaccessCapabilityTester;
 
 /**
  * Class for testing if passing an environment variable by setting it in a REWRITE in an .htaccess

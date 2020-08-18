@@ -1,6 +1,6 @@
 <?php
 
-namespace HtaccessCapabilityTester\Testers;
+namespace HtaccessCapabilityTester;
 
 
 /**

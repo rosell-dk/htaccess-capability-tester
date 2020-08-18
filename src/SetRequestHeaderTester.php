@@ -1,6 +1,6 @@
 <?php
 
-namespace HtaccessCapabilityTester\Testers;
+namespace HtaccessCapabilityTester;
 
 /**
  * Class for testing if setting request headers in an .htaccess file works.

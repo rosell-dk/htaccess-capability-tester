@@ -1,6 +1,6 @@
 <?php
 
-namespace HtaccessCapabilityTester\Testers;
+namespace HtaccessCapabilityTester;
 
 abstract class AbstractTester
 {
@@ -18,6 +18,9 @@ abstract class AbstractTester
 
     /** @var array  Test files for the test */
     protected $testFiles;
+
+    /** @var iHTTPRequestor  An object for making the HTTP request */
+    protected $httpRequestor;
 
     /**
      * Register the test files using the "registerTestFile" method
@@ -48,11 +51,22 @@ abstract class AbstractTester
         $this->createTestFilesIfNeeded();
     }
 
+    /**
+     * Make a HTTP request to a URL.
+     *
+     * @return  string  The response text
+     */
     protected function makeHTTPRequest($url) {
-        $text = file_get_contents($url);
-        // var_dump($http_response_header);
-        return $text;
+        if (!isset($this->httpRequestor)) {
+            $this->httpRequestor = new SimpleHttpRequestor();
+        }
+        return $this->httpRequestor->makeHTTPRequest($url);
     }
+
+    protected function setHTTPRequestor($httpRequestor) {
+        $this->httpRequestor = $httpRequestor;
+    }
+
 /*
     protected function runStandardTest() {
     }*/

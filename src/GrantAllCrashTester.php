@@ -1,6 +1,6 @@
 <?php
 
-namespace HtaccessCapabilityTester\Testers;
+namespace HtaccessCapabilityTester;
 
 /**
  * Class for testing if granting access works (doesn't result in a 500 Internal Server Error).

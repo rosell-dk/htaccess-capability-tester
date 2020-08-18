@@ -1,8 +1,8 @@
 <?php
 
-namespace HtaccessCapabilityTester\Testers;
+namespace HtaccessCapabilityTester;
 
-use HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
+use HtaccessCapabilityTester\SetRequestHeaderTester;
 
 use PHPUnit\Framework\TestCase;
 
