@@ -67,7 +67,7 @@ abstract class AbstractTester
      * @param  string  $baseDir  Directory on the server where the test files can be put
      * @param  string  $baseUrl  The base URL of the test files
      *
-     * @return  void
+     * @return void
      */
     public function __construct($baseDir, $baseUrl) {
         $this->baseDir = $baseDir;
@@ -80,7 +80,8 @@ abstract class AbstractTester
     /**
      * Make a HTTP request to a URL.
      *
-     * @return  string  The response text
+     * @param  string  $url  The URL to make the HTTP request to
+     * @return string  The response text
      */
     protected function makeHTTPRequest($url) {
         if (!isset($this->httpRequester)) {
@@ -93,7 +94,7 @@ abstract class AbstractTester
      * Set HTTP requester object, which handles making HTTP requests.
      *
      * @param  HTTPRequesterInterface  $httpRequester  The HTTPRequester to use
-     * @return  void
+     * @return void
      */
     public function setHTTPRequester($httpRequester) {
         $this->httpRequester = $httpRequester;
