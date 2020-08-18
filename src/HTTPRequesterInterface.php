@@ -2,7 +2,7 @@
 
 namespace HtaccessCapabilityTester;
 
-interface iHTTPRequestor
+interface HTTPRequesterInterface
 {
     /**
      * Make a HTTP request to a URL.

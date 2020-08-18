@@ -57,7 +57,7 @@ It is not to define your own test by extending the "AbstractTester" class. You c
 If you are in need of a test that discovers if an `.htaccess` causes an 500 Internal Server error, it is even more simple: Just extend the *AbstractCrashTester* class and implement the *getHtaccessToCrashTest()* method (see `GrantAllCrashTester.php`)
 
 ### Using custom object for making the HTTP request
-This library simply uses `file_get_contents` to make the HTTP request. It can however be set to use another object for the HTTP Request. Use the `setHTTPRequestor` method for that. The requester must implement `iHTTPRequestor` interface, which simply consists of a single method: `makeHTTPRequest($url)`
+This library simply uses `file_get_contents` to make the HTTP request. It can however be set to use another object for the HTTP Request. Use the `setHTTPRequestor` method for that. The requester must implement `HTTPRequesterInterface` interface, which simply consists of a single method: `makeHTTPRequest($url)`
 
 ## Full example of running a provided test:
 ```php

@@ -2,7 +2,7 @@
 
 namespace HtaccessCapabilityTester;
 
-class SimpleHttpRequestor implements iHTTPRequestor
+class SimpleHttpRequester implements HTTPRequesterInterface
 {
     /**
      * Make a HTTP request to a URL.

@@ -19,14 +19,15 @@ trait TraitStandardTestRunner
 {
 
     /**
-     *  Run the test to see if a header can be successfully set using the .htaccess.
+     *  Run a standard test (one, which contains a test.php file, which outputs either "0", "1"
+     *  or "null".
      *
      *  @return bool|null  Returns true if it can be established that it works, false if it can
      *                       be established that it does not work, or null if nothing could be
      *                       established due to some other failure
      */
     public function runTest() {
-        $responseText = self::makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/test.php');
+        $responseText = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/test.php');
         if ($responseText == '1') {
             return true;
         };
