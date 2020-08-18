@@ -95,7 +95,7 @@ abstract class AbstractTester
      * @param  HTTPRequesterInterface  $httpRequester  The HTTPRequester to use
      * @return  void
      */
-    protected function setHTTPRequester($httpRequester) {
+    public function setHTTPRequester($httpRequester) {
         $this->httpRequester = $httpRequester;
     }
 
