@@ -21,6 +21,8 @@ namespace HtaccessCapabilityTester;
  * - The tester only reports failure on a 500 Internal Server Error. All other status codes (even server errors)
  *       are treated as a success. The assumption here is that malformed .htaccess files / .htaccess
  *       files containing unknown or disallowed directives always results in a 500
+ * - If your purpose is to test if a request succeeds (response 200 Ok), you should create your own class.
+ *       (note that if you want to ensure that a php will succeed, make sure that a php is requested)
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
