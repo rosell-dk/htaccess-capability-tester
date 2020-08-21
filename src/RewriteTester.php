@@ -64,7 +64,7 @@ class RewriteTester extends AbstractTester
 # Testing for mod_rewrite
 # -----------------------
 # If mod_rewrite is enabled, redirect to 1.txt, which returns "1".
-# If mod_rewrite is disabled, the rewriting fails, and we end at 0.txt, which returns 0.
+# If mod_rewrite is disabled, the rewriting fails, and we end at 0.txt, which returns "0".
 #
 # Notes:
 # - We are not redirecting to a php, because that would additionally require phps
