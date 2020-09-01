@@ -12,6 +12,9 @@ abstract class AbstractTester
     /** @var string  The base url that the tests can be run from (corresponds to $baseDir) */
     protected $baseUrl;
 
+    /** @var object  Options */
+    protected $options;
+
     /** @var string  A subdir */
     protected $subDir;
 
@@ -58,22 +61,6 @@ abstract class AbstractTester
      */
     abstract protected function run();
 
-
-    /**
-     * Run test
-     *
-     * @param  string  $baseDir  Directory on the server where the test files can be put
-     * @param  string  $baseUrl  The base URL of the test files
-     *
-     *  @return TestResult   Returns a test result
-     *  @throws \Exception  In case the test cannot be run due to serious issues
-     */
-    public static function runTest($baseDir, $baseUrl)
-    {
-        $t = self::createInstance($baseDir, $baseUrl);
-        return $t->run();
-    }
-
     /**
      * Constructor.
      *
@@ -82,26 +69,13 @@ abstract class AbstractTester
      *
      * @return void
      */
-    final public function __construct($baseDir, $baseUrl)
+    public function __construct($baseDir, $baseUrl)
     {
         $this->baseDir = $baseDir;
         $this->baseUrl = $baseUrl;
         $this->subDir = $this->getSubDir();
         $this->registerTestFiles();
         $this->createTestFilesIfNeeded();
-    }
-
-    /**
-     * Create an instance of this class
-     *
-     * @param  string  $baseDir  Directory on the server where the test files can be put
-     * @param  string  $baseUrl  The base URL of the test files
-     *
-     * @return static
-     */
-    public static function createInstance($baseDir, $baseUrl)
-    {
-        return new static($baseDir, $baseUrl);
     }
 
     /**

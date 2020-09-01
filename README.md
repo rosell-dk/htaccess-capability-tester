@@ -25,7 +25,8 @@ require 'vendor/autoload.php';
 use HtaccessCapabilityTester\SetRequestHeaderTester;
 
 try {
-    $testResult = SetRequestHeaderTester::runTest($baseDir, $baseUrl);
+    $tester = new SetRequestHeaderTester($baseDir, $baseUrl);
+    $testResult = SetRequestHeaderTester->run();
 
     if ($testResult->status === true) {
         // It absolutely works
@@ -39,7 +40,6 @@ try {
 } catch (\Exception $e) {
     // The test throws an Exception if it cannot run due to serious issues
     // - if the test files cannot be written to the directory
-    // - if requesting them results in a 404 Not Found
 }
 ```
 
@@ -73,26 +73,14 @@ Require the library with *Composer*, like this:
 composer require rosell-dk/htaccess-capability-tester
 ```
 
-## Usage:
+## Available tests:
 
-### Running one of the provided tests:
-To for example run the request header test, do this:
-
-```php
-use HtaccessCapabilityTester\SetRequestHeaderTester;
-
-$tester = new SetRequestHeaderTester($baseDir, $baseUrl);
-
-$testResult = $tester->runTest();
-
-```
-PS: Notice that `runTest()` throws an exception if the test files cannot be created.
-
-The library currently supports the following tests:
-
+- *HtaccessEnabledTester* : Tests if .htaccess are read at all.
+- *ModEnvLoadedTester* : Tests if *mod_env* is loaded
+- *ModHeadersLoadedTester* : Tests if *mod_headers* is loaded
 - *RewriteTester* : Tests if rewriting works.
 - *SetRequestHeaderTester* : Tests if setting request headers in `.htaccess` works.
-- *GrantAllNotCrashTester* : Tests that `Require all granted` works (that it does not result in a 500 Internal Server Error)
+- *GrantAllCrashTester* : Tests that `Require all granted` works (that it does not result in a 500 Internal Server Error)
 - *PassEnvThroughRequestHeaderTester* : Tests if passing an environment variable through a request header in an `.htaccess` file works.
 - *PassEnvThroughRewriteTester*: Tests if passing an environment variable by setting it in a REWRITE in an `.htaccess` file works.
 
@@ -102,4 +90,4 @@ It is not to define your own test by extending the "AbstractTester" class. You c
 If you are in need of a test that discovers if an `.htaccess` causes an 500 Internal Server error, it is even more simple: Just extend the *AbstractCrashTester* class and implement the *getHtaccessToCrashTest()* method (see `GrantAllCrashTester.php`)
 
 ### Using another library for making the HTTP request
-This library simply uses `file_get_contents` to make the HTTP request. It can however be set to use another library. Use the `setHTTPRequestor` method for that. The requester must implement `HTTPRequesterInterface` interface, which simply consists of a single method: `makeHTTPRequest($url)`
+This library simply uses `file_get_contents` to make HTTP requests. It can however be set to use another library. Use the `setHTTPRequestor` method for that. The requester must implement `HTTPRequesterInterface` interface, which simply consists of a single method: `makeHTTPRequest($url)`

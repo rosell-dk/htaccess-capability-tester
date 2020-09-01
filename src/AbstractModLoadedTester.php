@@ -74,7 +74,9 @@ EOD;
         $status = null;
         $info = '';
 
-        $enabledResult = HtaccessEnabledTester::runTest($this->baseDir, $this->baseUrl);
+        $enabledTester = new HtaccessEnabledTester($this->baseDir, $this->baseUrl);
+        $enabledResult = $enabledTester->run();
+
         if ($enabledResult->status === false) {
             $status = false;
             $info = '.htaccess files are ignored altogether in this dir';
