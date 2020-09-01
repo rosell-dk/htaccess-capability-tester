@@ -39,5 +39,4 @@ class TesterFactory
         }
         return null;
     }
-
 }

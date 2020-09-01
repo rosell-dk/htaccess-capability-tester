@@ -15,7 +15,7 @@ namespace HtaccessCapabilityTester;
  *     (if disallowed, the result is either a 500 Internal Server Error or that the directive is
  *     ignored, depending on whether Nonfatal is set)
  * - The request results in a 500 Internal Server Error due to another problem than a disallowed
- *     directive (this is a false negative)
+ *     directive (this is, there is a risk for a false negative)
  *
  * The test works by creating an .htaccess which redirects requests to "0.txt"
  * to "1.txt" and then requesting "0.txt".
@@ -58,7 +58,8 @@ class RewriteTester extends AbstractTester
      *
      * @return  void
      */
-    public function registerTestFiles() {
+    public function registerTestFiles()
+    {
         $htaccessFile = <<<'EOD'
 
 # Testing for mod_rewrite
@@ -75,8 +76,8 @@ class RewriteTester extends AbstractTester
 #      too. Actually, the <IfModule> wrap isn't neccessary for our test to work, as the test
 #      identifies a 500 Internal Error as test failure. However, not having the wrap would
 #      cause the test to generate an entry in the error log when mod_rewrite isn't installed
-#      (regardless if overrides are configured to Nonfatal or not):
-#      "Invalid command 'RewriteEngine', perhaps misspelled or defined by a module not included
+#      (regardless if configured to Nonfatal or not): "Invalid command 'RewriteEngine', perhaps
+#      misspelled or defined by a module not included
 #      in the server configuration"
 
 <IfModule mod_rewrite.c>
@@ -94,16 +95,44 @@ EOD;
     /**
      *  Run the rewrite test.
      *
-     *  @return bool|null  Returns true if rewriting works in the directory being tested, false if
-     *                        does not.
+     *  @return TestResult   Returns a test result
      */
-    public function runTest() {
-        $responseText = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/0.txt');
-        //echo $this->baseUrl . '/' . $this->subDir . '/0.txt' . ':' .$responseText;
-        if ($responseText == '1') {
-            return true;
-        };
-        return false;
-    }
+    public function run()
+    {
+        $response = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/0.txt');
 
+        $status = null;
+        $info = '';
+
+        if ($response->body == '') {
+            // empty body means the HTTP request failed,
+            // which we generally treat as inconclusive
+            $status = null;
+            $info = 'The test request failed with status code: ' . $response->statusCode .
+                '. We interpret this as an inconclusive result.';
+        } else {
+            switch ($response->body) {
+                case '1':
+                    $status = true;
+                    break;
+                case '0':
+                    $status = false;
+                    break;
+                default:
+                    // text in the body means the test was inconclusive
+                    $status = null;
+                    $info = $response->body;
+            }
+        }
+
+        if ($response->statusCode == '500') {
+            // A 500 Internal Server error is interpreted as meaning that the .htaccess contains
+            // a forbidden directive
+            $status = false;
+            $info = 'The test request responded with a 500 Internal Server Error. ' .
+                'It probably means that the .htaccess contains a forbidden directive';
+        };
+
+        return new TestResult($status, $info);
+    }
 }

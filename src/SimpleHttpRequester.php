@@ -7,17 +7,25 @@ class SimpleHttpRequester implements HTTPRequesterInterface
     /**
      * Make a HTTP request to a URL.
      *
-     * @return  string  The response text
+     * @param  string  $url  The URL to make the HTTP request to
+     *
+     * @return  HTTPResponse  A HTTPResponse object, which simply contains body and status code.
      */
     public function makeHTTPRequest($url)
     {
         // PS: We suppress the E_WARNING level error generated on failure
-        $text = @file_get_contents($url);
-        if ($text === false) {
-            return '';
+        $body = @file_get_contents($url);
+        if ($body === false) {
+            $body = '';
         }
 
-        // var_dump($http_response_header);
-        return $text;
+        // $http_response_header materializes out of thin air when file_get_contents() is called
+        $statusLine = $http_response_header[0];
+
+        preg_match('{HTTP\/\S*\s(\d{3})}', $statusLine, $match);
+
+        $statusCode = $match[1];
+
+        return new HTTPResponse($body, $statusCode);
     }
 }

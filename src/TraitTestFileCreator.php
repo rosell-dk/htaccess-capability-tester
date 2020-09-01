@@ -2,7 +2,6 @@
 
 namespace HtaccessCapabilityTester;
 
-
 /**
  * Trait for creating test files
  *
@@ -13,7 +12,8 @@ namespace HtaccessCapabilityTester;
 trait TraitTestFileCreator
 {
 
-    public function createTestFilesIfNeeded() {
+    public function createTestFilesIfNeeded()
+    {
         foreach ($this->testFiles as list($fileName, $content, $subSubDir)) {
             self::createTestFileIfNeeded($fileName, $content, $subSubDir);
         }
@@ -23,7 +23,8 @@ trait TraitTestFileCreator
      *
      *  @return bool  Success or not
      */
-    private function createTestFileIfNeeded($fileName, $content, $subSubDir = '') {
+    private function createTestFileIfNeeded($fileName, $content, $subSubDir = '')
+    {
         $dir = $this->baseDir . '/' . $this->subDir;
         if ($subSubDir != '') {
             $dir .= '/' . $subSubDir;
@@ -45,5 +46,4 @@ trait TraitTestFileCreator
         }
         return false;
     }
-
 }

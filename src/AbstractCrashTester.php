@@ -43,7 +43,8 @@ abstract class AbstractCrashTester extends AbstractTester
      *
      * @return  void
      */
-    public function registerTestFiles() {
+    public function registerTestFiles()
+    {
 
         $file = $this->getHtaccessToCrashTest();
 
@@ -52,12 +53,23 @@ abstract class AbstractCrashTester extends AbstractTester
     }
 
     /**
-     *  Run the rewrite test.
+     *  Run the crash test.
      *
-     *  @return bool|null  Returns true if rewriting works in the directory being tested, false if
-     *                        does not.
+     *  @return TestResult   Returns a test result
      */
-    public function runTest() {
+    public function run()
+    {
+        $response = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/ping.txt');
+        $status = null;
+        $info = '';
+
+        if ($response->statusCode == '500') {
+            $status = false;
+        }
+
+        return new TestResult($status, $info);
+
+        /*
         $headers = get_headers($this->baseUrl . '/' . $this->subDir . '/ping.txt', 1);
         if ($headers === false) {
             // What kind of failure could this be, I wonder?
@@ -65,6 +77,7 @@ abstract class AbstractCrashTester extends AbstractTester
         }
         $responseCode = explode(' ', $headers[0])[1];
         return ($responseCode != '500');
+        */
 
         // Could for example be:
         // 200 Ok
@@ -82,5 +95,4 @@ abstract class AbstractCrashTester extends AbstractTester
         return false;
         */
     }
-
 }

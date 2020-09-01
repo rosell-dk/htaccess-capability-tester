@@ -42,24 +42,37 @@ abstract class AbstractTester
      *
      * @return  void
      */
-    protected function registerTestFile($fileName, $content, $subDir = '') {
+    protected function registerTestFile($fileName, $content, $subDir = '')
+    {
         $this->testFiles[] = [$fileName, $content, $subDir];
     }
 
     /**
      * Child classes must implement this method - or use the trait: TraitStandardTestRunner.
      *
-     * If the test involves making a HTTP request (which it probably does), the class should
-     * use the makeHTTPRequest() method making the request. The result must be interpreted
-     * into true, false or null. True = Success (the feature is supported), False = Failure
-     * (the feature is not supported), Null = Indetermite (ie if the test could not be completed
-     * due to a failure).
+     * Note: If the test involves making a HTTP request (which it probably does), the class should
+     * use the makeHTTPRequest() method making the request.
      *
-     * @return bool|null  Returns true if it can be established that it works, false if it can
-     *                       be established that it does not work, or null if nothing could be
-     *                       established due to some other failure
+     *  @return TestResult   Returns a test result
+     *  @throws \Exception  In case the test cannot be run due to serious issues
      */
-    abstract protected function runTest();
+    abstract protected function run();
+
+
+    /**
+     * Run test
+     *
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
+     *
+     *  @return TestResult   Returns a test result
+     *  @throws \Exception  In case the test cannot be run due to serious issues
+     */
+    public static function runTest($baseDir, $baseUrl)
+    {
+        $t = self::createInstance($baseDir, $baseUrl);
+        return $t->run();
+    }
 
     /**
      * Constructor.
@@ -69,7 +82,8 @@ abstract class AbstractTester
      *
      * @return void
      */
-    public function __construct($baseDir, $baseUrl) {
+    final public function __construct($baseDir, $baseUrl)
+    {
         $this->baseDir = $baseDir;
         $this->baseUrl = $baseUrl;
         $this->subDir = $this->getSubDir();
@@ -78,12 +92,27 @@ abstract class AbstractTester
     }
 
     /**
+     * Create an instance of this class
+     *
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
+     *
+     * @return static
+     */
+    public static function createInstance($baseDir, $baseUrl)
+    {
+        return new static($baseDir, $baseUrl);
+    }
+
+    /**
      * Make a HTTP request to a URL.
      *
      * @param  string  $url  The URL to make the HTTP request to
-     * @return string  The response text
+     *
+     * @return  HTTPResponse  A HTTPResponse object, which simply contains body and status code.
      */
-    protected function makeHTTPRequest($url) {
+    protected function makeHTTPRequest($url)
+    {
         if (!isset($this->httpRequester)) {
             $this->httpRequester = new SimpleHttpRequester();
         }
@@ -96,9 +125,8 @@ abstract class AbstractTester
      * @param  HTTPRequesterInterface  $httpRequester  The HTTPRequester to use
      * @return void
      */
-    public function setHTTPRequester($httpRequester) {
+    public function setHTTPRequester($httpRequester)
+    {
         $this->httpRequester = $httpRequester;
     }
-
-
 }

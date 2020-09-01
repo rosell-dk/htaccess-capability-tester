@@ -2,15 +2,50 @@
 
 [![Build Status](https://travis-ci.org/rosell-dk/htaccess-capability-tester.png?branch=master)](https://travis-ci.org/rosell-dk/htaccess-capability-tester)
 
-Detect if a given `.htaccess` feature works on the system through a live test.
+Detect `.htaccess` capabilities through live tests.
 
-There are cases where the only way to to learn if a given `.htaccess` capability is enabled / supported on a system is through a HTTP request. This library is build to handle such testing easily.
+NOTE: the API in the master branch is currently undergoing a lot of change
+
+There are cases where the only way to to learn if a given `.htaccess` capability is enabled / supported on a system is by examining it "from the outside" through a HTTP request. This library is build to handle such testing easily.
 
 This is what happens behind the scenes:
-1. Some test files for a given test are put on the server. Typically these includes an `.htaccess` file and a `test.php` file
-2. The test is triggered by doing a HTTP request to `test.php`
+1. Some test files for a given test are put on the server. Typically these at least includes an `.htaccess` file. For many tests, a `test.php` file is also generated.
+2. The test is triggered by doing a HTTP request (often to `test.php`)
+3. The response is interpreted
 
-As an example of how the test files works, here are the files generated for determining if setting a request header in a .htaccess file works:
+To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run. There are tests for deciding if a module is loaded, if the .htaccess is completely ignored, etc.
+
+
+## Usage
+
+The following example runs the test designed to determine if the `RequestHeader` directive is available and working. There are many other tests in the library, but they are all used in this fashion:
+
+```php
+require 'vendor/autoload.php';
+use HtaccessCapabilityTester\SetRequestHeaderTester;
+
+try {
+    $testResult = SetRequestHeaderTester::runTest($baseDir, $baseUrl);
+
+    if ($testResult->status === true) {
+        // It absolutely works
+    } elseif ($testResult->status === false) {
+        // It absolutely does not work
+
+    } elseif (is_null($testResult->status)) {
+        // The test was inconclusive.
+    }
+
+} catch (\Exception $e) {
+    // The test throws an Exception if it cannot run due to serious issues
+    // - if the test files cannot be written to the directory
+    // - if requesting them results in a 404 Not Found
+}
+```
+
+## How is this achieved?
+
+At the heart of each test are the test files. As an illustration, here are the files for the RequestHeader test:
 
 **.htaccess**
 ```
@@ -22,10 +57,20 @@ As an example of how the test files works, here are the files generated for dete
 **test.php**
 ```php
 if (isset($_SERVER['HTTP_USER_AGENT'])) {
-    echo  $_SERVER['HTTP_USER_AGENT'] == 'request-header-test' ? 1 : 0;
+    echo  $_SERVER['HTTP_USER_AGENT'] == 'request-header-test' ? '1' : '0';
 } else {
-    echo 0;
+    echo '0';
 }
+```
+
+Simple, right? The rest is just about putting the files at the location, doing the HTTP request and of course interpreting the result. In this case, the interpreting is easy. If `test.php` responds with "1", it must mean that setting the RequestHeader in the .htaccess worked. If it responds with "0", it means it did not work. If it responds with a 500 Internal Server Error, it (most likely) means that the RequestHeader directive has been disallowed, which also means it didn't work.
+
+
+## Installation
+Require the library with *Composer*, like this:
+
+```text
+composer require rosell-dk/htaccess-capability-tester
 ```
 
 ## Usage:
@@ -56,35 +101,5 @@ It is not to define your own test by extending the "AbstractTester" class. You c
 
 If you are in need of a test that discovers if an `.htaccess` causes an 500 Internal Server error, it is even more simple: Just extend the *AbstractCrashTester* class and implement the *getHtaccessToCrashTest()* method (see `GrantAllCrashTester.php`)
 
-### Using custom object for making the HTTP request
-This library simply uses `file_get_contents` to make the HTTP request. It can however be set to use another object for the HTTP Request. Use the `setHTTPRequestor` method for that. The requester must implement `HTTPRequesterInterface` interface, which simply consists of a single method: `makeHTTPRequest($url)`
-
-## Full example of running a provided test:
-```php
-require 'htaccess-capability-tester/vendor/autoload.php';
-
-use HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
-
-// Where to put the test files
-$baseDir = __DIR__ . '/live-tests';
-
-// URL for running the tests
-$baseUrl = 'http://hct0/live-tests';
-
-
-$tester = new SetRequestHeaderTester($baseDir, $baseUrl);
-
-try {
-    $testResult = $tester->runTest();
-} catch (\Exception $e) {
-    $testResult = null;
-}
-
-if ($testResult === true) {
-    echo 'the tested feature works';
-} elseif ($testResult === false) {
-    echo 'the tested feature does not work';
-} elseif ($testResult === null) {
-    echo 'the test did not reveal if the feature works or not';
-}
-```
+### Using another library for making the HTTP request
+This library simply uses `file_get_contents` to make the HTTP request. It can however be set to use another library. Use the `setHTTPRequestor` method for that. The requester must implement `HTTPRequesterInterface` interface, which simply consists of a single method: `makeHTTPRequest($url)`

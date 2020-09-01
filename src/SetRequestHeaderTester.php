@@ -30,9 +30,10 @@ class SetRequestHeaderTester extends AbstractTester
      *
      * @return  void
      */
-    public function registerTestFiles() {
+    public function registerTestFiles()
+    {
 
-$file = <<<'EOD'
+        $file = <<<'EOD'
 <?php
 if (isset($_SERVER['HTTP_USER_AGENT'])) {
     echo  $_SERVER['HTTP_USER_AGENT'] == 'request-header-test' ? 1 : 0;
@@ -42,7 +43,7 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
 EOD;
         $this->registerTestFile('test.php', $file);
 
-$file = <<<'EOD'
+        $file = <<<'EOD'
 <IfModule mod_headers.c>
 	# Certain hosts seem to strip non-standard request headers,
 	# so we use a standard one to avoid a false negative

@@ -6,7 +6,7 @@
   "keywords": [".htaccess", "apache", "litespeed"],
   "scripts": {
     "ci": [
-      "@test",
+      "@phpcs src",
       "@composer validate --no-check-all --strict",
       "@phpstan-global"
     ],

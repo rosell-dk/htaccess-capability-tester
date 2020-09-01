@@ -31,9 +31,10 @@ class PassEnvThroughRequestHeaderTester extends AbstractTester
      *
      * @return  void
      */
-    public function registerTestFiles() {
+    public function registerTestFiles()
+    {
 
-$file = <<<'EOD'
+        $file = <<<'EOD'
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -49,7 +50,7 @@ $file = <<<'EOD'
 EOD;
         $this->registerTestFile('.htaccess', $file);
 
-$file = <<<'EOD'
+        $file = <<<'EOD'
 <?php
 if (isset($_SERVER['HTTP_PASSTHROUGHHEADER'])) {
     echo ($_SERVER['HTTP_PASSTHROUGHHEADER'] == $_SERVER['DOCUMENT_ROOT'] ? 1 : 0);

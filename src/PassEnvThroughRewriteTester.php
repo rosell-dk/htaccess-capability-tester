@@ -31,9 +31,10 @@ class PassEnvThroughRewriteTester extends AbstractTester
      *
      * @return  void
      */
-    public function registerTestFiles() {
+    public function registerTestFiles()
+    {
 
-$file = <<<'EOD'
+        $file = <<<'EOD'
 <IfModule mod_rewrite.c>
 
     # Testing if we can pass environment variable from .htaccess to script in a RewriteRule
@@ -46,7 +47,7 @@ $file = <<<'EOD'
 EOD;
         $this->registerTestFile('.htaccess', $file);
 
-$file = <<<'EOD'
+        $file = <<<'EOD'
 <?php
 
 /**
@@ -54,7 +55,8 @@ $file = <<<'EOD'
  *  Return false if the environment variable isn't found
  */
 function getEnvPassedInRewriteRule($envName) {
-    // Envirenment variables passed through the REWRITE module have "REWRITE_" as a prefix (in Apache, not Litespeed, if I recall correctly)
+    // Environment variables passed through the REWRITE module have "REWRITE_" as a prefix
+    // (in Apache, not Litespeed, if I recall correctly).
     // Multiple iterations causes multiple REWRITE_ prefixes, and we get many environment variables set.
     // We simply look for an environment variable that ends with what we are looking for.
     // (so make sure to make it unique)
