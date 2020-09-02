@@ -41,7 +41,7 @@ abstract class AbstractTester
      *
      * Return a unique key. The default is to use the subdir. However, if a concrete Tester class
      * can test different things, it must override this method and make sure to return a different
-     * key per thing it can test (ModLoadedTester.php does that)
+     * key per thing it can test
      *
      * @return  string  A key it can be cached under
      */

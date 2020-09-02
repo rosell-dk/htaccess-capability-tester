@@ -30,17 +30,7 @@ class ModLoadedTester extends AbstractTester
      */
     public function getSubDir()
     {
-        return 'mod-loaded-tester';
-    }
-
-    /**
-     * Get key for caching purposes.
-     *
-     * @return  string  A key it can be cached under
-     */
-    public function getCacheKey()
-    {
-        return 'mod-loaded-tester-' . $this->moduleName;
+        return 'mod-loaded-tester/' . $this->moduleName;
     }
 
     /**
@@ -61,7 +51,7 @@ if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != ''))
 }
 EOD;
 
-        $this->registerTestFile('test.php', $php, $this->moduleName);
+        $this->registerTestFile('test.php', $php);
 
         $htaccess = <<<'EOD'
 # The beauty of this trick is that ServerSignature is available in core.
@@ -74,7 +64,7 @@ EOD;
 
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
-        $this->registerTestFile('.htaccess', $htaccess, $this->moduleName);
+        $this->registerTestFile('.htaccess', $htaccess);
     }
 
     /**
@@ -94,7 +84,7 @@ EOD;
             $status = false;
             $info = '.htaccess files are ignored altogether in this dir';
         } else {
-            $url = $this->baseUrl . '/' . $this->subDir . '/' . $this->moduleName . '/test.php';
+            $url = $this->baseUrl . '/' . $this->subDir . '/test.php';
             $response = $this->makeHTTPRequest($url);
 
             if ($response->body == '') {
