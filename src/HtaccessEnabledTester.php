@@ -39,7 +39,7 @@ EOD;
 ServerSignature Off
 EOD;
 
-        $php = <<<'EOD'
+        $phpOn = <<<'EOD'
 <?php
 if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != '')) {
     echo 1;
@@ -48,10 +48,19 @@ if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != ''))
 }
 EOD;
 
+        $phpOff = <<<'EOD'
+<?php
+if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != '')) {
+    echo 0;
+} else {
+    echo 1;
+}
+EOD;
+
         $this->registerTestFile('.htaccess', $htaccessFileOn, 'on');
         $this->registerTestFile('.htaccess', $htaccessFileOff, 'off');
-        $this->registerTestFile('test.php', $php, "on");
-        $this->registerTestFile('test.php', $php, "off");
+        $this->registerTestFile('test.php', $phpOn, "on");
+        $this->registerTestFile('test.php', $phpOff, "off");
     }
 
     /**
@@ -78,7 +87,7 @@ EOD;
             // As we don't expect any of the directives to be forbidden in our .htaccess,
             // We also treat 500 as an inconclusive result
         } else {
-            if (($responseOn->body == '1') && ($responseOff->body == '0')) {
+            if (($responseOn->body == '1') && ($responseOff->body == '1')) {
                 $status = true;
             } else {
                 $status = false;
