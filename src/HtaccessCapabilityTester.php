@@ -121,5 +121,4 @@ class HtaccessCapabilityTester
     {
         return $this->runTest(new CrashTester($this->baseDir, $this->baseUrl, $rules, $subDir));
     }
-
 }
