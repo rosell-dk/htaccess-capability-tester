@@ -36,30 +36,10 @@ if ($hct->htaccessEnabled() === false) {
 // Note that the tests returns null if they are inconclusive
 $testResult = $hct->htaccessEnabled();
 if (is_null($testResult)) {
-    // "RequestHeader set" works?
     // Inconclusive!
     // Perhaps a 403 Forbidden?
     // You can get a bit textual insight by using:
     // $hct->infoFromLastTest
-}
-
-$rulesToCrashTest = <<<'EOD'
-<ifModule mod_rewrite.c>
-  RewriteEngine On
-</ifModule>
-EOD;
-if ($hct->crashTest($rulesToCrashTest)) {
-    // The rules at least did not cause requests to anything in the folder to "crash".
-    // (even simple rules like the above can make the server respond with a
-    //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
-}
-
-// More:
-if ($hct->canSetResponseHeader()) {
-    // "Header set" works
-}
-if ($hct->canSetRequestHeader()) {
-    // "RequestHeader set" works
 }
 
 ```
@@ -86,6 +66,35 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
 Simple, right?
 
+
+## More examples of what you can test:
+
+```php
+
+require 'vendor/autoload.php';
+use HtaccessCapabilityTester\HtaccessCapabilityTester;
+
+$hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
+
+$rulesToCrashTest = <<<'EOD'
+<ifModule mod_rewrite.c>
+  RewriteEngine On
+</ifModule>
+EOD;
+if ($hct->crashTest($rulesToCrashTest)) {
+    // The rules at least did not cause requests to anything in the folder to "crash".
+    // (even simple rules like the above can make the server respond with a
+    //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
+}
+
+// More:
+if ($hct->canSetResponseHeader()) {
+    // "Header set" works
+}
+if ($hct->canSetRequestHeader()) {
+    // "RequestHeader set" works
+}
+```
 
 ## Installation
 Require the library with *Composer*, like this:
