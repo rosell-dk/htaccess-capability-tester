@@ -36,7 +36,10 @@ class HtaccessCapabilityTester
     }
 
     /**
-     * @param AbstractTester
+     * Run a test, store the info and return the status.
+     *
+     * @param  AbstractTester  $tester
+     *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
     private function runTest($tester)
@@ -96,6 +99,4 @@ class HtaccessCapabilityTester
     {
         return $this->runTest(new SetRequestHeaderTester($this->baseDir, $this->baseUrl));
     }
-
-
 }

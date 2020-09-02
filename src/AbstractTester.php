@@ -56,7 +56,7 @@ abstract class AbstractTester
      *  @return TestResult   Returns a test result
      *  @throws \Exception  In case the test cannot be run due to serious issues
      */
-    abstract protected function run();
+    abstract public function run();
 
     /**
      * Constructor.
