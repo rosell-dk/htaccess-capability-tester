@@ -15,13 +15,14 @@ This is what happens behind the scenes:
 
 ## Usage
 
-To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run. 
+To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run.
 
 ```php
 require 'vendor/autoload.php';
 use HtaccessCapabilityTester\HtaccessCapabilityTester;
 
 $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
+
 if ($hct->moduleLoaded('headers')) {
     // mod_headers has been tested functional in a real .htaccess
 }
