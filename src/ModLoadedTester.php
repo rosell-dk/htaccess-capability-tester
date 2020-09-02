@@ -55,6 +55,7 @@ EOD;
 
         $htaccess = <<<'EOD'
 # The beauty of this trick is that ServerSignature is available in core.
+# However, it requires PHP to check for the effect
 
 ServerSignature Off
 <IfModule mod_xxx.c>

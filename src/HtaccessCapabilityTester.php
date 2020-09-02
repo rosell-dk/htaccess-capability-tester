@@ -107,6 +107,16 @@ class HtaccessCapabilityTester
     }
 
     /**
+     * Test if setting a Response Header with the Header directive works.
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function canSetResponseHeader()
+    {
+        return $this->runTest(new SetResponseHeaderTester($this->baseDir, $this->baseUrl));
+    }
+
+    /**
      * Test if a module is loaded.
      *
      * This test detects if directives inside a "IfModule" is run for a given module

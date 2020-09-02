@@ -26,6 +26,6 @@ class SimpleHttpRequester implements HTTPRequesterInterface
 
         $statusCode = $match[1];
 
-        return new HTTPResponse($body, $statusCode);
+        return new HTTPResponse($body, $statusCode, $http_response_header);
     }
 }

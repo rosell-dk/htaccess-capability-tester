@@ -34,8 +34,9 @@ if ($hct->htaccessEnabled() === false) {
 }
 
 // Note that the tests returns null if they are inconclusive
-$testResult = $hct->canSetRequestHeader();
+$testResult = $hct->htaccessEnabled();
 if (is_null($testResult)) {
+    // "RequestHeader set" works?
     // Inconclusive!
     // Perhaps a 403 Forbidden?
     // You can get a bit textual insight by using:
@@ -52,6 +53,15 @@ if ($hct->crashTest($rulesToCrashTest)) {
     // (even simple rules like the above can make the server respond with a
     //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
 }
+
+// More:
+if ($hct->canSetResponseHeader()) {
+    // "Header set" works
+}
+if ($hct->canSetRequestHeader()) {
+    // "RequestHeader set" works
+}
+
 ```
 
 ## How is this achieved?
