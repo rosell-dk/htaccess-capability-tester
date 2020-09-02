@@ -33,15 +33,6 @@ if ($hct->htaccessEnabled() === false) {
     // Apache has been configured to ignore .htaccess files
 }
 
-// Note that the tests returns null if they are inconclusive
-$testResult = $hct->htaccessEnabled();
-if (is_null($testResult)) {
-    // Inconclusive!
-    // Perhaps a 403 Forbidden?
-    // You can get a bit textual insight by using:
-    // $hct->infoFromLastTest
-}
-
 ```
 
 ## How is this achieved?
@@ -87,12 +78,32 @@ if ($hct->crashTest($rulesToCrashTest)) {
     //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
 }
 
-// More:
 if ($hct->canSetResponseHeader()) {
     // "Header set" works
 }
 if ($hct->canSetRequestHeader()) {
     // "RequestHeader set" works
+}
+
+// Note that the tests returns null if they are inconclusive
+$testResult = $hct->htaccessEnabled();
+if (is_null($testResult)) {
+    // Inconclusive!
+    // Perhaps a 403 Forbidden?
+    // You can get a bit textual insight by using:
+    // $hct->infoFromLastTest
+}
+
+// Also note that an exception will be thrown if test files cannot be created.
+// You might want to wrap your call in a try-catch statement.
+try {
+    if ($hct->canSetRequestHeader()) {
+        // "RequestHeader set" works
+    }
+
+} catch (\Exception $e) {
+    // Probably permission problems.
+    // We should probably notify someone
 }
 ```
 
