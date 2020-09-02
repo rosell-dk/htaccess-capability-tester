@@ -28,7 +28,7 @@ abstract class AbstractModLoadedTester extends AbstractTester
      */
     public function getSubDir()
     {
-        return 'mod-' . $this->moduleToTest() . '-loaded-tester';
+        return 'mod-loaded-tester';
     }
 
     /**
@@ -39,7 +39,8 @@ abstract class AbstractModLoadedTester extends AbstractTester
     public function registerTestFiles()
     {
 
-        $file = <<<'EOD'
+
+        $php = <<<'EOD'
 <?php
 if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != '')) {
     echo 1;
@@ -48,9 +49,9 @@ if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != ''))
 }
 EOD;
 
-        $this->registerTestFile('test.php', $file);
+        $this->registerTestFile('test.php', $php, $this->moduleToTest());
 
-        $file = <<<'EOD'
+        $htaccess = <<<'EOD'
 # The beauty of this trick is that ServerSignature is available in core.
 
 ServerSignature Off
@@ -59,9 +60,9 @@ ServerSignature On
 </IfModule>
 EOD;
 
-        $file = str_replace('mod_xxx', 'mod_' . $this->moduleToTest(), $file);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleToTest(), $htaccess);
 
-        $this->registerTestFile('.htaccess', $file);
+        $this->registerTestFile('.htaccess', $htaccess, $this->moduleToTest());
     }
 
     /**
@@ -81,21 +82,23 @@ EOD;
             $status = false;
             $info = '.htaccess files are ignored altogether in this dir';
         } else {
-            $responseOn = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/on/test.php');
-            $responseOff = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/off/test.php');
+            $url = $this->baseUrl . '/' . $this->subDir . '/' . $this->moduleToTest() . '/test.php';
+            $response = $this->makeHTTPRequest($url);
 
-            if ($responseOn->body == '') {
+            if ($response->body == '') {
                 // empty body means the HTTP request failed,
                 // which we generally treat as inconclusive
 
                 $status = null;
-                $info = 'The test request failed with status code: ' . $responseOn->statusCode .
+                $info = 'The test request failed with status code: ' . $response->statusCode .
                     '. We interpret this as an inconclusive result';
+
+                $info .= '(url: ' . $url . ')';
 
                 // As we don't expect any of the directives to be forbidden in our .htaccess,
                 // We also treat 500 as an inconclusive result
             } else {
-                if (($responseOn->body == '1') && ($responseOff->body == '0')) {
+                if ($response->body == '1') {
                     $status = true;
                 } else {
                     $status = false;
