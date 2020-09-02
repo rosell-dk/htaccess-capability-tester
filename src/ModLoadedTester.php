@@ -34,6 +34,16 @@ class ModLoadedTester extends AbstractTester
     }
 
     /**
+     * Get key for caching purposes.
+     *
+     * @return  string  A key it can be cached under
+     */
+    public function getCacheKey()
+    {
+        return 'mod-loaded-tester-' . $this->moduleName;
+    }
+
+    /**
      * Register the test files using the "registerTestFile" method
      *
      * @return  void
@@ -77,10 +87,10 @@ EOD;
         $status = null;
         $info = '';
 
-        $enabledTester = new HtaccessEnabledTester($this->baseDir, $this->baseUrl);
-        $enabledResult = $enabledTester->run();
+        $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
+        $enabledResult = $hct->htaccessEnabled();
 
-        if ($enabledResult->status === false) {
+        if ($enabledResult === false) {
             $status = false;
             $info = '.htaccess files are ignored altogether in this dir';
         } else {

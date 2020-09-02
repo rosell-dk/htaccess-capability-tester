@@ -44,7 +44,13 @@ class HtaccessCapabilityTester
      */
     private function runTest($tester)
     {
-        $testResult = $tester->run();
+        if (TestResultCache::isCached($tester)) {
+            $testResult = TestResultCache::getCached($tester);
+        } else {
+            $testResult = $tester->run();
+            TestResultCache::cache($tester, $testResult);
+        }
+
         $this->infoFromLastTest = $testResult->info;
         return $testResult->status;
     }

@@ -12,9 +12,6 @@ abstract class AbstractTester
     /** @var string  The base url that the tests can be run from (corresponds to $baseDir) */
     protected $baseUrl;
 
-    /** @var string  A subdir */
-    protected $subDir;
-
     /** @var array  Test files for the test */
     protected $testFiles;
 
@@ -35,6 +32,30 @@ abstract class AbstractTester
      * @return  string  A subdir for the test files
      */
     abstract protected function getSubDir();
+
+    /**
+     * Get key for caching purposes.
+     *
+     * Return a unique key. The default is to use the subdir. However, if a concrete Tester class
+     * can test different things, it must override this method and make sure to return a different
+     * key per thing it can test (ModLoadedTester.php does that)
+     *
+     * @return  string  A key it can be cached under
+     */
+     public function getCacheKey()
+     {
+         return $this->getSubDir();
+     }
+
+     public function getBaseDir()
+     {
+         return $this->baseDir;
+     }
+
+     public function getBaseUrl()
+     {
+         return $this->baseUrl;
+     }
 
     /**
      * Child classes must that implement the registerTestFiles method must call
