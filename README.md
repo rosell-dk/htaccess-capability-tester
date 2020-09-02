@@ -41,6 +41,17 @@ if (is_null($testResult)) {
     // You can get a bit textual insight by using:
     // $hct->infoFromLastTest
 }
+
+$rulesToCrashTest = <<<'EOD'
+<ifModule mod_rewrite.c>
+  RewriteEngine On
+</ifModule>
+EOD;
+if ($hct->crashTest($rulesToCrashTest)) {
+    // The rules at least did not cause requests to anything in the folder to "crash".
+    // (even simple rules like the above can make the server respond with a
+    //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
+}
 ```
 
 ## How is this achieved?

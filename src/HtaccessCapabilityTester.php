@@ -105,4 +105,21 @@ class HtaccessCapabilityTester
     {
         return $this->runTest(new SetRequestHeaderTester($this->baseDir, $this->baseUrl));
     }
+
+    /**
+     * Test if a module is loaded.
+     *
+     * This test detects if directives inside a "IfModule" is run for a given module
+     *
+     * @param string       $rules   Rules to crash-test
+     * @param string       $subDir  (optional) Subdir for the .htaccess to reside.
+     *                              if left out, a unique string will be generated
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function crashTest($rules, $subDir = null)
+    {
+        return $this->runTest(new CrashTester($this->baseDir, $this->baseUrl, $rules, $subDir));
+    }
+
 }

@@ -3,7 +3,7 @@
 namespace HtaccessCapabilityTester;
 
 /**
- * Abstract class for testing if a .htaccess results in a 500 Internal Server Error
+ * Class for testing if a .htaccess results in a 500 Internal Server Error
  * (ie due to being malformed or containing directives that are unknown or not allowed)
  *
  * The tester reports success when:
@@ -28,15 +28,33 @@ namespace HtaccessCapabilityTester;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since the beginning
  */
-abstract class AbstractCrashTester extends AbstractTester
+class CrashTester extends AbstractTester
 {
 
+    /* @var string  Rules to crash-test */
+    private $rules;
+
+    public function __construct($baseDir, $baseUrl, $rules, $subDir = null)
+    {
+        if (is_null($subDir)) {
+            $subDir = hash('md5', $rules);
+        }
+        $this->subDir = 'crash-tester/' . $subDir;
+        $this->rules = $rules;
+
+        parent::__construct($baseDir, $baseUrl);
+    }
+
     /**
-     * Get the .htaccess content to crash-test.
+     * Child classes must implement this method, which tells which subdir the
+     * test files are to be put.
      *
-     * @return  string  The file content of the .htaccess
+     * @return  string  A subdir for the test files
      */
-    abstract protected function getHtaccessToCrashTest();
+    public function getSubDir()
+    {
+        return $this->subDir;
+    }
 
     /**
      * Register the test files using the "registerTestFile" method
@@ -45,10 +63,7 @@ abstract class AbstractCrashTester extends AbstractTester
      */
     public function registerTestFiles()
     {
-
-        $file = $this->getHtaccessToCrashTest();
-
-        $this->registerTestFile('.htaccess', $file);
+        $this->registerTestFile('.htaccess', $this->rules);
         $this->registerTestFile('ping.txt', "pong");
     }
 
@@ -65,34 +80,10 @@ abstract class AbstractCrashTester extends AbstractTester
 
         if ($response->statusCode == '500') {
             $status = false;
+        } else {
+            $status = true;
         }
 
         return new TestResult($status, $info);
-
-        /*
-        $headers = get_headers($this->baseUrl . '/' . $this->subDir . '/ping.txt', 1);
-        if ($headers === false) {
-            // What kind of failure could this be, I wonder?
-            return null;
-        }
-        $responseCode = explode(' ', $headers[0])[1];
-        return ($responseCode != '500');
-        */
-
-        // Could for example be:
-        // 200 Ok
-        // 403 Forbidden
-        // 500 Internal Server Error
-        // - and a lot more: https://restfulapi.net/http-status-codes/
-
-        //print_r('code:' . $responseCode);
-        /*
-        $responseText = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/ping.txt');
-        //echo $this->baseUrl . '/' . $this->subDir . '/0.txt' . ':' .$responseText;
-        if ($responseText == 'pong') {
-            return true;
-        };
-        return false;
-        */
     }
 }

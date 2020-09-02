@@ -1,43 +1,11 @@
-<?php
+# Grant All Crash Testing
 
-namespace HtaccessCapabilityTester;
+This library used to have a class for crash-testing specific .htaccess rules commonly used in an attempt to grant access to specific files. Such directives are however "dangerous" to use because it is not uncommon that the server has been configured not to allow authorization directives like "Order" and "Require" and even set up to go fatal.
 
-/**
- * Class for testing if granting access works (doesn't result in a 500 Internal Server Error).
- *
- * It is not uncommon to see .htaccess files that are put in a folder in order
- * to override access restrictions that possible have been added to a parent
- * .htaccess files by ie a security plugin.
- * However, such practise can lead to problems because some some servers may
- * have been configured to not allow access configurations in .htaccess files.
- * If that is the case, the result is a 500 Internal Server Error.
- *
- * @package    HtaccessCapabilityTester
- * @author     Bjørn Rosell <it@rosell.dk>
- * @since      Class available since the beginning
- */
-class GrantAllCrashTester extends AbstractCrashTester
-{
+I removed the class, as I found it a bit too specialized.
+Here is the `.htaccess` it was testing:
 
-    /**
-     * Child classes must implement this method, which tells which subdir to put test files in.
-     *
-     * @return  string  A subdir for the test files
-     */
-    public function getSubDir()
-    {
-        return 'grant-all-crash-tester';
-    }
-
-    /**
-     * Get the .htaccess content to crash-test.
-     *
-     * @return  string  The file content of the .htaccess
-     */
-    protected function getHtaccessToCrashTest()
-    {
-
-        $file = <<<'EOD'
+```
 # This .htaccess is here in order to test if it results in a 500 Internal Server Error.
 # .htaccess files can result in 500 Internal Server Error when they contain directives that has
 # not been allowed for the directory it is in (that stuff is controlled with "AllowOverride" or
@@ -70,8 +38,4 @@ class GrantAllCrashTester extends AbstractCrashTester
         Require all granted
     </IfModule>
 </FilesMatch>
-EOD;
-
-        return $file;
-    }
-}
+```
