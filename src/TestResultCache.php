@@ -72,7 +72,6 @@ class TestResultCache
         if (!self::isCached($tester)) {
             throw new \Exception('Not in cache');
         } else {
-
         }
         $key1 = $tester->getBaseDir() . $tester->getBaseUrl();
         $key2 = $tester->getCacheKey();

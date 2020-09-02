@@ -12,6 +12,9 @@ abstract class AbstractTester
     /** @var string  The base url that the tests can be run from (corresponds to $baseDir) */
     protected $baseUrl;
 
+    /** @var string  Subdir to put .htaccess files in */
+    protected $subDir;
+
     /** @var array  Test files for the test */
     protected $testFiles;
 
@@ -42,20 +45,20 @@ abstract class AbstractTester
      *
      * @return  string  A key it can be cached under
      */
-     public function getCacheKey()
-     {
-         return $this->getSubDir();
-     }
+    public function getCacheKey()
+    {
+        return $this->getSubDir();
+    }
 
-     public function getBaseDir()
-     {
-         return $this->baseDir;
-     }
+    public function getBaseDir()
+    {
+        return $this->baseDir;
+    }
 
-     public function getBaseUrl()
-     {
-         return $this->baseUrl;
-     }
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
 
     /**
      * Child classes must that implement the registerTestFiles method must call
