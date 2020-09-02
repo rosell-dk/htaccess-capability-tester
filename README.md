@@ -15,7 +15,7 @@ This is what happens behind the scenes:
 
 ## Usage
 
-To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run. There are tests for deciding if a module is loaded, if the .htaccess is completely ignored, etc.
+To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run. 
 
 ```php
 require 'vendor/autoload.php';
