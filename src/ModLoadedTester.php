@@ -12,18 +12,18 @@ namespace HtaccessCapabilityTester;
 class ModLoadedTester extends AbstractModLoadedTester
 {
 
-    /* @var string Module id (ie "rewrite") */
-    protected $moduleId;
+    /* @var string A valid Apache module name (ie "rewrite") */
+    protected $moduleName;
 
-    public function __construct($baseDir, $baseUrl, $moduleId)
+    public function __construct($baseDir, $baseUrl, $moduleName)
     {
-        $this->moduleId = $moduleId;
+        $this->moduleName = $moduleName;
 
         parent::__construct($baseDir, $baseUrl);
     }
 
     public function moduleToTest()
     {
-        return $this->moduleId;
+        return $this->moduleName;
     }
 }

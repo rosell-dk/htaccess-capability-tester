@@ -13,39 +13,38 @@ This is what happens behind the scenes:
 2. The test is triggered by doing a HTTP request (often to `test.php`)
 3. The response is interpreted
 
-To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run. There are tests for deciding if a module is loaded, if the .htaccess is completely ignored, etc.
-
-
 ## Usage
 
-The following example runs the test designed to determine if the `RequestHeader` directive is available and working. There are many other tests in the library, but they are all used in this fashion:
+To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run. There are tests for deciding if a module is loaded, if the .htaccess is completely ignored, etc.
 
 ```php
 require 'vendor/autoload.php';
-use HtaccessCapabilityTester\SetRequestHeaderTester;
+use HtaccessCapabilityTester\HtaccessCapabilityTester;
 
-try {
-    $tester = new SetRequestHeaderTester($baseDir, $baseUrl);
-    $testResult = SetRequestHeaderTester->run();
+$hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
+if ($hct->moduleLoaded('headers')) {
+    // mod_headers has been tested functional in a real .htaccess
+}
+if ($hct->canRewrite()) {
+    // rewriting works
+}
+if ($hct->htaccessEnabled() === false) {
+    // Apache has been configured to ignore .htaccess files
+}
 
-    if ($testResult->status === true) {
-        // It absolutely works
-    } elseif ($testResult->status === false) {
-        // It absolutely does not work
-
-    } elseif (is_null($testResult->status)) {
-        // The test was inconclusive.
-    }
-
-} catch (\Exception $e) {
-    // The test throws an Exception if it cannot run due to serious issues
-    // - if the test files cannot be written to the directory
+// Note that the tests returns null if they are inconclusive
+$testResult = $hct->canSetRequestHeader();
+if (is_null($testResult)) {
+    // Inconclusive!
+    // Perhaps a 403 Forbidden?
+    // You can get a bit textual insight by using:
+    // $hct->infoFromLastTest
 }
 ```
 
 ## How is this achieved?
 
-At the heart of each test are the test files. As an illustration, here are the files for the RequestHeader test:
+At the heart of each test are the test files. As an illustration, here are the files for the test that examines if the RequestHeader directive works:
 
 **.htaccess**
 ```
@@ -63,7 +62,7 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
 }
 ```
 
-Simple, right? The rest is just about putting the files at the location, doing the HTTP request and of course interpreting the result. In this case, the interpreting is easy. If `test.php` responds with "1", it must mean that setting the RequestHeader in the .htaccess worked. If it responds with "0", it means it did not work. If it responds with a 500 Internal Server Error, it (most likely) means that the RequestHeader directive has been disallowed, which also means it didn't work.
+Simple, right?
 
 
 ## Installation
@@ -72,22 +71,3 @@ Require the library with *Composer*, like this:
 ```text
 composer require rosell-dk/htaccess-capability-tester
 ```
-
-## Available tests:
-
-- *HtaccessEnabledTester* : Tests if .htaccess are read at all.
-- *ModEnvLoadedTester* : Tests if *mod_env* is loaded
-- *ModHeadersLoadedTester* : Tests if *mod_headers* is loaded
-- *RewriteTester* : Tests if rewriting works.
-- *SetRequestHeaderTester* : Tests if setting request headers in `.htaccess` works.
-- *GrantAllCrashTester* : Tests that `Require all granted` works (that it does not result in a 500 Internal Server Error)
-- *PassEnvThroughRequestHeaderTester* : Tests if passing an environment variable through a request header in an `.htaccess` file works.
-- *PassEnvThroughRewriteTester*: Tests if passing an environment variable by setting it in a REWRITE in an `.htaccess` file works.
-
-### Running your own test
-It is not to define your own test by extending the "AbstractTester" class. You can use the code in one of the provided testers as a template (ie `SetRequestHeaderTester.php`).
-
-If you are in need of a test that discovers if an `.htaccess` causes an 500 Internal Server error, it is even more simple: Just extend the *AbstractCrashTester* class and implement the *getHtaccessToCrashTest()* method (see `GrantAllCrashTester.php`)
-
-### Using another library for making the HTTP request
-This library simply uses `file_get_contents` to make HTTP requests. It can however be set to use another library. Use the `setHTTPRequestor` method for that. The requester must implement `HTTPRequesterInterface` interface, which simply consists of a single method: `makeHTTPRequest($url)`

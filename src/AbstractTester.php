@@ -12,9 +12,6 @@ abstract class AbstractTester
     /** @var string  The base url that the tests can be run from (corresponds to $baseDir) */
     protected $baseUrl;
 
-    /** @var object  Options */
-    protected $options;
-
     /** @var string  A subdir */
     protected $subDir;
 
