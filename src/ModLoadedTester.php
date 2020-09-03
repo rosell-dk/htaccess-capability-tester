@@ -107,6 +107,25 @@ EOD;
         $this->registerTestFile('dummy.txt', "im just here", 'test-using-response-header');
     }
 
+    private function registerTestFiles4()
+    {
+        // Test files, method 4: Using AddType
+        // --------------------------------------------------
+
+        $htaccess = <<<'EOD'
+<IfModule mod_xxx.c>
+AddType image/gif .test
+</IfModule>
+<IfModule !mod_xxx.c>
+AddType image/jpeg .test
+</IfModule>
+EOD;
+
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $this->registerTestFile('.htaccess', $htaccess, 'test-using-add-type');
+        $this->registerTestFile('dummy.test', "im just here", 'test-using-add-type');
+    }
+
     /**
      * Register the test files using the "registerTestFile" method
      *
@@ -117,6 +136,7 @@ EOD;
         $this->registerTestFiles1();
         $this->registerTestFiles2();
         $this->registerTestFiles3();
+        $this->registerTestFiles4();
     }
 
 
@@ -142,6 +162,23 @@ EOD;
             if ($response->body == '1') {
                 $status = true;
             } else {
+                $status = false;
+            }
+        }
+        return new TestResult($status, $info);
+    }
+
+    private function runTestUsingAddType()
+    {
+        $status = null;
+        $info = '';
+        $urlBase = $this->baseUrl . '/' . $this->subDir;
+        $response = $this->makeHTTPRequest($urlBase . '/test-using-add-type/dummy.test');
+
+        if (in_array('Content-Type: image/gif', $response->headers)) {
+            $status = true;
+        } else {
+            if (in_array('Content-Type: image/jpeg', $response->headers)) {
                 $status = false;
             }
         }
@@ -189,6 +226,8 @@ EOD;
      */
     public function run()
     {
+        return $this->runTestUsingAddType();
+
         $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
         $enabledResult = $hct->htaccessEnabled();
 
@@ -198,16 +237,23 @@ EOD;
             $testResult = new TestResult($status, $info);
         } else {
             $testResult = $this->runTestUsingServerSignature();
+
+            if (is_null($testResult->status)) {
+                if ($hct->canAddType()) {
+                    $testResult = $this->runTestUsingAddType();
+                }
+            }
+
             if (is_null($testResult->status)) {
                 if ($hct->canRewrite()) {
-                    // We got another shot!
-                    // This one does not depend on grants for PHP.
                     $testResult = $this->runTestUsingRewrite();
-                } else {
-                    if ($hct->canSetResponseHeader()) {
-                        // We got yet another shot!
-                        $testResult = $this->runTestUsingResponseHeader();
-                    }
+                }
+            }
+
+            if (is_null($testResult->status)) {
+                if ($hct->canSetResponseHeader()) {
+                    // We got yet another shot!
+                    $testResult = $this->runTestUsingResponseHeader();
                 }
             }
         }
