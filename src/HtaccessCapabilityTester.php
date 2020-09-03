@@ -119,6 +119,7 @@ class HtaccessCapabilityTester
     {
         return $this->runTest(new SetResponseHeaderTester($this->baseDir, $this->baseUrl));
     }
+
     /**
      * Test if setting a Request Header with the RequestHeader directive works.
      *
@@ -129,6 +130,15 @@ class HtaccessCapabilityTester
         return $this->runTest(new SetRequestHeaderTester($this->baseDir, $this->baseUrl));
     }
 
+    /**
+     * Test if enabling ContentDigest works.
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function canContentDigest()
+    {
+        return $this->runTest(new ContentDigestTester($this->baseDir, $this->baseUrl));
+    }
 
     /**
      * Test if a module is loaded.

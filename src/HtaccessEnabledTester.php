@@ -116,11 +116,15 @@ EOD;
 
             // We are here because the first test was inconclusive.
             // This probably means that PHP scripts are forbidden.
-            // But there are other ways. Many tests doesn't rely on PHP.
-            // If any of those tests succeeds, it will mean that .htaccess is read.
-            // We test AddType first because it is part of mod_mime, which is very common.
 
-            if ($hct->canAddType() || $hct->canRewrite() || $hct->canSetResponseHeader()) {
+            // But we have many tests around here that does not rely on PHP.
+            // If any of those tests succeeds, it will mean that the .htaccess is read.
+
+            if ($hct->canContentDigest()         // Override: Options, Module: none (in core)
+                || $hct->canAddType()            // Override: FileInfo, Module: mime
+                || $hct->canRewrite()            // Override: FileInfo, Module: rewrite
+                || $hct->canSetResponseHeader()  // Override: FileInfo, Module: headers
+            ) {
                 $status = true;
                 $info = '';
             }

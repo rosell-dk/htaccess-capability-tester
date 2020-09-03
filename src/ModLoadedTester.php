@@ -33,10 +33,16 @@ class ModLoadedTester extends AbstractTester
         return 'mod-loaded-tester/' . $this->modName;
     }
 
-    private function registerTestFiles1()
+    private function registerTestFilesServerSignature()
     {
-        // Test files, method 1: Using ServerSignature
+        // Test files, method : Using ServerSignature
         // --------------------------------------------------
+        // Requires (in order not to be inconclusive)
+        // - Modules: None - its in core
+        // - Override: All
+        // - Directives: ServerSignature
+        // - PHP?: Yes
+
         $php = <<<'EOD'
 <?php
 if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != '')) {
@@ -50,6 +56,7 @@ EOD;
 
         $htaccess = <<<'EOD'
 # The beauty of this trick is that ServerSignature is available in core.
+# (it requires no modules and cannot easily be made forbidden)
 # However, it requires PHP to check for the effect
 
 ServerSignature Off
@@ -62,10 +69,15 @@ EOD;
         $this->registerTestFile('.htaccess', $htaccess, 'test-using-server-signature');
     }
 
-    private function registerTestFiles2()
+    private function registerTestFilesUsingRewrite()
     {
-        // Test files, method 2: Using Rewrite
+        // Test files, method: Using Rewrite
         // --------------------------------------------------
+        // Requires (in order not to be inconclusive)
+        // - Module: mod_rewrite
+        // - Override: FileInfo
+        // - Directives: RewriteEngine, RewriteRule and IfModule
+        // - PHP?: No
 
         $htaccess = <<<'EOD'
 RewriteEngine On
@@ -88,10 +100,15 @@ EOD;
         );
     }
 
-    private function registerTestFiles3()
+    private function registerTestFilesUsingResponseHeader()
     {
-        // Test files, method 3: Using Response Header
+        // Test files, method: Using Response Header
         // --------------------------------------------------
+        // Requires (in order not to be inconclusive)
+        // - Module: mod_headers
+        // - Override: FileInfo
+        // - Directives: Header and IfModule
+        // - PHP?: No
 
         $htaccess = <<<'EOD'
 <IfModule mod_xxx.c>
@@ -107,10 +124,16 @@ EOD;
         $this->registerTestFile('dummy.txt', "im just here", 'test-using-response-header');
     }
 
-    private function registerTestFiles4()
+    private function registerTestFilesUsingAddType()
     {
-        // Test files, method 4: Using AddType
+        // Test files, method: Using AddType
         // --------------------------------------------------
+        //
+        // Requires (in order not to be inconclusive)
+        // - Module: mod_mime
+        // - Override: FileInfo
+        // - Directives: AddType and IfModule
+        // - PHP?: No
 
         $htaccess = <<<'EOD'
 <IfModule mod_xxx.c>
@@ -126,6 +149,31 @@ EOD;
         $this->registerTestFile('dummy.test', "im just here", 'test-using-add-type');
     }
 
+    private function registerTestFilesUsingContentDigest()
+    {
+        // Test files, method: Using ContentDigest
+        // --------------------------------------------------
+        //
+        // Requires (in order not to be inconclusive)
+        // - Module: None - its in core
+        // - Override: Options
+        // - Directives: ContentDigest
+        // - PHP?: No
+
+        $htaccess = <<<'EOD'
+<IfModule mod_xxx.c>
+ContentDigest On
+</IfModule>
+<IfModule !mod_xxx.c>
+ContentDigest Off
+</IfModule>
+EOD;
+
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $this->registerTestFile('.htaccess', $htaccess, 'test-using-content-digest');
+        $this->registerTestFile('dummy.txt', "im just here", 'test-using-content-digest');
+    }
+
     /**
      * Register the test files using the "registerTestFile" method
      *
@@ -133,10 +181,11 @@ EOD;
      */
     public function registerTestFiles()
     {
-        $this->registerTestFiles1();
-        $this->registerTestFiles2();
-        $this->registerTestFiles3();
-        $this->registerTestFiles4();
+        $this->registerTestFilesServerSignature();
+        $this->registerTestFilesUsingRewrite();
+        $this->registerTestFilesUsingResponseHeader();
+        $this->registerTestFilesUsingAddType();
+        $this->registerTestFilesUsingContentDigest();
     }
 
 
@@ -219,6 +268,24 @@ EOD;
         return new TestResult($status, $info);
     }
 
+    private function runTestUsingContentDigest()
+    {
+        $status = null;
+        $info = '';
+
+        $urlBase = $this->baseUrl . '/' . $this->subDir;
+        $response = $this->makeHTTPRequest($urlBase . '/test-using-content-digest/dummy.txt');
+
+        $headersHash = $response->getHeadersHash();
+
+        if (isset($headersHash['Content-MD5'])) {
+            $status = true;
+        } else {
+            $status = false;
+        }
+        return new TestResult($status, $info);
+    }
+
     /**
      *  Run the test.
      *
@@ -234,21 +301,47 @@ EOD;
             $info = '.htaccess files are ignored altogether in this dir';
             $testResult = new TestResult($status, $info);
         } else {
+            // The ServerSignature test requires:
+            // - PHP
+            // - nothing more (no modules, no overrides)
+
             $testResult = $this->runTestUsingServerSignature();
 
             if (is_null($testResult->status)) {
+                // The ContentDigest test requires:
+                // - Module: None - its in core
+                // - Override: Options
+
+                if ($hct->canContentDigest()) {
+                    $testResult = $this->runTestUsingContentDigest();
+                }
+            }
+
+            if (is_null($testResult->status)) {
+                // The AddType test requires:
+                // - Module: mod_mime     (very common)
+                // - Override: FileInfo
+
                 if ($hct->canAddType()) {
                     $testResult = $this->runTestUsingAddType();
                 }
             }
 
             if (is_null($testResult->status)) {
+                // The Rewrite test requires:
+                // - Module: mod_rewrite  (pretty common)
+                // - Override: FileInfo
+
                 if ($hct->canRewrite()) {
                     $testResult = $this->runTestUsingRewrite();
                 }
             }
 
             if (is_null($testResult->status)) {
+                // The Response Header test requires:
+                // - Module: mod_headers   (pretty common)
+                // - Override: FileInfo
+
                 if ($hct->canSetResponseHeader()) {
                     // We got yet another shot!
                     $testResult = $this->runTestUsingResponseHeader();

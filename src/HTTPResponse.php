@@ -36,4 +36,25 @@ class HTTPResponse
         $this->statusCode = $statusCode;
         $this->headers = $headers;
     }
+
+    /**
+     *  Get headers as a hash.
+     *
+     *  Note: This little function does not handle multiple headers with the
+     *        same name.
+     *  @return  array  Hashed headers
+     */
+    public function getHeadersHash()
+    {
+        $hash = [];
+        foreach ($this->headers as $header) {
+            $pos = strpos($header, ':');
+            if ($pos > 0) {
+                $key = trim(substr($header, 0, $pos));
+                $value = trim(substr($header, $pos + 1));
+                $hash[$key] = $value;
+            }
+        }
+        return $hash;
+    }
 }
