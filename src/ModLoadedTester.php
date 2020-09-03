@@ -13,11 +13,11 @@ class ModLoadedTester extends AbstractTester
 {
 
     /* @var string A valid Apache module name (ie "rewrite") */
-    protected $moduleName;
+    protected $modName;
 
-    public function __construct($baseDir, $baseUrl, $moduleName)
+    public function __construct($baseDir, $baseUrl, $modName)
     {
-        $this->moduleName = $moduleName;
+        $this->modName = $modName;
 
         parent::__construct($baseDir, $baseUrl);
     }
@@ -30,7 +30,7 @@ class ModLoadedTester extends AbstractTester
      */
     public function getSubDir()
     {
-        return 'mod-loaded-tester/' . $this->moduleName;
+        return 'mod-loaded-tester/' . $this->modName;
     }
 
     private function registerTestFiles1()
@@ -58,7 +58,7 @@ ServerSignature On
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
         $this->registerTestFile('.htaccess', $htaccess, 'test-using-server-signature');
     }
 
@@ -77,7 +77,7 @@ RewriteRule ^null\.txt$ 0.txt [L]
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
         $this->registerTestFile('.htaccess', $htaccess, 'test-using-rewrite');
         $this->registerTestFile('0.txt', "0", 'test-using-rewrite');
         $this->registerTestFile('1.txt', "1", 'test-using-rewrite');
@@ -102,7 +102,7 @@ Header set X-Response-Header-Test: 0
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
         $this->registerTestFile('.htaccess', $htaccess, 'test-using-response-header');
         $this->registerTestFile('dummy.txt', "im just here", 'test-using-response-header');
     }
