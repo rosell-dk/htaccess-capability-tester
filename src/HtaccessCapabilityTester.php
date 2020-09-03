@@ -97,13 +97,17 @@ class HtaccessCapabilityTester
     }
 
     /**
-     * Test if setting a Request Header with the RequestHeader directive works.
+     * Test if AddType works.
+     *
+     * The .htaccess in this test uses the following directives:
+     * - IfModule (core)
+     * - AddType  (mod_mime, FileInfo)
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function canSetRequestHeader()
+    public function canAddType()
     {
-        return $this->runTest(new SetRequestHeaderTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new AddTypeTester($this->baseDir, $this->baseUrl));
     }
 
     /**
@@ -115,6 +119,16 @@ class HtaccessCapabilityTester
     {
         return $this->runTest(new SetResponseHeaderTester($this->baseDir, $this->baseUrl));
     }
+    /**
+     * Test if setting a Request Header with the RequestHeader directive works.
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function canSetRequestHeader()
+    {
+        return $this->runTest(new SetRequestHeaderTester($this->baseDir, $this->baseUrl));
+    }
+
 
     /**
      * Test if a module is loaded.

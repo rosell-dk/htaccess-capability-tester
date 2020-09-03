@@ -78,6 +78,10 @@ if ($hct->crashTest($rulesToCrashTest)) {
     //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
 }
 
+if ($hct->canAddType()) {
+    // AddType directive works
+}
+
 if ($hct->canSetResponseHeader()) {
     // "Header set" works
 }
