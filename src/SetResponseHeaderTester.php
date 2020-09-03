@@ -40,7 +40,7 @@ EOD;
         $this->registerTestFile('.htaccess', $file);
 
         // Just to have something to request
-        $this->registerTestFile('1.txt', "1");
+        $this->registerTestFile('dummy.txt', "they needed someone, so here i am");
     }
 
     /**
@@ -51,7 +51,7 @@ EOD;
      */
     public function run()
     {
-        $response = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/1.txt');
+        $response = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/dummy.txt');
 
         $status = null;
         $info = '';

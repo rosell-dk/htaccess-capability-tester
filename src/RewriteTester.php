@@ -82,7 +82,7 @@ class RewriteTester extends AbstractTester
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^0\.txt$ 1.txt [L]
+    RewriteRule ^0\.txt$ 1\.txt [L]
 </IfModule>
 
 EOD;
