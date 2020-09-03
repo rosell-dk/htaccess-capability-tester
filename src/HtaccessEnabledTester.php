@@ -113,16 +113,9 @@ EOD;
 
         if (is_null($testResult->status)) {
             $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
-            $rewriteStatus = $hct->canRewrite();
-            if ($rewriteStatus !== true) {
+            if ($hct->canAddType() || $hct->canRewrite() || $hct->canSetResponseHeader()) {
                 $status = true;
                 $info = '';
-            } else {
-                $responseHeaderStatus = $hct->canSetResponseHeader();
-                if ($responseHeaderStatus === true) {
-                    $status = true;
-                    $info = '';
-                }
             }
         }
         return new TestResult($status, $info);
