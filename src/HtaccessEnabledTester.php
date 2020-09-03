@@ -113,6 +113,13 @@ EOD;
 
         if (is_null($testResult->status)) {
             $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
+
+            // We are here because the first test was inconclusive.
+            // This probably means that PHP scripts are forbidden.
+            // But there are other ways. Many tests doesn't rely on PHP.
+            // If any of those tests succeeds, it will mean that .htaccess is read.
+            // We test AddType first because it is part of mod_mime, which is very common.
+
             if ($hct->canAddType() || $hct->canRewrite() || $hct->canSetResponseHeader()) {
                 $status = true;
                 $info = '';
