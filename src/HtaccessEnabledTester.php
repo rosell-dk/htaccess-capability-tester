@@ -124,7 +124,6 @@ EOD;
                     $info = '';
                 }
             }
-
         }
         return new TestResult($status, $info);
     }
