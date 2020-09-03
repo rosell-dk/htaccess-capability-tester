@@ -120,10 +120,11 @@ EOD;
             // But we have many tests around here that does not rely on PHP.
             // If any of those tests succeeds, it will mean that the .htaccess is read.
 
-            if ($hct->canContentDigest()         // Override: Options, Module: none (in core)
-                || $hct->canAddType()            // Override: FileInfo, Module: mime
-                || $hct->canRewrite()            // Override: FileInfo, Module: rewrite
-                || $hct->canSetResponseHeader()  // Override: FileInfo, Module: headers
+            if ($hct->canContentDigest()         // Override: Options,  Status: Core
+                || $hct->canAddType()            // Override: FileInfo, Status: Base, Module: mime
+                || $hct->canSetDirectoryIndex()  // Override: Indexes,  Status: Base, Module: mod_dir
+                || $hct->canRewrite()            // Override: FileInfo, Status: Extension, Module: rewrite
+                || $hct->canSetResponseHeader()  // Override: FileInfo, Status: Extension, Module: headers
             ) {
                 $status = true;
                 $info = '';

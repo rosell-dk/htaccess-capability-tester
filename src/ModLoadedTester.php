@@ -174,6 +174,32 @@ EOD;
         $this->registerTestFile('dummy.txt', "im just here", 'test-using-content-digest');
     }
 
+    private function registerTestFilesUsingDirectoryIndex()
+    {
+        // Test files, method: Using DirectoryIndex
+        // --------------------------------------------------
+        //
+        // Requires (in order not to be inconclusive)
+        // - Module: mod_dir (Status: Base)
+        // - Override: Indexes
+        // - Directives: DirectoryIndex
+        // - PHP?: No
+
+        $htaccess = <<<'EOD'
+<IfModule mod_xxx.c>
+  DirectoryIndex 1.html
+</IfModule>
+<IfModule !mod_xxx.c>
+  DirectoryIndex 0.html
+</IfModule>
+EOD;
+
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $this->registerTestFile('.htaccess', $htaccess, 'test-using-directory-index');
+        $this->registerTestFile('0.html', "0", 'test-using-directory-index');
+        $this->registerTestFile('1.html', "1", 'test-using-directory-index');
+    }
+
     /**
      * Register the test files using the "registerTestFile" method
      *
@@ -186,6 +212,7 @@ EOD;
         $this->registerTestFilesUsingResponseHeader();
         $this->registerTestFilesUsingAddType();
         $this->registerTestFilesUsingContentDigest();
+        $this->registerTestFilesUsingDirectoryIndex();
     }
 
 
@@ -286,6 +313,22 @@ EOD;
         return new TestResult($status, $info);
     }
 
+    private function runTestUsingDirectoryIndex()
+    {
+        $status = null;
+        $info = '';
+
+        $urlBase = $this->baseUrl . '/' . $this->subDir;
+        $response = $this->makeHTTPRequest($urlBase . '/test-using-directory-index/');
+
+        if ($response->body == '1') {
+            $status = true;
+        } else {
+            $status = false;
+        }
+        return new TestResult($status, $info);
+    }
+
     /**
      *  Run the test.
      *
@@ -319,11 +362,21 @@ EOD;
 
             if (is_null($testResult->status)) {
                 // The AddType test requires:
-                // - Module: mod_mime     (very common)
+                // - Module: mod_mime     (Status: Base)
                 // - Override: FileInfo
 
                 if ($hct->canAddType()) {
                     $testResult = $this->runTestUsingAddType();
+                }
+            }
+
+            if (is_null($testResult->status)) {
+                // The DirectoryIndex test requires:
+                // - Module: mod_dir     (Status: Base)
+                // - Override: Indexes
+
+                if ($hct->canSetDirectoryIndex()) {
+                    $testResult = $this->runTestUsingDirectoryIndex();
                 }
             }
 

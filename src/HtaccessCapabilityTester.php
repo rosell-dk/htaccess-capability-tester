@@ -141,6 +141,17 @@ class HtaccessCapabilityTester
     }
 
     /**
+     * Test if DirectoryIndex works.
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function canSetDirectoryIndex()
+    {
+        return $this->runTest(new DirectoryIndexTester($this->baseDir, $this->baseUrl));
+    }
+
+
+    /**
      * Test if a module is loaded.
      *
      * This test detects if directives inside a "IfModule" is run for a given module
