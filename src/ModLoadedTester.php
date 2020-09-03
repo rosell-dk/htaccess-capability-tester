@@ -226,8 +226,6 @@ EOD;
      */
     public function run()
     {
-        return $this->runTestUsingAddType();
-
         $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
         $enabledResult = $hct->htaccessEnabled();
 
