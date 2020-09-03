@@ -199,7 +199,7 @@ EOD;
         } else {
             $testResult = $this->runTestUsingServerSignature();
             if (is_null($testResult->status)) {
-                if (!$hct->canRewrite()) {
+                if ($hct->canRewrite()) {
                     // We got another shot!
                     // This one does not depend on grants for PHP.
                     $testResult = $this->runTestUsingRewrite();
