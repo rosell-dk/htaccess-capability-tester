@@ -23,13 +23,10 @@ class HtaccessEnabledTester extends AbstractTester
         return 'htaccess-enabled-tester';
     }
 
-    /**
-     * Register the test files using the "registerTestFile" method
-     *
-     * @return  void
-     */
-    public function registerTestFiles()
+    private function registerTestFiles1()
     {
+        // Test files, method 1: Using ServerSignature
+        // --------------------------------------------------
 
         $htaccessFileOn = <<<'EOD'
 ServerSignature On
@@ -64,11 +61,16 @@ EOD;
     }
 
     /**
-     *  Run the test.
+     * Register the test files using the "registerTestFile" method
      *
-     *  @return TestResult   Returns a test result
+     * @return  void
      */
-    public function run()
+    public function registerTestFiles()
+    {
+        $this->registerTestFiles1();
+    }
+
+    private function runTestUsingServerSignature()
     {
         $responseOn = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/on/test.php');
         $responseOff = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/off/test.php');
@@ -94,6 +96,36 @@ EOD;
             }
         }
 
+        return new TestResult($status, $info);
+    }
+
+    /**
+     *  Run the test.
+     *
+     *  @return TestResult   Returns a test result
+     */
+    public function run()
+    {
+
+        $testResult = $this->runTestUsingServerSignature();
+        $status = $testResult->status;
+        $info = $testResult->info;
+
+        if (is_null($testResult->status)) {
+            $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
+            $rewriteStatus = $hct->canRewrite();
+            if ($rewriteStatus !== true) {
+                $status = true;
+                $info = '';
+            } else {
+                $responseHeaderStatus = $hct->canSetResponseHeader();
+                if ($responseHeaderStatus === true) {
+                    $status = true;
+                    $info = '';
+                }
+            }
+
+        }
         return new TestResult($status, $info);
     }
 }
