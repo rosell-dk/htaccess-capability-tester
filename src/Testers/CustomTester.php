@@ -75,14 +75,13 @@ class CustomTester extends AbstractTester
             $url = $this->baseUrl . '/' . $this->subDir . '/';
             $response = $this->makeHTTPRequest($url . $runEntry['request']);
             $result = Interpreter::interpret($response, $runEntry['interpretation']);
-            if (!is_null($result->status)) {
+            if ($result->info != 'no-match') {
                 return $result;
             }
         }
-        if (count($runner) == 1) {
-            return $result;
-        } else {
-            return new TestResult(null, 'All tests where inconclusive.');
+        if (is_null($result)) {
+            $result = new TestResult(null, 'Nothing to test!');
         }
+        return $result;
     }
 }

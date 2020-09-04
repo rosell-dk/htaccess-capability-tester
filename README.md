@@ -99,7 +99,7 @@ The list of mappings is read from the top until one of the conditions is met. Th
 ```php
 [
     ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
-    ['success', 'headers', 'contains-key', 'Content-MD5'],
+    ['inconclusive', 'headers', 'contains-key', 'Content-MD5'],
 ]
 ```
 
