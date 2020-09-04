@@ -84,7 +84,7 @@ EOD;
                 ['0.txt', "0"],
                 ['1.txt', "1"]
             ],
-            'runner' => [
+            'tests' => [
                 [
                     'request' => '0.txt',
                     'interpretation' => [

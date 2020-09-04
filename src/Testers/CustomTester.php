@@ -58,7 +58,7 @@ class CustomTester extends AbstractTester
         /*
         ie:
 
-        'runner' => [
+        'tests' => [
             [
                 'request' => '0.txt',
                 'interpretation' => [
@@ -69,12 +69,12 @@ class CustomTester extends AbstractTester
             ]
         ]
         */
-        $runner = $this->definitions['runner'];
+        $tests = $this->definitions['tests'];
         $result = null;
-        foreach ($runner as $i => $runEntry) {
+        foreach ($tests as $i => $test) {
             $url = $this->baseUrl . '/' . $this->subDir . '/';
-            $response = $this->makeHTTPRequest($url . $runEntry['request']);
-            $result = Interpreter::interpret($response, $runEntry['interpretation']);
+            $response = $this->makeHTTPRequest($url . $test['request']);
+            $result = Interpreter::interpret($response, $test['interpretation']);
             if ($result->info != 'no-match') {
                 return $result;
             }

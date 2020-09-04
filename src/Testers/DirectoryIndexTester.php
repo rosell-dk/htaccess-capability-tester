@@ -35,7 +35,7 @@ EOD;
                 ['index.html', "0"],
                 ['index2.html', "1"]
             ],
-            'runner' => [
+            'tests' => [
                 [
                     'request' => '',    // We request the index, that is why its empty
                     'interpretation' => [

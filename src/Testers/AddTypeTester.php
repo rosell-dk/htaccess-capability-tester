@@ -34,7 +34,7 @@ EOD;
                 ['.htaccess', $htaccessFile],
                 ['dummy.test', "they needed someone, so here i am"],
             ],
-            'runner' => [
+            'tests' => [
                 [
                     'request' => 'dummy.test',
                     'interpretation' => [

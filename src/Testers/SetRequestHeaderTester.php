@@ -45,7 +45,7 @@ EOD;
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],
             ],
-            'runner' => [
+            'tests' => [
                 [
                     'request' => 'test.php',
                     'interpretation' => [

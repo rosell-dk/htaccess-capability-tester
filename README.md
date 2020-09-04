@@ -120,7 +120,7 @@ $customTestDef = [
         ['0.txt', "0"],
         ['1.txt', "1"]
     ],
-    'runner' => [
+    'test' => [
         [
             'request' => '0.txt',
             'interpretation' => [
@@ -135,7 +135,7 @@ $customTestDef = [
 $testResult = $hct->customTest($customTestDef);
 ```
 
-Btw: You can put more tests into the "runner" (perhaps I should rename to "tests"?) property. If the first test is inconclusive, it will continue to the next.
+Btw: You can put more tests into the "tests" property. If no rules match in the first test, it will continue to the next test.
 
 
 ## Installation

@@ -36,7 +36,7 @@ EOD;
                 ['off/.htaccess', 'ContentDigest Off'],
                 ['off/dummy.txt', ""],
             ],
-            'runner' => [
+            'tests' => [
                 [
                     'request' => 'on/dummy.txt',
                     'interpretation' => [
