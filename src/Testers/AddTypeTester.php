@@ -3,7 +3,7 @@
 namespace HtaccessCapabilityTester\Testers;
 
 /**
- * Class for testing if setting DirectoryIndex works
+ * Class for testing if AddType works
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>

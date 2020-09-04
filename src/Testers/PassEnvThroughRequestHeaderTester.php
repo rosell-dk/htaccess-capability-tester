@@ -3,7 +3,7 @@
 namespace HtaccessCapabilityTester\Testers;
 
 /**
- * Class for testing if setting DirectoryIndex works
+ * Class for testing if an environment variable can be passed through RequestHeader and received with PHP.
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
