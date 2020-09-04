@@ -42,11 +42,11 @@ As mentioned, a test has three phases:
 2. Doing a request (in advanced cases, more)
 3. Interpreting the request.
 
-As it turns out, for these purposes interpreting is in most cases dead simple. The response is examined and mapped into one of three possible results: success, failure or inconclusive.
+As it turns out, for these purposes interpreting is in most cases dead simple. The response is examined and mapped into one of three possible results: *success*, *failure* or *inconclusive*.
 
 As an example, lets see what goes on for the *canRewrite()* test:
 
-### The files:
+### 1. The following files are written:
 
 **.htaccess**
 ```text
@@ -66,7 +66,7 @@ As an example, lets see what goes on for the *canRewrite()* test:
 1
 ```
 
-### 2. The request:
+### 2. The request
 A HTTP request is made to "0.txt"
 
 ### 3. The interpretation
