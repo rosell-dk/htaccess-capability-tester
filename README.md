@@ -46,7 +46,9 @@ As it turns out, for these purposes interpreting is in most cases dead simple. T
 
 As an example, lets see what goes on for the *canRewrite()* test:
 
-### 1. The following files are written:
+### 1. The files
+
+The following test files are used for the *rewrite* test:
 
 **.htaccess**
 ```text
@@ -101,7 +103,7 @@ The list of mappings is read from the top until one of the conditions is met. Th
 ]
 ```
 
-Here is a full example for replicating *canRewrite*:
+Here is a full example for replicating *canRewrite()*:
 
 ```php
 $htaccessFile = <<<'EOD'
