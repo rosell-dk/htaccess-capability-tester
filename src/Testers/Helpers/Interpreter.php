@@ -1,0 +1,104 @@
+<?php
+
+namespace HtaccessCapabilityTester\Testers\Helpers;
+
+use \HtaccessCapabilityTester\HTTPResponse;
+use \HtaccessCapabilityTester\TestResult;
+
+/**
+ * Class for interpreting responses using a defined interpretation table.
+ *
+ * @package    HtaccessCapabilityTester
+ * @author     Bjørn Rosell <it@rosell.dk>
+ * @since      Class available since 0.7
+ */
+class Interpreter
+{
+
+    /**
+     * Interpret a response using an interpretation table.
+     *
+     * @param HTTPResponse  $response
+     * @param array         $interpretationTable
+     *
+     * @return TestResult
+     */
+    public static function interpret($response, $interpretationTable)
+    {
+        foreach ($interpretationTable as $i => $entry) {
+            // ie:
+            // ['inconclusive', 'body', 'is-empty'],
+            // ['failure', 'statusCode', 'equals', '500']
+            // ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
+
+            $statusStr = $entry[0];
+
+            $status = null;
+            switch ($statusStr) {
+                case 'failure':
+                    $status = false;
+                    break;
+                case 'inconclusive':
+                    $status = null;
+                    break;
+                case 'success':
+                    $status = true;
+                    break;
+            }
+
+            if (!isset($entry[1])) {
+                return new TestResult($status, '');
+            }
+
+            $propertyToExamine = $entry[1];
+            $operator = $entry[2];
+            $arg1 = (isset($entry[3]) ? $entry[3] : '');
+            $arg2 = (isset($entry[4]) ? $entry[4] : '');
+
+
+
+            $val = '';
+            switch ($propertyToExamine) {
+                case 'statusCode':
+                    $val = $response->statusCode;
+                    break;
+                case 'body':
+                    $val = $response->body;
+                    break;
+                case 'headers':
+                    $val = $response->getHeadersHash();
+                    break;
+            }
+
+            $reason = $propertyToExamine . ' ' . $operator;
+            if (isset($entry[3])) {
+                $reason .= ' "' . implode('" "', array_slice($entry, 3)) . '"';
+            }
+            $result = new TestResult($status, $reason);
+
+            switch ($operator) {
+                case 'is-empty':
+                    if ($val == '') {
+                        return $result;
+                    }
+                    break;
+                case 'equals':
+                    if ($val == $arg1) {
+                        return $result;
+                    }
+                    break;
+                case 'contains-key':
+                    if (isset($val[$arg1])) {
+                        return $result;
+                    }
+                    break;
+                case 'contains-key-value':
+                    if (isset($val[$arg1]) && ($val[$arg1] == $arg2)) {
+                        return $result;
+                    }
+                    break;
+            }
+        }
+        return new TestResult(null, 'response code: ' . $response->statusCode);
+    }
+}

@@ -8,6 +8,7 @@ use \HtaccessCapabilityTester\Testers\ContentDigestTester;
 use \HtaccessCapabilityTester\Testers\CrashTester;
 use \HtaccessCapabilityTester\Testers\DirectoryIndexTester;
 use \HtaccessCapabilityTester\Testers\HtaccessEnabledTester;
+use \HtaccessCapabilityTester\Testers\CustomTester;
 use \HtaccessCapabilityTester\Testers\ModLoadedTester;
 use \HtaccessCapabilityTester\Testers\PassEnvThroughRequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\PassEnvThroughRewriteTester;
@@ -144,7 +145,7 @@ class HtaccessCapabilityTester
     }
 
     /**
-     * Test if enabling ContentDigest works.
+     * Test if ContentDigest directive works.
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
@@ -163,9 +164,31 @@ class HtaccessCapabilityTester
         return $this->runTest(new DirectoryIndexTester($this->baseDir, $this->baseUrl));
     }
 
+    /**
+     * Test if an environment variable can be passed through RequestHeader and received in PHP.
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function canPassEnvThroughRequestHeader()
+    {
+        return $this->runTest(new PassEnvThroughRequestHeaderTester($this->baseDir, $this->baseUrl));
+    }
+
 
     /**
-     * Test if a module is loaded.
+     * Test if an environment variable can be set with mod_rewrite and received in PHP.
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function canPassEnvThroughRewrite()
+    {
+        return $this->runTest(new PassEnvThroughRewriteTester($this->baseDir, $this->baseUrl));
+    }
+
+
+
+    /**
+     * Crash-test some .htaccess.
      *
      * This test detects if directives inside a "IfModule" is run for a given module
      *
@@ -178,5 +201,17 @@ class HtaccessCapabilityTester
     public function crashTest($rules, $subDir = null)
     {
         return $this->runTest(new CrashTester($this->baseDir, $this->baseUrl, $rules, $subDir));
+    }
+
+    /**
+     * Run a custom test.
+     *
+     * @param array       $definition
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function customTest($definition)
+    {
+        return $this->runTest(new CustomTester($this->baseDir, $this->baseUrl, $definition));
     }
 }

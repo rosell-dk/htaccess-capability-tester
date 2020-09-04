@@ -2,8 +2,6 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use \HtaccessCapabilityTester\TestResult;
-
 /**
  * Class for testing if rewriting works at the tested location.
  *
@@ -39,31 +37,22 @@ use \HtaccessCapabilityTester\TestResult;
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
- * @since      Class available since the beginning
+ * @since      Class available since 0.7
  */
-class RewriteTester extends AbstractTester
+class RewriteTester extends CustomTester
 {
 
     /**
-     * Child classes must implement this method, which tells which subdir the
-     * test files are to be put.
+     * Constructor.
      *
-     * @return  string  A subdir for the test files
-     */
-    public function getSubDir()
-    {
-        return 'rewrite-tester';
-    }
-
-    /**
-     * Register the test files using the "registerTestFile" method
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
      *
-     * @return  void
+     * @return void
      */
-    public function registerTestFiles()
+    public function __construct($baseDir, $baseUrl)
     {
         $htaccessFile = <<<'EOD'
-
 # Testing for mod_rewrite
 # -----------------------
 # If mod_rewrite is enabled, redirect to 1.txt, which returns "1".
@@ -86,55 +75,27 @@ class RewriteTester extends AbstractTester
     RewriteEngine On
     RewriteRule ^0\.txt$ 1\.txt [L]
 </IfModule>
-
 EOD;
 
-        $this->registerTestFile('.htaccess', $htaccessFile);
-        $this->registerTestFile('0.txt', "0");
-        $this->registerTestFile('1.txt', "1");
-    }
+        $definitions = [
+            'subdir' => 'rewrite-tester',
+            'files' => [
+                ['.htaccess', $htaccessFile],
+                ['0.txt', "0"],
+                ['1.txt', "1"]
+            ],
+            'runner' => [
+                [
+                    'request' => '0.txt',
+                    'interpretation' => [
+                        ['success', 'body', 'equals', '1'],
+                        ['failure', 'body', 'equals', '0'],
+                        ['failure', 'statusCode', 'equals', '500'],
+                    ]
+                ]
+            ]
+        ];
 
-    /**
-     *  Run the rewrite test.
-     *
-     *  @return TestResult   Returns a test result
-     */
-    public function run()
-    {
-        $response = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/0.txt');
-
-        $status = null;
-        $info = '';
-
-        if ($response->body == '') {
-            // empty body means the HTTP request failed,
-            // which we generally treat as inconclusive
-            $status = null;
-            $info = 'The test request failed with status code: ' . $response->statusCode .
-                '. We interpret this as an inconclusive result.';
-        } else {
-            switch ($response->body) {
-                case '1':
-                    $status = true;
-                    break;
-                case '0':
-                    $status = false;
-                    break;
-                default:
-                    // text in the body means the test was inconclusive
-                    $status = null;
-                    $info = $response->body;
-            }
-        }
-
-        if ($response->statusCode == '500') {
-            // A 500 Internal Server error is interpreted as meaning that the .htaccess contains
-            // a forbidden directive
-            $status = false;
-            $info = 'The test request responded with a 500 Internal Server Error. ' .
-                'It probably means that the .htaccess contains a forbidden directive';
-        };
-
-        return new TestResult($status, $info);
+        parent::__construct($baseDir, $baseUrl, $definitions);
     }
 }

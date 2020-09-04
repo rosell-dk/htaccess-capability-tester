@@ -2,82 +2,50 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use \HtaccessCapabilityTester\TestResult;
-
 /**
- * Class for testing the AddType directive.
+ * Class for testing if setting DirectoryIndex works
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class AddTypeTester extends AbstractTester
+class AddTypeTester extends CustomTester
 {
 
     /**
-     * Child classes must implement this method, which tells which subdir the
-     * test files are to be put.
+     * Constructor.
      *
-     * @return  string  A subdir for the test files
-     */
-    public function getSubDir()
-    {
-        return 'add-type-tester';
-    }
-
-    /**
-     * Register the test files using the "registerTestFile" method
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
      *
-     * @return  void
+     * @return void
      */
-    public function registerTestFiles()
+    public function __construct($baseDir, $baseUrl)
     {
-
-        $file = <<<'EOD'
+        $htaccessFile = <<<'EOD'
 <IfModule mod_mime.c>
     AddType image/gif .test
 </IfModule>
 EOD;
 
-        $this->registerTestFile('.htaccess', $file);
+        $definitions = [
+            'subdir' => 'add-type-tester',
+            'files' => [
+                ['.htaccess', $htaccessFile],
+                ['dummy.test', "they needed someone, so here i am"],
+            ],
+            'runner' => [
+                [
+                    'request' => 'dummy.test',
+                    'interpretation' => [
+                        ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
+                        ['failure', 'statusCode', 'equals', '500'],
+                        ['failure', 'statusCode', 'equals', '200']
+                    ]
+                ]
+            ]
+        ];
 
-        // Just to have something to request
-        $this->registerTestFile('dummy.test', "they needed someone, so here i am");
-    }
-
-    /**
-     *  Run the tets
-     *
-     *  @return TestResult   Returns a test result
-     *  @throws \Exception  In case the test cannot be run due to serious issues
-     */
-    public function run()
-    {
-        $response = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/dummy.test');
-
-        $status = null;
-        $info = '';
-
-        if (in_array('Content-Type: image/gif', $response->headers)) {
-            $status = true;
-        } else {
-            if ($response->statusCode == '500') {
-                // A 500 Internal Server error is interpreted as meaning that the .htaccess contains
-                // a forbidden directive
-                $status = false;
-                $info = 'The test request responded with a 500 Internal Server Error. ' .
-                    'It probably means that the Header directive is forbidden';
-            } elseif ($response->statusCode !== '200') {
-                $status = null;
-                $info = 'The test request failed with status code: ' . $response->statusCode .
-                    '. We interpret this as an inconclusive result.';
-            } else {
-                $status = false;
-            }
-        }
-//
-        //echo '<pre>' . print_r($response->headers, true) . '</pre>';
-
-        return new TestResult($status, $info);
+        parent::__construct($baseDir, $baseUrl, $definitions);
     }
 }

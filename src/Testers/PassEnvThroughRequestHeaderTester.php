@@ -2,41 +2,27 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use \HtaccessCapabilityTester\TestResult;
-
 /**
- * Class for testing if passing an environment variable through a request header in an .htaccess
- * file works.
+ * Class for testing if setting DirectoryIndex works
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
- * @since      Class available since the beginning
+ * @since      Class available since 0.7
  */
-class PassEnvThroughRequestHeaderTester extends AbstractTester
+class PassEnvThroughRequestHeaderTester extends CustomTester
 {
 
-    use TraitStandardTestRunner;
-
     /**
-     * Child classes must implement this method, which tells which subdir the
-     * test files are to be put.
+     * Constructor.
      *
-     * @return  string  A subdir for the test files
-     */
-    public function getSubDir()
-    {
-        return 'pass-env-through-request-header-tester';
-    }
-
-    /**
-     * Register the test files using the "registerTestFile" method
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
      *
-     * @return  void
+     * @return void
      */
-    public function registerTestFiles()
+    public function __construct($baseDir, $baseUrl)
     {
-
-        $file = <<<'EOD'
+        $htaccessFile = <<<'EOD'
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -50,16 +36,34 @@ class PassEnvThroughRequestHeaderTester extends AbstractTester
 
 </IfModule>
 EOD;
-        $this->registerTestFile('.htaccess', $file);
 
-        $file = <<<'EOD'
+        $phpFile = <<<'EOD'
 <?php
 if (isset($_SERVER['HTTP_PASSTHROUGHHEADER'])) {
-    echo ($_SERVER['HTTP_PASSTHROUGHHEADER'] == $_SERVER['DOCUMENT_ROOT'] ? 1 : 0);
-    exit;
+echo ($_SERVER['HTTP_PASSTHROUGHHEADER'] == $_SERVER['DOCUMENT_ROOT'] ? 1 : 0);
+exit;
 }
 echo '0';
 EOD;
-        $this->registerTestFile('test.php', $file);
+
+        $definitions = [
+            'subdir' => 'pass-env-through-request-header-tester',
+            'files' => [
+                ['.htaccess', $htaccessFile],
+                ['test.php', $phpFile],
+            ],
+            'runner' => [
+                [
+                    'request' => 'test.php',
+                    'interpretation' => [
+                        ['success', 'body', 'equals', '1'],
+                        ['failure', 'body', 'equals', '0'],
+                        ['failure', 'statusCode', 'equals', '500'],
+                    ]
+                ]
+            ]
+        ];
+
+        parent::__construct($baseDir, $baseUrl, $definitions);
     }
 }

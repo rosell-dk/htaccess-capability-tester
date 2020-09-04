@@ -2,84 +2,51 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use \HtaccessCapabilityTester\TestResult;
-
 /**
  * Class for testing if setting DirectoryIndex works
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
- * @since      Class available since the beginning
+ * @since      Class available since 0.7
  */
-class DirectoryIndexTester extends AbstractTester
+class DirectoryIndexTester extends CustomTester
 {
 
     /**
-     * Child classes must implement this method, which tells which subdir the
-     * test files are to be put.
+     * Constructor.
      *
-     * @return  string  A subdir for the test files
-     */
-    public function getSubDir()
-    {
-        return 'directory-index-tester';
-    }
-
-    /**
-     * Register the test files using the "registerTestFile" method
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
      *
-     * @return  void
+     * @return void
      */
-    public function registerTestFiles()
+    public function __construct($baseDir, $baseUrl)
     {
-
-        $htaccess = <<<'EOD'
+        $htaccessFile = <<<'EOD'
 <IfModule mod_dir.c>
     DirectoryIndex index2.html
 </IfModule>
 EOD;
 
-        $this->registerTestFile('.htaccess', $htaccess);
-        $this->registerTestFile('index.html', "0");
-        $this->registerTestFile('index2.html', "1");
-    }
+        $definitions = [
+            'subdir' => 'directory-index-tester',
+            'files' => [
+                ['.htaccess', $htaccessFile],
+                ['index.html', "0"],
+                ['index2.html', "1"]
+            ],
+            'runner' => [
+                [
+                    'request' => '',    // We request the index, that is why its empty
+                    'interpretation' => [
+                        ['success', 'body', 'equals', '1'],
+                        ['failure', 'body', 'equals', '0'],
+                        ['failure', 'statusCode', 'equals', '500'],
+                    ]
+                ]
+            ]
+        ];
 
-    /**
-     *  Run the tets
-     *
-     *  @return TestResult   Returns a test result
-     *  @throws \Exception  In case the test cannot be run due to serious issues
-     */
-    public function run()
-    {
-        $status = null;
-        $info = '';
-
-        $dir = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($dir . '/');
-
-        if ($response->statusCode == '500') {
-            // A 500 Internal Server error is interpreted as meaning that the .htaccess contains
-            // a forbidden directive
-            $status = false;
-            $info = 'The test request responded with a 500 Internal Server Error. ' .
-                'It probably means that the Header directive is forbidden';
-        } else {
-            if ($response->statusCode !== '200') {
-                $status = null;
-                $info = 'The test request failed with status code: ' . $response->statusCode .
-                    '. We interpret this as an inconclusive result.';
-            } else {
-                if ($response->body == '1') {
-                    $status = true;
-                } elseif ($response->body == '0') {
-                    $status = false;
-                } else {
-                    $info = 'unexpected response: ' . $response->body;
-                }
-            }
-        }
-
-        return new TestResult($status, $info);
+        parent::__construct($baseDir, $baseUrl, $definitions);
     }
 }

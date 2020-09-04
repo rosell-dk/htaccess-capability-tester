@@ -9,7 +9,7 @@ use \HtaccessCapabilityTester\TestResult;
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
- * @since      Class available since the beginning
+ * @since      Class available since 0.7
  */
 trait TraitTestFileCreator
 {

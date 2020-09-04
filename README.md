@@ -35,80 +35,102 @@ if ($hct->htaccessEnabled() === false) {
 
 ```
 
-## How is this achieved?
+## An example of how it works
 
-At the heart of each test are the test files. As an illustration, here are the files for the test that examines if the RequestHeader directive works:
+As mentioned, a test has three phases:
+1. Writing the test files to the directory in question
+2. Doing a request (in advanced cases, more)
+3. Interpreting the request.
+
+As it turns out, for these purposes interpreting is in most cases dead simple. The response is examined and mapped into one of three possible results: success, failure or inconclusive.
+
+As an example, lets see what goes on for the *canRewrite()* test:
+
+### The files:
 
 **.htaccess**
-```
-<IfModule mod_headers.c>
-    RequestHeader set User-Agent "request-header-test"
-</IfModule>```
+```text
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^0\.txt$ 1\.txt [L]
+</IfModule>
 ```
 
-**test.php**
+*0.txt*
+```text
+0
+```
+
+*1.txt*
+```text
+1
+```
+
+### 2. The request:
+A HTTP request is made to "0.txt"
+
+### 3. The interpretation
+- Map to *success*, if the body of the response is "1"
+- Map to *failure*, if the body of the response is "0"
+- Map to *failure*, if the status code of the response is "500" (as this probably means that the directive was forbidden)
+- Otherwise map to *inconclusive* (something went wrong with running the test, so no conclusion could be reached. The most common reason would probably be a "403 forbidden")
+
+
+## Running your own custom tests
+
+The API provides the *customTest()* method for running custom tests easily, by just providing a definition. It isn't capable of handling complex interpretation, but it takes care of simple cases like *canRewrite()* in a breeze (for complex interpretation, you will need to extend `HtaccessCapabilityTester\Testers\AbstractTester`).
+
+As an example, here is how the mapping used in *canRewrite()* is defined:
+
 ```php
-if (isset($_SERVER['HTTP_USER_AGENT'])) {
-    echo  $_SERVER['HTTP_USER_AGENT'] == 'request-header-test' ? '1' : '0';
-} else {
-    echo '0';
-}
+$mapping = [
+    ['success', 'body', 'equals', '1'],
+    ['failure', 'body', 'equals', '0'],
+    ['failure', 'statusCode', 'equals', '500'],
+]
 ```
 
-Simple, right?
+The list of mappings is read from the top until one of the conditions is met. The first line for example translates to "Map to success if the body of the response equals '1'". If none of the conditions are met, the result is automatically mapped to 'inconclusive'.
 
-
-## More examples of what you can test:
+*canRewrite()* does not need to examine response headers, but this is possible too, like this:
 
 ```php
+[
+    ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
+    ['success', 'headers', 'contains-key', 'Content-MD5'],
+]
+```
 
-require 'vendor/autoload.php';
-use HtaccessCapabilityTester\HtaccessCapabilityTester;
+Here is a full example for replicating *canRewrite*:
 
-$hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
-
-$rulesToCrashTest = <<<'EOD'
-<ifModule mod_rewrite.c>
-  RewriteEngine On
-</ifModule>
+```php
+$htaccessFile = <<<'EOD'
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^0\.txt$ 1\.txt [L]
+</IfModule>
 EOD;
-if ($hct->crashTest($rulesToCrashTest)) {
-    // The rules at least did not cause requests to anything in the folder to "crash".
-    // (even simple rules like the above can make the server respond with a
-    //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
-}
 
-if ($hct->canAddType()) {
-    // AddType directive works
-}
+$customTestDef = [
+    'subdir' => 'rewrite-tester',
+    'files' => [
+        ['.htaccess', $htaccessFile],
+        ['0.txt', "0"],
+        ['1.txt', "1"]
+    ],
+    'runner' => [
+        [
+            'request' => '0.txt',
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+                ['failure', 'statusCode', 'equals', '500'],
+            ]
+        ]
+    ]
+];
 
-if ($hct->canSetResponseHeader()) {
-    // "Header set" works
-}
-if ($hct->canSetRequestHeader()) {
-    // "RequestHeader set" works
-}
-
-// Note that the tests returns null if they are inconclusive
-$testResult = $hct->htaccessEnabled();
-if (is_null($testResult)) {
-    // Inconclusive!
-    // Perhaps a 403 Forbidden?
-    // You can get a bit textual insight by using:
-    // $hct->infoFromLastTest
-}
-
-// Also note that an exception will be thrown if test files cannot be created.
-// You might want to wrap your call in a try-catch statement.
-try {
-    if ($hct->canSetRequestHeader()) {
-        // "RequestHeader set" works
-    }
-
-} catch (\Exception $e) {
-    // Probably permission problems.
-    // We should probably notify someone
-}
+$testResult = $hct->customTest($customTestDef);
 ```
 
 ## Installation
