@@ -21,7 +21,7 @@ class Interpreter
      * @param HTTPResponse  $response
      * @param array         $interpretationTable
      *
-     * @return TestResult
+     * @return TestResult   If there is no match, the test result will have status = false and info = "no-match".
      */
     public static function interpret($response, $interpretationTable)
     {
@@ -55,8 +55,6 @@ class Interpreter
             $arg1 = (isset($entry[3]) ? $entry[3] : '');
             $arg2 = (isset($entry[4]) ? $entry[4] : '');
 
-
-
             $val = '';
             switch ($propertyToExamine) {
                 case 'statusCode':
@@ -74,6 +72,9 @@ class Interpreter
             if (isset($entry[3])) {
                 $reason .= ' "' . implode('" "', array_slice($entry, 3)) . '"';
             }
+            if (($propertyToExamine == 'statusCode') && ($operator == 'not-equals')) {
+                $reason .= ' - it was: ' . $val;
+            }
             $result = new TestResult($status, $reason);
 
             switch ($operator) {
@@ -87,8 +88,18 @@ class Interpreter
                         return $result;
                     }
                     break;
+                case 'not-equals':
+                    if ($val != $arg1) {
+                        return $result;
+                    }
+                    break;
                 case 'contains-key':
                     if (isset($val[$arg1])) {
+                        return $result;
+                    }
+                    break;
+                case 'not-contains-key':
+                    if (!isset($val[$arg1])) {
                         return $result;
                     }
                     break;
@@ -97,8 +108,13 @@ class Interpreter
                         return $result;
                     }
                     break;
+                case 'not-contains-key-value':
+                    if (!isset($val[$arg1]) || ($val[$arg1] != $arg2)) {
+                        return $result;
+                    }
+                    break;
             }
         }
-        return new TestResult(null, 'response code: ' . $response->statusCode);
+        return new TestResult(null, 'no-match');
     }
 }
