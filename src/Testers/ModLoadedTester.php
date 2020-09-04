@@ -2,64 +2,28 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use \HtaccessCapabilityTester\HtaccessCapabilityTester;
-use \HtaccessCapabilityTester\TestResult;
-
-/*  TODO:
-    Rewrite this class to extend CustomTester too!
-    we can set a new "requirements" property on the tests:
-
-    'tests' => [
-        [
-            'requirements' => ['canRewrite'],
-            'request' => 'test-using-rewrite/0.txt',
-            'interpretation' => [
-                ['success', 'body', 'equals', '1'],
-            ]
-        ]
-    ]
-
-*/
-
 /**
- * Abstract class for testing if a given module is loaded and thus available in .htaccess
+ * Class for testing if a module is loaded.
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class ModLoadedTester extends AbstractTester
+class ModLoadedTester extends CustomTester
 {
 
     /* @var string A valid Apache module name (ie "rewrite") */
     protected $modName;
 
-    public function __construct($baseDir, $baseUrl, $modName)
-    {
-        $this->modName = $modName;
 
-        parent::__construct($baseDir, $baseUrl);
-    }
-
-    /**
-     * Child classes must implement this method, which tells which subdir the
-     * test files are to be put.
-     *
-     * @return  string  A subdir for the test files
-     */
-    public function getSubDir()
-    {
-        return 'mod-loaded-tester/' . $this->modName;
-    }
-
-    private function registerTestFilesServerSignature()
+    private function getServerSignatureBasedTest()
     {
         // Test files, method : Using ServerSignature
         // --------------------------------------------------
-        // Requires (in order not to be inconclusive)
-        // - Modules: None - its in core
+        // Requires (in order not to be inconclusive):
         // - Override: All
-        // - Directives: ServerSignature
+        // - Status: Core
+        // - Directives: ServerSignature, IfModule
         // - PHP?: Yes
 
         $php = <<<'EOD'
@@ -70,8 +34,6 @@ if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != ''))
     echo 0;
 }
 EOD;
-
-        $this->registerTestFile('test.php', $php, 'test-using-server-signature');
 
         $htaccess = <<<'EOD'
 # The beauty of this trick is that ServerSignature is available in core.
@@ -85,10 +47,27 @@ ServerSignature On
 EOD;
 
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
-        $this->registerTestFile('.htaccess', $htaccess, 'test-using-server-signature');
+
+        return [
+            'subdir' => 'mod-loaded-tester/' . $this->modName . '/server-signature',
+            'files' => [
+                ['.htaccess', $htaccess],
+                ['test.php', $php],
+            ],
+            'request' => 'test.php',
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+                // This time we do not fail for 500 because it is very unlikely that any of the
+                // directives used are forbidden
+            ]
+        ];
     }
 
-    private function registerTestFilesUsingRewrite()
+    /**
+     *  @return  array
+     */
+    private function getRewriteBasedTest()
     {
         // Test files, method: Using Rewrite
         // --------------------------------------------------
@@ -101,26 +80,39 @@ EOD;
         $htaccess = <<<'EOD'
 RewriteEngine On
 <IfModule mod_xxx.c>
-RewriteRule ^null\.txt$ 1.txt [L]
+    RewriteRule ^request-me\.txt$ 1.txt [L]
 </IfModule>
 <IfModule !mod_xxx.c>
-RewriteRule ^null\.txt$ 0.txt [L]
+    RewriteRule ^request-me\.txt$ 0.txt [L]
 </IfModule>
 EOD;
 
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
-        $this->registerTestFile('.htaccess', $htaccess, 'test-using-rewrite');
-        $this->registerTestFile('0.txt', "0", 'test-using-rewrite');
-        $this->registerTestFile('1.txt', "1", 'test-using-rewrite');
-        $this->registerTestFile(
-            'null.txt',
-            "Redirect failed even though rewriting has been proven to work. Strange!",
-            'test-using-rewrite'
-        );
+
+        return [
+            'requirements' => ['canRewrite()'],
+            'subdir' => 'mod-loaded-tester/' . $this->modName . '/rewrite',
+            'files' => [
+                ['.htaccess', $htaccess],
+                ['0.txt', '0'],
+                ['1.txt', '1'],
+                ['request-me.txt', 'Redirect failed even though rewriting has been proven to work. Strange!'],
+            ],
+            'request' => 'request-me.txt',
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+                //['inconclusive', 'statusCode', 'not-equals', '200'],
+            ]
+        ];
     }
 
-    private function registerTestFilesUsingResponseHeader()
+    /**
+     *  @return  array
+     */
+    private function getResponseHeaderBasedTest()
     {
+
         // Test files, method: Using Response Header
         // --------------------------------------------------
         // Requires (in order not to be inconclusive)
@@ -131,44 +123,34 @@ EOD;
 
         $htaccess = <<<'EOD'
 <IfModule mod_xxx.c>
-Header set X-Response-Header-Test: 1
+    Header set X-Response-Header-Test: 1
 </IfModule>
 <IfModule !mod_xxx.c>
-Header set X-Response-Header-Test: 0
+    Header set X-Response-Header-Test: 0
 </IfModule>
 EOD;
 
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
-        $this->registerTestFile('.htaccess', $htaccess, 'test-using-response-header');
-        $this->registerTestFile('dummy.txt', "im just here", 'test-using-response-header');
+
+        return [
+            'requirements' => ['canSetResponseHeader()'],
+            'subdir' => 'mod-loaded-tester/' . $this->modName . '/response-header',
+            'files' => [
+                ['.htaccess', $htaccess],
+                ['request-me.txt', 'thanks'],
+            ],
+            'request' => 'request-me.txt',
+            'interpretation' => [
+                ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', '1'],
+                ['failure', 'headers', 'contains-key-value', 'X-Response-Header-Test', '0'],
+            ]
+        ];
     }
 
-    private function registerTestFilesUsingAddType()
-    {
-        // Test files, method: Using AddType
-        // --------------------------------------------------
-        //
-        // Requires (in order not to be inconclusive)
-        // - Module: mod_mime
-        // - Override: FileInfo
-        // - Directives: AddType and IfModule
-        // - PHP?: No
-
-        $htaccess = <<<'EOD'
-<IfModule mod_xxx.c>
-AddType image/gif .test
-</IfModule>
-<IfModule !mod_xxx.c>
-AddType image/jpeg .test
-</IfModule>
-EOD;
-
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
-        $this->registerTestFile('.htaccess', $htaccess, 'test-using-add-type');
-        $this->registerTestFile('dummy.test', "im just here", 'test-using-add-type');
-    }
-
-    private function registerTestFilesUsingContentDigest()
+    /**
+     *  @return  array
+     */
+    private function getContentDigestBasedTest()
     {
         // Test files, method: Using ContentDigest
         // --------------------------------------------------
@@ -181,19 +163,34 @@ EOD;
 
         $htaccess = <<<'EOD'
 <IfModule mod_xxx.c>
-ContentDigest On
+    ContentDigest On
 </IfModule>
 <IfModule !mod_xxx.c>
-ContentDigest Off
+    ContentDigest Off
 </IfModule>
 EOD;
 
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
-        $this->registerTestFile('.htaccess', $htaccess, 'test-using-content-digest');
-        $this->registerTestFile('dummy.txt', "im just here", 'test-using-content-digest');
+
+        return [
+            'requirements' => ['canContentDigest()'],
+            'subdir' => 'mod-loaded-tester/' . $this->modName . '/content-digest',
+            'files' => [
+                ['.htaccess', $htaccess],
+                ['request-me.txt', 'thanks'],
+            ],
+            'request' => 'request-me.txt',
+            'interpretation' => [
+                ['success', 'headers', 'contains-key', 'Content-MD5'],
+                ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
+            ]
+        ];
     }
 
-    private function registerTestFilesUsingDirectoryIndex()
+    /**
+     *  @return  array
+     */
+    private function getDirectoryIndexBasedTest()
     {
         // Test files, method: Using DirectoryIndex
         // --------------------------------------------------
@@ -206,221 +203,94 @@ EOD;
 
         $htaccess = <<<'EOD'
 <IfModule mod_xxx.c>
-  DirectoryIndex 1.html
+    DirectoryIndex 1.html
 </IfModule>
 <IfModule !mod_xxx.c>
-  DirectoryIndex 0.html
+    DirectoryIndex 0.html
 </IfModule>
 EOD;
 
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
-        $this->registerTestFile('.htaccess', $htaccess, 'test-using-directory-index');
-        $this->registerTestFile('0.html', "0", 'test-using-directory-index');
-        $this->registerTestFile('1.html', "1", 'test-using-directory-index');
+
+        return [
+            'requirements' => ['canSetDirectoryIndex()'],
+            'subdir' => 'mod-loaded-tester/' . $this->modName . '/directory-index',
+            'files' => [
+                ['.htaccess', $htaccess],
+                ['0.html', '0'],
+                ['1.html', '1'],
+            ],
+            'request' => '',        // empty - in order to request the index
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+            ]
+        ];
     }
+
 
     /**
-     * Register the test files using the "registerTestFile" method
-     *
-     * @return  void
+     *  @return  array
      */
-    public function registerTestFiles()
+    private function getAddTypeBasedTest()
     {
-        $this->registerTestFilesServerSignature();
-        $this->registerTestFilesUsingRewrite();
-        $this->registerTestFilesUsingResponseHeader();
-        $this->registerTestFilesUsingAddType();
-        $this->registerTestFilesUsingContentDigest();
-        $this->registerTestFilesUsingDirectoryIndex();
+        // Test files, method: Using AddType
+        // --------------------------------------------------
+        //
+        // Requires (in order not to be inconclusive)
+        // - Module: mod_mime
+        // - Override: FileInfo
+        // - Directives: AddType and IfModule
+        // - PHP?: No
+
+        $htaccess = <<<'EOD'
+<IfModule mod_xxx.c>
+    AddType image/gif .test
+</IfModule>
+<IfModule !mod_xxx.c>
+    AddType image/jpeg .test
+</IfModule>
+EOD;
+
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+
+        return [
+            'requirements' => ['canAddType()'],
+            'subdir' => 'mod-loaded-tester/' . $this->modName . '/add-type',
+            'files' => [
+                ['.htaccess', $htaccess],
+                ['request-me.test', '0'],
+            ],
+            'request' => 'request-me.test',
+            'interpretation' => [
+                ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
+                ['failure', 'headers', 'contains-key-value', 'Content-Type', 'image/jpeg'],
+            ]
+        ];
     }
 
-
-    private function runTestUsingServerSignature()
-    {
-        $status = null;
-        $info = '';
-
-        $urlBase = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($urlBase . '/test-using-server-signature/test.php');
-
-        if ($response->body == '') {
-            // empty body means the HTTP request failed,
-            // which we generally treat as inconclusive
-
-            // As we don't expect any of the directives to be forbidden in our .htaccess,
-            // We also treat 500 as an inconclusive result
-
-            $status = null;
-            $info = 'The test request failed with status code: ' . $response->statusCode .
-                '. We interpret this as an inconclusive result';
-        } else {
-            if ($response->body == '1') {
-                $status = true;
-            } else {
-                $status = false;
-            }
-        }
-        return new TestResult($status, $info);
-    }
-
-    private function runTestUsingAddType()
-    {
-        $status = null;
-        $info = '';
-        $urlBase = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($urlBase . '/test-using-add-type/dummy.test');
-
-        if (in_array('Content-Type: image/gif', $response->headers)) {
-            $status = true;
-        } else {
-            if (in_array('Content-Type: image/jpeg', $response->headers)) {
-                $status = false;
-            }
-        }
-        return new TestResult($status, $info);
-    }
-
-    private function runTestUsingRewrite()
-    {
-        $status = null;
-        $info = '';
-        $urlBase = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($urlBase . '/test-using-rewrite/null.txt');
-        if ($response->body == '1') {
-            $status = true;
-        } elseif ($response->body == '0') {
-            $status = false;
-        } else {
-            // ok, thats weird, this should not be happening
-            $info = $response->body;
-        }
-        return new TestResult($status, $info);
-    }
-
-    private function runTestUsingResponseHeader()
-    {
-        $status = null;
-        $info = '';
-        $urlBase = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($urlBase . '/test-using-response-header/dummy.txt');
-
-        if (in_array('X-Response-Header-Test: 1', $response->headers)) {
-            $status = true;
-        } elseif (in_array('X-Response-Header-Test: 0', $response->headers)) {
-            $status = false;
-        } else {
-            $status = null;
-        }
-        return new TestResult($status, $info);
-    }
-
-    private function runTestUsingContentDigest()
-    {
-        $status = null;
-        $info = '';
-
-        $urlBase = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($urlBase . '/test-using-content-digest/dummy.txt');
-
-        $headersHash = $response->getHeadersHash();
-
-        if (isset($headersHash['Content-MD5'])) {
-            $status = true;
-        } else {
-            $status = false;
-        }
-        return new TestResult($status, $info);
-    }
-
-    private function runTestUsingDirectoryIndex()
-    {
-        $status = null;
-        $info = '';
-
-        $urlBase = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($urlBase . '/test-using-directory-index/');
-
-        if ($response->body == '1') {
-            $status = true;
-        } else {
-            $status = false;
-        }
-        return new TestResult($status, $info);
-    }
 
     /**
-     *  Run the test.
+     * Constructor.
      *
-     *  @return TestResult   Returns a test result
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
+     *
+     * @return void
      */
-    public function run()
+    public function __construct($baseDir, $baseUrl, $moduleName)
     {
-        $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
-        $enabledResult = $hct->htaccessEnabled();
+        $this->modName = $moduleName;
 
-        if ($enabledResult === false) {
-            $status = false;
-            $info = '.htaccess files are ignored altogether in this dir';
-            $testResult = new TestResult($status, $info);
-        } else {
-            // The ServerSignature test requires:
-            // - PHP
-            // - nothing more (no modules, no overrides)
+        $tests = [
+            $this->getServerSignatureBasedTest(),   // PHP
+            $this->getContentDigestBasedTest(),     // Override: Options
+            $this->getAddTypeBasedTest(),           // Override: FileInfo, Status: Base (mod_mime)
+            $this->getDirectoryIndexBasedTest(),    // Override: Indexes, Status: Base (mod_dir)
+            $this->getRewriteBasedTest(),           // Override: FileInfo, Module: mod_rewrite
+            $this->getResponseHeaderBasedTest()     // Override: FileInfo, Module: mod_headers
+        ];
 
-            $testResult = $this->runTestUsingServerSignature();
-
-            if (is_null($testResult->status)) {
-                // The ContentDigest test requires:
-                // - Module: None - its in core
-                // - Override: Options
-
-                if ($hct->canContentDigest()) {
-                    $testResult = $this->runTestUsingContentDigest();
-                }
-            }
-
-            if (is_null($testResult->status)) {
-                // The AddType test requires:
-                // - Module: mod_mime     (Status: Base)
-                // - Override: FileInfo
-
-                if ($hct->canAddType()) {
-                    $testResult = $this->runTestUsingAddType();
-                }
-            }
-
-            if (is_null($testResult->status)) {
-                // The DirectoryIndex test requires:
-                // - Module: mod_dir     (Status: Base)
-                // - Override: Indexes
-
-                if ($hct->canSetDirectoryIndex()) {
-                    $testResult = $this->runTestUsingDirectoryIndex();
-                }
-            }
-
-            if (is_null($testResult->status)) {
-                // The Rewrite test requires:
-                // - Module: mod_rewrite  (pretty common)
-                // - Override: FileInfo
-
-                if ($hct->canRewrite()) {
-                    $testResult = $this->runTestUsingRewrite();
-                }
-            }
-
-            if (is_null($testResult->status)) {
-                // The Response Header test requires:
-                // - Module: mod_headers   (pretty common)
-                // - Override: FileInfo
-
-                if ($hct->canSetResponseHeader()) {
-                    // We got yet another shot!
-                    $testResult = $this->runTestUsingResponseHeader();
-                }
-            }
-        }
-
-        return $testResult;
+        parent::__construct($baseDir, $baseUrl, $tests);
     }
 }
