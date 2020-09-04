@@ -137,6 +137,8 @@ $testResult = $hct->customTest($customTestDef);
 
 Btw: You can put more tests into the "tests" property. If no rules match in the first test, it will continue to the next test.
 
+Almost all of the build-in tests are written in this "language". You can look at the source code in the classes in "Testers" for inspiration.
+
 
 ## Installation
 Require the library with *Composer*, like this:

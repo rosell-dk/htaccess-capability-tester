@@ -40,8 +40,8 @@ EOD;
         $phpFile = <<<'EOD'
 <?php
 if (isset($_SERVER['HTTP_PASSTHROUGHHEADER'])) {
-echo ($_SERVER['HTTP_PASSTHROUGHHEADER'] == $_SERVER['DOCUMENT_ROOT'] ? 1 : 0);
-exit;
+    echo ($_SERVER['HTTP_PASSTHROUGHHEADER'] == $_SERVER['DOCUMENT_ROOT'] ? 1 : 0);
+    exit;
 }
 echo '0';
 EOD;
