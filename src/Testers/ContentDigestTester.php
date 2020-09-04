@@ -2,87 +2,62 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use \HtaccessCapabilityTester\TestResult;
-
 /**
- * Class for testing if setting response headers in an .htaccess file works.
+ * Class for testing if setting ContentDigest works
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class ContentDigestTester extends AbstractTester
+class ContentDigestTester extends CustomTester
 {
 
     /**
-     * Child classes must implement this method, which tells which subdir the
-     * test files are to be put.
+     * Constructor.
      *
-     * @return  string  A subdir for the test files
-     */
-    public function getSubDir()
-    {
-        return 'content-digest-tester';
-    }
-
-    /**
-     * Register the test files using the "registerTestFile" method
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
      *
-     * @return  void
+     * @return void
      */
-    public function registerTestFiles()
+    public function __construct($baseDir, $baseUrl)
     {
+        $htaccessFile = <<<'EOD'
+<IfModule mod_dir.c>
+    DirectoryIndex index2.html
+</IfModule>
+EOD;
 
-        $this->registerTestFile('.htaccess', 'ContentDigest On', 'on');
-        $this->registerTestFile('.htaccess', 'ContentDigest Off', 'off');
+        $definitions = [
+            'subdir' => 'content-digest-tester',
+            'files' => [
+                ['on/.htaccess', 'ContentDigest On'],
+                ['on/dummy.txt', ""],
+                ['off/.htaccess', 'ContentDigest Off'],
+                ['off/dummy.txt', ""],
+            ],
+            'runner' => [
+                [
+                    'request' => 'on/dummy.txt',
+                    'interpretation' => [
+                        ['failure', 'statusCode', 'equals', '500'],
+                        ['inconclusive', 'statusCode', 'not-equals', '200'],        // calls the whole thing off
+                        ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
+                    ]
+                ],
+                [
+                    'request' => 'off/dummy.txt',
+                    'interpretation' => [
+                        ['failure', 'statusCode', 'equals', '500'],
+                        ['failure', 'headers', 'contains-key', 'Content-MD5'],
+                        ['inconclusive', 'statusCode', 'not-equals', '200'],
+                        ['success', 'statusCode', 'equals', '200'],
+                    ]
+                ],
 
-        // Just to have something to request
-        $this->registerTestFile('dummy.txt', "they needed someone, so here i am", 'on');
-        $this->registerTestFile('dummy.txt', "they needed someone, so here i am", 'off');
-    }
+            ]
+        ];
 
-    /**
-     *  Run the tets
-     *
-     *  @return TestResult   Returns a test result
-     *  @throws \Exception  In case the test cannot be run due to serious issues
-     */
-    public function run()
-    {
-        $status = null;
-        $info = '';
-
-        $dir = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($dir . '/on/dummy.txt');
-
-        if ($response->statusCode == '500') {
-            // A 500 Internal Server error is interpreted as meaning that the .htaccess contains
-            // a forbidden directive
-            $status = false;
-            $info = 'The test request responded with a 500 Internal Server Error. ' .
-                'It probably means that the Header directive is forbidden';
-        } else {
-            if ($response->statusCode !== '200') {
-                $status = null;
-                $info = 'The test request failed with status code: ' . $response->statusCode .
-                    '. We interpret this as an inconclusive result.';
-            } else {
-                $headersHash = $response->getHeadersHash();
-                if (!isset($headersHash['Content-MD5'])) {
-                    $status = false;
-                } else {
-                    $responseOff = $this->makeHTTPRequest($dir . '/off/dummy.txt');
-                    $headersHashOff = $responseOff->getHeadersHash();
-
-                    if (isset($headersHashOff['Content-MD5'])) {
-                        $status = false;
-                    } else {
-                        $status = true;
-                    }
-                }
-            }
-        }
-
-        return new TestResult($status, $info);
+        parent::__construct($baseDir, $baseUrl, $definitions);
     }
 }
