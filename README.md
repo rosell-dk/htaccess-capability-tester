@@ -135,6 +135,9 @@ $customTestDef = [
 $testResult = $hct->customTest($customTestDef);
 ```
 
+Btw: You can put more tests into the "runner" (perhaps I should rename to "tests"?) property. If the first test is inconclusive, it will continue to the next.
+
+
 ## Installation
 Require the library with *Composer*, like this:
 
