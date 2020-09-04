@@ -1,6 +1,11 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\HTTPRequesterInterface;
+use \HtaccessCapabilityTester\HTTPResponse;
+use \HtaccessCapabilityTester\SimpleHttpRequester;
+use \HtaccessCapabilityTester\TestResult;
 
 abstract class AbstractTester
 {

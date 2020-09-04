@@ -2,6 +2,19 @@
 
 namespace HtaccessCapabilityTester;
 
+use \HtaccessCapabilityTester\Testers\AbstractTester;
+use \HtaccessCapabilityTester\Testers\AddTypeTester;
+use \HtaccessCapabilityTester\Testers\ContentDigestTester;
+use \HtaccessCapabilityTester\Testers\CrashTester;
+use \HtaccessCapabilityTester\Testers\DirectoryIndexTester;
+use \HtaccessCapabilityTester\Testers\HtaccessEnabledTester;
+use \HtaccessCapabilityTester\Testers\ModLoadedTester;
+use \HtaccessCapabilityTester\Testers\PassEnvThroughRequestHeaderTester;
+use \HtaccessCapabilityTester\Testers\PassEnvThroughRewriteTester;
+use \HtaccessCapabilityTester\Testers\RewriteTester;
+use \HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
+use \HtaccessCapabilityTester\Testers\SetResponseHeaderTester;
+
 /**
  * Main entrance.
  *

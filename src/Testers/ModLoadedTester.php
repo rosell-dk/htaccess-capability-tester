@@ -1,6 +1,9 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\HtaccessCapabilityTester;
+use \HtaccessCapabilityTester\TestResult;
 
 /**
  * Abstract class for testing if a given module is loaded and thus available in .htaccess

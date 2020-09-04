@@ -1,15 +1,17 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\TestResult;
 
 /**
- * Class for testing if setting DirectoryIndex works
+ * Class for testing if setting response headers in an .htaccess file works.
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since the beginning
  */
-class DirectoryIndexTester extends AbstractTester
+class ContentDigestTester extends AbstractTester
 {
 
     /**
@@ -20,7 +22,7 @@ class DirectoryIndexTester extends AbstractTester
      */
     public function getSubDir()
     {
-        return 'directory-index-tester';
+        return 'content-digest-tester';
     }
 
     /**
@@ -31,15 +33,12 @@ class DirectoryIndexTester extends AbstractTester
     public function registerTestFiles()
     {
 
-        $htaccess = <<<'EOD'
-<IfModule mod_dir.c>
-    DirectoryIndex index2.html
-</IfModule>
-EOD;
+        $this->registerTestFile('.htaccess', 'ContentDigest On', 'on');
+        $this->registerTestFile('.htaccess', 'ContentDigest Off', 'off');
 
-        $this->registerTestFile('.htaccess', $htaccess);
-        $this->registerTestFile('index.html', "0");
-        $this->registerTestFile('index2.html', "1");
+        // Just to have something to request
+        $this->registerTestFile('dummy.txt', "they needed someone, so here i am", 'on');
+        $this->registerTestFile('dummy.txt', "they needed someone, so here i am", 'off');
     }
 
     /**
@@ -54,7 +53,7 @@ EOD;
         $info = '';
 
         $dir = $this->baseUrl . '/' . $this->subDir;
-        $response = $this->makeHTTPRequest($dir . '/');
+        $response = $this->makeHTTPRequest($dir . '/on/dummy.txt');
 
         if ($response->statusCode == '500') {
             // A 500 Internal Server error is interpreted as meaning that the .htaccess contains
@@ -68,12 +67,18 @@ EOD;
                 $info = 'The test request failed with status code: ' . $response->statusCode .
                     '. We interpret this as an inconclusive result.';
             } else {
-                if ($response->body == '1') {
-                    $status = true;
-                } elseif ($response->body == '0') {
+                $headersHash = $response->getHeadersHash();
+                if (!isset($headersHash['Content-MD5'])) {
                     $status = false;
                 } else {
-                    $info = 'unexpected response: ' . $response->body;
+                    $responseOff = $this->makeHTTPRequest($dir . '/off/dummy.txt');
+                    $headersHashOff = $responseOff->getHeadersHash();
+
+                    if (isset($headersHashOff['Content-MD5'])) {
+                        $status = false;
+                    } else {
+                        $status = true;
+                    }
                 }
             }
         }

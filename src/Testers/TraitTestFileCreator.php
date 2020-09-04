@@ -1,6 +1,8 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\TestResult;
 
 /**
  * Trait for creating test files

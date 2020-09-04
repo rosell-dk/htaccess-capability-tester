@@ -1,6 +1,9 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\HTTPResponse;
+use \HtaccessCapabilityTester\TestResult;
 
 /**
  * Trait for running standard tests

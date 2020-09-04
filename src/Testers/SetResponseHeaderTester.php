@@ -1,6 +1,8 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\TestResult;
 
 /**
  * Class for testing if setting response headers in an .htaccess file works.

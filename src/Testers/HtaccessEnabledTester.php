@@ -1,6 +1,9 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\HtaccessCapabilityTester;
+use \HtaccessCapabilityTester\TestResult;
 
 /**
  * Class for testing if rewriting works at the tested location.

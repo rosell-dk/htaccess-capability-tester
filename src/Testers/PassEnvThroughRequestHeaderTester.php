@@ -1,6 +1,8 @@
 <?php
 
-namespace HtaccessCapabilityTester;
+namespace HtaccessCapabilityTester\Testers;
+
+use \HtaccessCapabilityTester\TestResult;
 
 /**
  * Class for testing if passing an environment variable through a request header in an .htaccess

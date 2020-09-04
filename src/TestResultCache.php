@@ -2,6 +2,8 @@
 
 namespace HtaccessCapabilityTester;
 
+use \HtaccessCapabilityTester\Testers\AbstractTester;
+
 /**
  * Class caching test results
  *
