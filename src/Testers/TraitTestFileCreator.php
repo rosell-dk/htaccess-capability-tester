@@ -32,8 +32,9 @@ trait TraitTestFileCreator
             $dir .= '/' . $subSubDir;
         }
         $path = $dir . '/' . $fileName;
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
+
+        if (!is_dir(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
         }
         if (!file_exists($path)) {
             return file_put_contents($path, $content);
