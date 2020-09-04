@@ -5,6 +5,22 @@ namespace HtaccessCapabilityTester\Testers;
 use \HtaccessCapabilityTester\HtaccessCapabilityTester;
 use \HtaccessCapabilityTester\TestResult;
 
+/*  TODO:
+    Rewrite this class to extend CustomTester too!
+    we can set a new "requirements" property on the tests:
+
+    'tests' => [
+        [
+            'requirements' => ['canRewrite'],
+            'request' => 'test-using-rewrite/0.txt',
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+            ]
+        ]
+    ]
+
+*/
+
 /**
  * Abstract class for testing if a given module is loaded and thus available in .htaccess
  *

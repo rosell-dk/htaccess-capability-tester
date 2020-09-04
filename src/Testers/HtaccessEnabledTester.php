@@ -5,6 +5,22 @@ namespace HtaccessCapabilityTester\Testers;
 use \HtaccessCapabilityTester\HtaccessCapabilityTester;
 use \HtaccessCapabilityTester\TestResult;
 
+/*  TODO:
+    Rewrite this class to extend CustomTester too!
+    we can set a new "requirements" property on the tests:
+
+    'tests' => [
+        [
+            'requirements' => ['canRewrite'],
+            'request' => '',
+            'interpretation' => [
+                ['success'],
+            ]
+        ]
+    ]
+
+*/
+
 /**
  * Class for testing if rewriting works at the tested location.
  *

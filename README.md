@@ -120,7 +120,7 @@ $customTestDef = [
         ['0.txt', "0"],
         ['1.txt', "1"]
     ],
-    'test' => [
+    'tests' => [
         [
             'request' => '0.txt',
             'interpretation' => [
