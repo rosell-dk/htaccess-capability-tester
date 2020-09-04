@@ -64,24 +64,20 @@ if ($result === false) {
 echo ($result == $_SERVER['DOCUMENT_ROOT'] ? '1' : '0');
 EOD;
 
-        $definitions = [
+        $test = [
             'subdir' => 'pass-env-through-rewrite-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],
             ],
-            'tests' => [
-                [
-                    'request' => 'test.php',
-                    'interpretation' => [
-                        ['success', 'body', 'equals', '1'],
-                        ['failure', 'body', 'equals', '0'],
-                        ['failure', 'statusCode', 'equals', '500'],
-                    ]
-                ]
+            'request' => 'test.php',
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+                ['failure', 'statusCode', 'equals', '500'],
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $definitions);
+        parent::__construct($baseDir, $baseUrl, $test);
     }
 }

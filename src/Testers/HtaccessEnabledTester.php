@@ -19,6 +19,20 @@ use \HtaccessCapabilityTester\TestResult;
         ]
     ]
 
+    or:
+
+    'tests' => [
+        [
+            'request' => '',
+            'interpretation' => [
+                ['success', 'canContentDigest'],
+                ['success', 'canAddType'],
+                ...
+            ]
+        ]
+    ]
+
+
 */
 
 /**

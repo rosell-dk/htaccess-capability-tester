@@ -28,23 +28,19 @@ class SetResponseHeaderTester extends CustomTester
 </IfModule>
 EOD;
 
-        $definitions = [
+        $test = [
             'subdir' => 'set-response-header-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['dummy.txt', "they needed someone, so here i am"],
             ],
-            'tests' => [
-                [
-                    'request' => 'dummy.txt',
-                    'interpretation' => [
-                        ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
-                        ['failure', 'statusCode', 'equals', '500'],
-                    ]
-                ]
+            'request' => 'dummy.txt',
+            'interpretation' => [
+                ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
+                ['failure', 'statusCode', 'equals', '500'],
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $definitions);
+        parent::__construct($baseDir, $baseUrl, $test);
     }
 }

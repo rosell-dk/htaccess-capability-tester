@@ -185,7 +185,40 @@ class HtaccessCapabilityTester
         return $this->runTest(new PassEnvThroughRewriteTester($this->baseDir, $this->baseUrl));
     }
 
+    /**
+     * Call one of the methods of this class (not all allowed).
+     *
+     * @param string  $functionCall  ie "canRewrite()"
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function callMethod($functionCall)
+    {
+        switch ($functionCall) {
+            case 'htaccessEnabled()':
+                return $this->htaccessEnabled();
+            case 'canRewrite()':
+                return $this->canRewrite();
+            case 'canAddType()':
+                return $this->canAddType();
+            case 'canSetResponseHeader()':
+                return $this->canSetResponseHeader();
+            case 'canSetRequestHeader()':
+                return $this->canSetRequestHeader();
+            case 'canContentDigest()':
+                return $this->canContentDigest();
+            case 'canSetDirectoryIndex()':
+                return $this->canSetDirectoryIndex();
+            case 'canPassEnvThroughRequestHeader()':
+                return $this->canPassEnvThroughRequestHeader();
+            case 'canPassEnvThroughRewrite()':
+                return $this->canPassEnvThroughRewrite();
+            default:
+                throw new \Exception('The method is not callable');
+        }
 
+        // TODO:             moduleLoaded($moduleName)
+    }
 
     /**
      * Crash-test some .htaccess.

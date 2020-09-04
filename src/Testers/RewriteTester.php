@@ -77,25 +77,21 @@ class RewriteTester extends CustomTester
 </IfModule>
 EOD;
 
-        $definitions = [
+        $test = [
             'subdir' => 'rewrite-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['0.txt', "0"],
                 ['1.txt', "1"]
             ],
-            'tests' => [
-                [
-                    'request' => '0.txt',
-                    'interpretation' => [
-                        ['success', 'body', 'equals', '1'],
-                        ['failure', 'body', 'equals', '0'],
-                        ['failure', 'statusCode', 'equals', '500'],
-                    ]
-                ]
+            'request' => '0.txt',
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+                ['failure', 'statusCode', 'equals', '500'],
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $definitions);
+        parent::__construct($baseDir, $baseUrl, $test);
     }
 }

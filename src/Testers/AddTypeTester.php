@@ -28,24 +28,20 @@ class AddTypeTester extends CustomTester
 </IfModule>
 EOD;
 
-        $definitions = [
+        $test = [
             'subdir' => 'add-type-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['dummy.test', "they needed someone, so here i am"],
             ],
-            'tests' => [
-                [
-                    'request' => 'dummy.test',
-                    'interpretation' => [
-                        ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
-                        ['failure', 'statusCode', 'equals', '500'],
-                        ['failure', 'statusCode', 'equals', '200']
-                    ]
-                ]
+            'request' => 'dummy.test',
+            'interpretation' => [
+                ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
+                ['failure', 'statusCode', 'equals', '500'],
+                ['failure', 'statusCode', 'equals', '200']
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $definitions);
+        parent::__construct($baseDir, $baseUrl, $test);
     }
 }

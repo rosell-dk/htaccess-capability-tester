@@ -39,24 +39,20 @@ echo 0;
 }
 EOD;
 
-        $definitions = [
+        $test = [
             'subdir' => 'set-request-header-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],
             ],
-            'tests' => [
-                [
-                    'request' => 'test.php',
-                    'interpretation' => [
-                        ['success', 'body', 'equals', '1'],
-                        ['failure', 'body', 'equals', '0'],
-                        ['failure', 'statusCode', 'equals', '500'],
-                    ]
-                ]
+            'request' => 'test.php',
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+                ['failure', 'statusCode', 'equals', '500'],
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $definitions);
+        parent::__construct($baseDir, $baseUrl, $test);
     }
 }

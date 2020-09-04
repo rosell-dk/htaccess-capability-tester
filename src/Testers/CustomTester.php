@@ -2,6 +2,7 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
+use \HtaccessCapabilityTester\HtaccessCapabilityTester;
 use \HtaccessCapabilityTester\HTTPRequesterInterface;
 use \HtaccessCapabilityTester\HTTPResponse;
 use \HtaccessCapabilityTester\SimpleHttpRequester;
@@ -12,20 +13,42 @@ class CustomTester extends AbstractTester
 {
     use TraitTestFileCreator;
 
-    /** @var array  All definitions in one place, thanks */
-    protected $definitions;
+    /** @var array  All tests in one place, thanks */
+    protected $tests;
 
     /**
      * Constructor.
      *
      * @param  string  $baseDir  Directory on the server where the test files can be put
      * @param  string  $baseUrl  The base URL of the test files
+     * @param  array   $tests    A single test or an array of test definitions
      *
      * @return void
      */
-    public function __construct($baseDir, $baseUrl, $definitions)
+    public function __construct($baseDir, $baseUrl, $tests)
     {
-        $this->definitions = $definitions;
+        /*
+
+        [
+            [
+                'subdir' => 'server-signature',
+                'files' => [
+                    ['.htaccess', $htaccessFile],
+                    ['0.txt', "0"],
+                ],
+                'request' => '0.txt',
+                'interpretation' => [
+                    ['success', 'body', 'equals', '1'],
+                ]
+            ]
+        ]
+        */
+
+        if (isset($tests[0])) {
+            $this->tests = $tests;
+        } else {
+            $this->tests = [$tests];
+        }
         parent::__construct($baseDir, $baseUrl);
     }
 
@@ -36,15 +59,27 @@ class CustomTester extends AbstractTester
      */
     protected function registerTestFiles()
     {
-        foreach ($this->definitions['files'] as $entry) {
-            list($filename, $content) = $entry;
-            $this->registerTestFile($filename, $content);
+        foreach ($this->tests as $test) {
+            $subDir = $test['subdir'];
+            if (isset($test['files'])) {
+                foreach ($test['files'] as $entry) {
+                    list($filename, $content) = $entry;
+                    $this->registerTestFile($subDir . '/' . $filename, $content);
+                }
+            }
         }
     }
 
     public function getSubDir()
     {
-        return $this->definitions['subdir'];
+        return '';
+        //return $this->tests[0]['subdir'];
+    }
+
+    public function getCacheKey()
+    {
+        //return '';
+        return $this->tests[0]['subdir'];
     }
 
     /**
@@ -55,24 +90,20 @@ class CustomTester extends AbstractTester
      */
     public function run()
     {
-        /*
-        ie:
-
-        'tests' => [
-            [
-                'request' => '0.txt',
-                'interpretation' => [
-                    ['success', 'body', 'equals', '1'],
-                    ['failure', 'body', 'equals', '0'],
-                    ['failure', 'statusCode', 'equals', '500'],
-                ]
-            ]
-        ]
-        */
-        $tests = $this->definitions['tests'];
         $result = null;
-        foreach ($tests as $i => $test) {
-            $url = $this->baseUrl . '/' . $this->subDir . '/';
+        foreach ($this->tests as $i => $test) {
+            if (isset($test['requirements'])) {
+                $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
+
+                foreach ($test['requirements'] as $requirement) {
+                    $requirementResult = $hct->callMethod($requirement);
+                    if (!$requirementResult) {
+                        // Skip test
+                        continue 2;
+                    }
+                }
+            }
+            $url = $this->baseUrl . '/' . $test['subdir'] . '/';
             $response = $this->makeHTTPRequest($url . $test['request']);
             $result = Interpreter::interpret($response, $test['interpretation']);
             if ($result->info != 'no-match') {

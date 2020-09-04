@@ -113,32 +113,31 @@ $htaccessFile = <<<'EOD'
 </IfModule>
 EOD;
 
-$customTestDef = [
-    'subdir' => 'rewrite-tester',
-    'files' => [
-        ['.htaccess', $htaccessFile],
-        ['0.txt', "0"],
-        ['1.txt', "1"]
-    ],
-    'tests' => [
-        [
-            'request' => '0.txt',
-            'interpretation' => [
-                ['success', 'body', 'equals', '1'],
-                ['failure', 'body', 'equals', '0'],
-                ['failure', 'statusCode', 'equals', '500'],
-            ]
+$$test = [
+    [
+        'subdir' => 'rewrite-tester',
+        'files' => [
+            ['.htaccess', $htaccessFile],
+            ['0.txt', "0"],
+            ['1.txt', "1"]
+        ],
+        'request' => '0.txt',
+        'interpretation' => [
+            ['success', 'body', 'equals', '1'],
+            ['failure', 'body', 'equals', '0'],
+            ['failure', 'statusCode', 'equals', '500'],
         ]
     ]
 ];
 
-$testResult = $hct->customTest($customTestDef);
+$testResult = $hct->customTest($test);
 ```
 
-Btw: You can put more tests into the "tests" property. If no rules match in the first test, it will continue to the next test.
+Bonus info:
+- It is possible to pass in an array of tests instead of just one test. The second test will only run if there is no match in the first, and so on
+- You can make each test-definition conditional upon a test such as canRewrite(). To do so, add a "requirements" property like this: 'requirements' => `['canRewrite()']`.
 
 Almost all of the build-in tests are written in this "language". You can look at the source code in the classes in "Testers" for inspiration.
-
 
 ## Installation
 Require the library with *Composer*, like this:

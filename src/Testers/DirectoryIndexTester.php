@@ -28,25 +28,21 @@ class DirectoryIndexTester extends CustomTester
 </IfModule>
 EOD;
 
-        $definitions = [
+        $test = [
             'subdir' => 'directory-index-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['index.html', "0"],
                 ['index2.html', "1"]
             ],
-            'tests' => [
-                [
-                    'request' => '',    // We request the index, that is why its empty
-                    'interpretation' => [
-                        ['success', 'body', 'equals', '1'],
-                        ['failure', 'body', 'equals', '0'],
-                        ['failure', 'statusCode', 'equals', '500'],
-                    ]
-                ]
+            'request' => '',    // We request the index, that is why its empty
+            'interpretation' => [
+                ['success', 'body', 'equals', '1'],
+                ['failure', 'body', 'equals', '0'],
+                ['failure', 'statusCode', 'equals', '500'],
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $definitions);
+        parent::__construct($baseDir, $baseUrl, $test);
     }
 }
