@@ -176,7 +176,7 @@ class HtaccessCapabilityTester
 
 
     /**
-     * Test if an environment variable can be set with mod_rewrite and received in PHP.
+     * Test if an environment variable can be set in a rewrite rule  and received in PHP.
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
