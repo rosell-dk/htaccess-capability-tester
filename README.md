@@ -113,7 +113,7 @@ $htaccessFile = <<<'EOD'
 </IfModule>
 EOD;
 
-$$test = [
+$test = [
     [
         'subdir' => 'rewrite-tester',
         'files' => [
