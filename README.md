@@ -139,6 +139,32 @@ Bonus info:
 
 Almost all of the build-in tests are written in this "language". You can look at the source code in the classes in "Testers" for inspiration.
 
+PS: I'm considering defining all tests in YAML. Like this:
+
+```yaml
+subdir: rewrite-tester
+files:
+    - filename: '.htaccess'
+      content: |
+        <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteRule ^0\.txt$ 1\.txt [L]
+        </IfModule>
+    - filename: '0.txt'
+      content: '0'
+    - filename: '1.txt'
+      content: '1'
+
+request:
+    url: '0.txt'
+
+interpretation:
+    - [success, body, equals, '1']
+    - [failure, body, equals, '0']
+    - [failure, status-code, equals, '500']
+```
+
+
 ## Installation
 Require the library with *Composer*, like this:
 
