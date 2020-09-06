@@ -58,12 +58,12 @@ The following test files are used for the *rewrite* test:
 </IfModule>
 ```
 
-*0.txt*
+**0.txt**
 ```text
 0
 ```
 
-*1.txt*
+**1.txt**
 ```text
 1
 ```
@@ -89,7 +89,7 @@ $mapping = [
     ['success', 'body', 'equals', '1'],
     ['failure', 'body', 'equals', '0'],
     ['failure', 'statusCode', 'equals', '500'],
-]
+];
 ```
 
 The list of mappings is read from the top until one of the conditions is met. The first line for example translates to "Map to success if the body of the response equals '1'". If none of the conditions are met, the result is automatically mapped to 'inconclusive'.
