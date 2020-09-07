@@ -36,6 +36,9 @@ class HtaccessCapabilityTester
     /** @var string  Additional info regarding last test (often empty) */
     public $infoFromLastTest;
 
+    /** @var HTTPRequesterInterface  The object used to make the HTTP request */
+    private $requester;
+
     /**
      * Constructor.
      *
@@ -59,6 +62,9 @@ class HtaccessCapabilityTester
      */
     private function runTest($tester)
     {
+        if (isset($this->requester)) {
+            $tester->setHTTPRequester($this->requester);
+        }
         if (TestResultCache::isCached($tester)) {
             $testResult = TestResultCache::getCached($tester);
         } else {
@@ -70,6 +76,18 @@ class HtaccessCapabilityTester
         return $testResult->status;
     }
 
+    /**
+     * Run a test, store the info and return the status.
+     *
+     * @param  HTTPRequesterInterface  $requester
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function setHttpRequester($requester)
+    {
+        $this->requester = $requester;
+    }
+    
     /**
      * Test if .htaccess files are enabled
      *
