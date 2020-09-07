@@ -28,36 +28,39 @@ class ContentDigestTester extends CustomTester
 </IfModule>
 EOD;
 
-        $tests = [
-            [
-                'subdir' => 'content-digest-tester/on',
-                'files' => [
-                    ['.htaccess', 'ContentDigest On'],
-                    ['dummy.txt', ""],
+        $test = [
+            'subdir' => 'content-digest-tester',
+            'subtests' => [
+                [
+                    'subdir' => 'on',
+                    'files' => [
+                        ['.htaccess', 'ContentDigest On'],
+                        ['dummy.txt', ""],
+                    ],
+                    'request' => 'dummy.txt',
+                    'interpretation' => [
+                        ['failure', 'statusCode', 'equals', '500'],
+                        ['inconclusive', 'statusCode', 'not-equals', '200'],    // calls the whole thing off
+                        ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
+                    ]
                 ],
-                'request' => 'dummy.txt',
-                'interpretation' => [
-                    ['failure', 'statusCode', 'equals', '500'],
-                    ['inconclusive', 'statusCode', 'not-equals', '200'],    // calls the whole thing off
-                    ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
-                ]
-            ],
-            [
-                'subdir' => 'content-digest-tester/off',
-                'files' => [
-                    ['.htaccess', 'ContentDigest Off'],
-                    ['dummy.txt', ""],
-                ],
-                'request' => 'dummy.txt',
-                'interpretation' => [
-                    ['failure', 'statusCode', 'equals', '500'],
-                    ['failure', 'headers', 'contains-key', 'Content-MD5'],
-                    ['inconclusive', 'statusCode', 'not-equals', '200'],
-                    ['success', 'statusCode', 'equals', '200'],
+                [
+                    'subdir' => 'off',
+                    'files' => [
+                        ['.htaccess', 'ContentDigest Off'],
+                        ['dummy.txt', ""],
+                    ],
+                    'request' => 'dummy.txt',
+                    'interpretation' => [
+                        ['failure', 'statusCode', 'equals', '500'],
+                        ['failure', 'headers', 'contains-key', 'Content-MD5'],
+                        ['inconclusive', 'statusCode', 'not-equals', '200'],
+                        ['success', 'statusCode', 'equals', '200'],
+                    ]
                 ]
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $tests);
+        parent::__construct($baseDir, $baseUrl, $test);
     }
 }

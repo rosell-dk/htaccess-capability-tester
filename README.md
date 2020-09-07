@@ -134,35 +134,10 @@ $testResult = $hct->customTest($test);
 ```
 
 Bonus info:
-- It is possible to pass in an array of tests instead of just one test. The second test will only run if there is no match in the first, and so on
-- You can make each test-definition conditional upon a test such as canRewrite(). To do so, add a "requirements" property like this: 'requirements' => `['canRewrite()']`.
+- A test can contain subtests. The second test will only run if there is no match in the first, and so on. Check out ie. `ContentDigestTester.php` for how to use.
+- You can make each test-definition conditional upon a test such as `canRewrite()`. To do so, add a "requirements" property like this: 'requirements' => `['canRewrite()']` (see for example `ModLoadedTester.php`)
 
 Almost all of the build-in tests are written in this "language". You can look at the source code in the classes in "Testers" for inspiration.
-
-PS: I'm considering defining all tests in YAML. Like this:
-
-```yaml
-subdir: rewrite-tester
-files:
-    - filename: '.htaccess'
-      content: |
-        <IfModule mod_rewrite.c>
-            RewriteEngine On
-            RewriteRule ^0\.txt$ 1\.txt [L]
-        </IfModule>
-    - filename: '0.txt'
-      content: '0'
-    - filename: '1.txt'
-      content: '1'
-
-request:
-    url: '0.txt'
-
-interpretation:
-    - [success, body, equals, '1']
-    - [failure, body, equals, '0']
-    - [failure, status-code, equals, '500']
-```
 
 
 ## Installation

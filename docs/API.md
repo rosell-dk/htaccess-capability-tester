@@ -1,26 +1,40 @@
 # API overview
 This document is under development...
 
-## The tests
-
-
+## Test methods in HtaccessCapabilityTester:
 
 ### `htaccessEnabled()`
 Apache can be configured to ignore `.htaccess` files altogether. This method tests if the `.htaccess` file is processed at all
 
-The method works by trying out a series of subtests until a conclusion is reached. It can come out inconclusive, but it is very unlikely.
+The method works by trying out a series of subtests until a conclusion is reached. It will never come out inconclusive.
 
-The first test works by setting the little known *ServerSignature* directive and relying on its even more little known side-effect, which is that it sets a server variable. The directive is part of core, which means it will almost always work. In order to disallow a core directive, the server admin must set *AllowOverride* to *None* and by setting *AllowOverrideList* to a list that does not include *ServerSignature*. Unfortunately, a PHP script is needed to check if the environment variable is set, which means that the test can come out inconclusive
-
-The rest of the subtests simply consists of calling other test methods, which does not rely on PHP. If rewriting for example can be proven to work, well then the `.htaccess` must have been processed.
-
-**Prerequisite to come out conclusive**
-
-At least one of these must be satisfied:
-- PHP allowed
-- AllowOverride includes "Options"
-- AllowOverride includes "Indexes" and mod_dir (Status: Base)
-- AllowOverride includes "FileInfo" and at least one of these modules is loaded: mod_mime (Base), mod_rewrite, mod_headers
-
+How does it work?
+- The first strategy is testing a series of features, such as `canRewrite()`. If any of them works, well, then the `.htaccess` must have been processed.
+- Secondly, the `canSetServerSignature()` is tested. It tests the "ServerSignature" directive. If this test comes out negative, it is highly likely that the .htaccess has not been read, as the directive is a core directive. So we return *failure*.
+- Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not.
 
 ### `canRewrite()`
+Tests if rewriting works using this simple test:
+
+```yaml
+subdir: rewrite-tester
+files:
+    - filename: '.htaccess'
+      content: |
+        <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteRule ^0\.txt$ 1\.txt [L]
+        </IfModule>
+    - filename: '0.txt'
+      content: '0'
+    - filename: '1.txt'
+      content: '1'
+
+request:
+    url: '0.txt'
+
+interpretation:
+    - [success, body, equals, '1']
+    - [failure, body, equals, '0']
+    - [failure, status-code, equals, '500']
+```

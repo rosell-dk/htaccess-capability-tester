@@ -13,6 +13,7 @@ use \HtaccessCapabilityTester\Testers\ModLoadedTester;
 use \HtaccessCapabilityTester\Testers\PassEnvThroughRequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\PassEnvThroughRewriteTester;
 use \HtaccessCapabilityTester\Testers\RewriteTester;
+use \HtaccessCapabilityTester\Testers\ServerSignatureTester;
 use \HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\SetResponseHeaderTester;
 
@@ -153,6 +154,17 @@ class HtaccessCapabilityTester
     {
         return $this->runTest(new ContentDigestTester($this->baseDir, $this->baseUrl));
     }
+
+    /**
+     * Test if ServerSignature directive works.
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function canSetServerSignature()
+    {
+        return $this->runTest(new ServerSignatureTester($this->baseDir, $this->baseUrl));
+    }
+
 
     /**
      * Test if DirectoryIndex works.

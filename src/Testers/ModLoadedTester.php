@@ -49,7 +49,8 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'subdir' => 'mod-loaded-tester/' . $this->modName . '/server-signature',
+            'requirements' => ['htaccessEnabled()'],
+            'subdir' => 'server-signature',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['test.php', $php],
@@ -91,7 +92,7 @@ EOD;
 
         return [
             'requirements' => ['canRewrite()'],
-            'subdir' => 'mod-loaded-tester/' . $this->modName . '/rewrite',
+            'subdir' => 'rewrite',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['0.txt', '0'],
@@ -134,7 +135,7 @@ EOD;
 
         return [
             'requirements' => ['canSetResponseHeader()'],
-            'subdir' => 'mod-loaded-tester/' . $this->modName . '/response-header',
+            'subdir' => 'response-header',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['request-me.txt', 'thanks'],
@@ -174,7 +175,7 @@ EOD;
 
         return [
             'requirements' => ['canContentDigest()'],
-            'subdir' => 'mod-loaded-tester/' . $this->modName . '/content-digest',
+            'subdir' => 'content-digest',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['request-me.txt', 'thanks'],
@@ -214,7 +215,7 @@ EOD;
 
         return [
             'requirements' => ['canSetDirectoryIndex()'],
-            'subdir' => 'mod-loaded-tester/' . $this->modName . '/directory-index',
+            'subdir' => 'directory-index',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['0.html', '0'],
@@ -256,7 +257,7 @@ EOD;
 
         return [
             'requirements' => ['canAddType()'],
-            'subdir' => 'mod-loaded-tester/' . $this->modName . '/add-type',
+            'subdir' => 'add-type',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['request-me.test', '0'],
@@ -283,12 +284,15 @@ EOD;
         $this->modName = $moduleName;
 
         $tests = [
-            $this->getServerSignatureBasedTest(),   // PHP
-            $this->getContentDigestBasedTest(),     // Override: Options
-            $this->getAddTypeBasedTest(),           // Override: FileInfo, Status: Base (mod_mime)
-            $this->getDirectoryIndexBasedTest(),    // Override: Indexes, Status: Base (mod_dir)
-            $this->getRewriteBasedTest(),           // Override: FileInfo, Module: mod_rewrite
-            $this->getResponseHeaderBasedTest()     // Override: FileInfo, Module: mod_headers
+            'subdir' => 'mod-loaded-tester/' . $this->modName,
+            'subtests' => [
+                $this->getServerSignatureBasedTest(),   // PHP
+                $this->getContentDigestBasedTest(),     // Override: Options
+                $this->getAddTypeBasedTest(),           // Override: FileInfo, Status: Base (mod_mime)
+                $this->getDirectoryIndexBasedTest(),    // Override: Indexes, Status: Base (mod_dir)
+                $this->getRewriteBasedTest(),           // Override: FileInfo, Module: mod_rewrite
+                $this->getResponseHeaderBasedTest()     // Override: FileInfo, Module: mod_headers
+            ]
         ];
 
         parent::__construct($baseDir, $baseUrl, $tests);

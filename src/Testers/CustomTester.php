@@ -13,42 +13,40 @@ class CustomTester extends AbstractTester
 {
     use TraitTestFileCreator;
 
-    /** @var array  All tests in one place, thanks */
-    protected $tests;
+    /** @var array  A definition defining the test */
+    protected $test;
+
+    /** @var array  For convenience, all tests */
+    private $tests;
 
     /**
      * Constructor.
      *
      * @param  string  $baseDir  Directory on the server where the test files can be put
      * @param  string  $baseUrl  The base URL of the test files
-     * @param  array   $tests    A single test or an array of test definitions
+     * @param  array   $test     The test (may contain subtests)
      *
      * @return void
      */
-    public function __construct($baseDir, $baseUrl, $tests)
+    public function __construct($baseDir, $baseUrl, $test)
     {
-        /*
+        $this->test = $test;
 
-        [
-            [
-                'subdir' => 'server-signature',
-                'files' => [
-                    ['.htaccess', $htaccessFile],
-                    ['0.txt', "0"],
-                ],
-                'request' => '0.txt',
-                'interpretation' => [
-                    ['success', 'body', 'equals', '1'],
-                ]
-            ]
-        ]
-        */
+        if (isset($test['subtests'])) {
+            $this->tests = $test['subtests'];
 
-        if (isset($tests[0])) {
-            $this->tests = $tests;
+            // Add main subdir to subdir for all subtests
+            foreach ($this->tests as &$subtest) {
+                if (isset($subtest['subdir'])) {
+                    $subtest['subdir'] = $test['subdir'] . '/' . $subtest['subdir'];
+                }
+            }
         } else {
-            $this->tests = [$tests];
+            $this->tests = [$test];
         }
+
+        //echo '<pre>' . print_r($this->tests, true) . '</pre>';
+        //echo json_encode($this->tests) . '<br>';
         parent::__construct($baseDir, $baseUrl);
     }
 
@@ -59,12 +57,21 @@ class CustomTester extends AbstractTester
      */
     protected function registerTestFiles()
     {
+
         foreach ($this->tests as $test) {
-            $subDir = $test['subdir'];
             if (isset($test['files'])) {
-                foreach ($test['files'] as $entry) {
-                    list($filename, $content) = $entry;
-                    $this->registerTestFile($subDir . '/' . $filename, $content);
+                foreach ($test['files'] as $file) {
+                    // Two syntaxes are allowed:
+                    // - Simple array (ie: ['0.txt', '0']
+                    // - Named, ie:  ['filename' => '0.txt', 'content' => '0']
+                    // The second makes more readable YAML definitions
+                    if (isset($file['filename'])) {
+                        $filename = $file['filename'];
+                        $content = $file['content'];
+                    } else {
+                        list ($filename, $content) = $file;
+                    }
+                    $this->registerTestFile($test['subdir'] . '/' . $filename, $content);
                 }
             }
         }
@@ -72,15 +79,9 @@ class CustomTester extends AbstractTester
 
     public function getSubDir()
     {
-        return '';
-        //return $this->tests[0]['subdir'];
+        return $this->test['subdir'];
     }
 
-    public function getCacheKey()
-    {
-        //return '';
-        return $this->tests[0]['subdir'];
-    }
 
     /**
      *  Run
@@ -103,11 +104,18 @@ class CustomTester extends AbstractTester
                     }
                 }
             }
-            $url = $this->baseUrl . '/' . $test['subdir'] . '/';
-            $response = $this->makeHTTPRequest($url . $test['request']);
-            $result = Interpreter::interpret($response, $test['interpretation']);
-            if ($result->info != 'no-match') {
-                return $result;
+            if (isset($test['request'])) {
+                $requestUrl = $this->baseUrl . '/' . $test['subdir'] . '/';
+                if (isset($test['request']['url'])) {
+                    $requestUrl .= $test['request']['url'];
+                } else {
+                    $requestUrl .= $test['request'];
+                }
+                $response = $this->makeHTTPRequest($requestUrl);
+                $result = Interpreter::interpret($response, $test['interpretation']);
+                if ($result->info != 'no-match') {
+                    return $result;
+                }
             }
         }
         if (is_null($result)) {

@@ -16,22 +16,23 @@ trait TraitTestFileCreator
 
     public function createTestFilesIfNeeded()
     {
-        foreach ($this->testFiles as list($fileName, $content, $subSubDir)) {
-            self::createTestFileIfNeeded($fileName, $content, $subSubDir);
+        if (isset($this->testFiles)) {
+            foreach ($this->testFiles as list($fileName, $content)) {
+                self::createTestFileIfNeeded($fileName, $content);
+            }
         }
     }
 
     /** Create/update test file if needed (missing or changed)
      *
+     *  @param  string  $fileName  filname. May contain path components (ie: "subdir/.htaccess")
+     *  @param  string  $content   Content of the file
+     *
      *  @return bool  Success or not
      */
-    private function createTestFileIfNeeded($fileName, $content, $subSubDir = '')
+    private function createTestFileIfNeeded($fileName, $content)
     {
-        $dir = $this->baseDir . '/' . $this->subDir;
-        if ($subSubDir != '') {
-            $dir .= '/' . $subSubDir;
-        }
-        $path = $dir . '/' . $fileName;
+        $path = $this->baseDir . '/' . $fileName;
 
         if (!is_dir(dirname($path))) {
             mkdir(dirname($path), 0777, true);

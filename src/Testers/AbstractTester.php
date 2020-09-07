@@ -71,9 +71,12 @@ abstract class AbstractTester
      *
      * @return  void
      */
-    protected function registerTestFile($fileName, $content, $subDir = '')
+    protected function registerTestFile($filename, $content)
     {
-        $this->testFiles[] = [$fileName, $content, $subDir];
+        if (!isset($this->testFiles)) {
+            $this->testFiles = [];
+        }
+        $this->testFiles[] = [$filename, $content];
     }
 
     /**
