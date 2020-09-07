@@ -30,21 +30,30 @@ use \HtaccessCapabilityTester\TestResult;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class CrashTester extends AbstractTester
+class CrashTester extends CustomTester
 {
 
-    /* @var string  Rules to crash-test */
-    private $rules;
-
-    public function __construct($baseDir, $baseUrl, $rules, $subDir = null)
+    public function __construct($baseDir, $baseUrl, $htaccessRules, $subDir = null)
     {
         if (is_null($subDir)) {
-            $subDir = hash('md5', $rules);
+            $subDir = hash('md5', $htaccessRules);
         }
-        $this->subDir = 'crash-tester/' . $subDir;
-        $this->rules = $rules;
 
-        parent::__construct($baseDir, $baseUrl);
+        $test = [
+            'subdir' => $subDir,
+            'files' => [
+                ['.htaccess', $htaccessRules],
+                ['request-me.txt', 'thanks'],
+            ],
+            'request' => 'request-me.txt',
+            'interpretation' => [
+                ['failure', 'status-code', 'equals', '500'],
+                ['success', 'status-code', 'not-equals', '500'],
+            ]
+        ];
+
+        parent::__construct($baseDir, $baseUrl, $test);
+
     }
 
     /**
@@ -55,37 +64,7 @@ class CrashTester extends AbstractTester
      */
     public function getSubDir()
     {
-        return $this->subDir;
+        return 'crash-tester';
     }
 
-    /**
-     * Register the test files using the "registerTestFile" method
-     *
-     * @return  void
-     */
-    public function registerTestFiles()
-    {
-        $this->registerTestFile('.htaccess', $this->rules);
-        $this->registerTestFile('ping.txt', "pong");
-    }
-
-    /**
-     *  Run the crash test.
-     *
-     *  @return TestResult   Returns a test result
-     */
-    public function run()
-    {
-        $response = $this->makeHTTPRequest($this->baseUrl . '/' . $this->subDir . '/ping.txt');
-        $status = null;
-        $info = '';
-
-        if ($response->statusCode == '500') {
-            $status = false;
-        } else {
-            $status = true;
-        }
-
-        return new TestResult($status, $info);
-    }
 }
