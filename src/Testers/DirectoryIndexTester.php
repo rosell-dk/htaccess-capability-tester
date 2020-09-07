@@ -39,7 +39,7 @@ EOD;
             'interpretation' => [
                 ['success', 'body', 'equals', '1'],
                 ['failure', 'body', 'equals', '0'],
-                ['failure', 'statusCode', 'equals', '500'],
+                ['failure', 'status-code', 'equals', '500'],
             ]
         ];
 

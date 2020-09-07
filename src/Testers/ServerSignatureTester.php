@@ -63,9 +63,9 @@ EOD;
                     ],
                     'request' => 'test.php',
                     'interpretation' => [
-                        ['inconclusive', 'statusCode', 'equals', '403'],
+                        ['inconclusive', 'status-code', 'equals', '403'],
                         ['inconclusive', 'body', 'isEmpty'],
-                        ['inconclusive', 'statusCode', 'not-equals', '200'],
+                        ['inconclusive', 'status-code', 'not-equals', '200'],
                         ['failure', 'body', 'equals', '0'],
                     ],
                     [

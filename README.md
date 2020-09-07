@@ -88,7 +88,7 @@ As an example, here is how the mapping used in *canRewrite()* is defined:
 $mapping = [
     ['success', 'body', 'equals', '1'],
     ['failure', 'body', 'equals', '0'],
-    ['failure', 'statusCode', 'equals', '500'],
+    ['failure', 'status-code', 'equals', '500'],
 ];
 ```
 
@@ -125,7 +125,7 @@ $test = [
         'interpretation' => [
             ['success', 'body', 'equals', '1'],
             ['failure', 'body', 'equals', '0'],
-            ['failure', 'statusCode', 'equals', '500'],
+            ['failure', 'status-code', 'equals', '500'],
         ]
     ]
 ];

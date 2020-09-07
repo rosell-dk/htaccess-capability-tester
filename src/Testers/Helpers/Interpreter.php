@@ -57,7 +57,7 @@ class Interpreter
 
             $val = '';
             switch ($propertyToExamine) {
-                case 'statusCode':
+                case 'status-code':
                     $val = $response->statusCode;
                     break;
                 case 'body':
@@ -72,7 +72,7 @@ class Interpreter
             if (isset($entry[3])) {
                 $reason .= ' "' . implode('" "', array_slice($entry, 3)) . '"';
             }
-            if (($propertyToExamine == 'statusCode') && ($operator == 'not-equals')) {
+            if (($propertyToExamine == 'status-code') && ($operator == 'not-equals')) {
                 $reason .= ' - it was: ' . $val;
             }
             $result = new TestResult($status, $reason);

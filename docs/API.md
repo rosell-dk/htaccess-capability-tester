@@ -39,7 +39,7 @@ interpretation:
     - [failure, status-code, equals, '500']
 ```
 
-### canSetResponseHeader()
+### `canSetResponseHeader()``
 Tests if setting a response header works using this simple test:
 
 ```yaml
@@ -57,6 +57,6 @@ request:
     url: 'dummy.txt'
 
 interpretation:
-    - ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
-    - ['failure', 'statusCode', 'equals', '500']
+    - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test'],
+    - [failure, status-code, equals, '500']
 ```

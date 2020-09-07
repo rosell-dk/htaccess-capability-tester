@@ -39,8 +39,8 @@ EOD;
                     ],
                     'request' => 'dummy.txt',
                     'interpretation' => [
-                        ['failure', 'statusCode', 'equals', '500'],
-                        ['inconclusive', 'statusCode', 'not-equals', '200'],    // calls the whole thing off
+                        ['failure', 'status-code', 'equals', '500'],
+                        ['inconclusive', 'status-code', 'not-equals', '200'],    // calls the whole thing off
                         ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
                     ]
                 ],
@@ -52,10 +52,10 @@ EOD;
                     ],
                     'request' => 'dummy.txt',
                     'interpretation' => [
-                        ['failure', 'statusCode', 'equals', '500'],
+                        ['failure', 'status-code', 'equals', '500'],
                         ['failure', 'headers', 'contains-key', 'Content-MD5'],
-                        ['inconclusive', 'statusCode', 'not-equals', '200'],
-                        ['success', 'statusCode', 'equals', '200'],
+                        ['inconclusive', 'status-code', 'not-equals', '200'],
+                        ['success', 'status-code', 'equals', '200'],
                     ]
                 ]
             ]

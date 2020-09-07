@@ -37,7 +37,7 @@ EOD;
             'request' => 'dummy.txt',
             'interpretation' => [
                 ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
-                ['failure', 'statusCode', 'equals', '500'],
+                ['failure', 'status-code', 'equals', '500'],
             ]
         ];
 
