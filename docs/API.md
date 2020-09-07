@@ -38,3 +38,25 @@ interpretation:
     - [failure, body, equals, '0']
     - [failure, status-code, equals, '500']
 ```
+
+### canSetResponseHeader()
+Tests if setting a response header works using this simple test:
+
+```yaml
+subdir: set-response-header-tester
+files:
+    - filename: '.htaccess'
+      content: |
+          <IfModule mod_headers.c>
+              Header set X-Response-Header-Test: test
+          </IfModule>
+    - filename: 'dummy.txt'
+      content: 'they needed someone, so here i am'
+
+request:
+    url: 'dummy.txt'
+
+interpretation:
+    - ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
+    - ['failure', 'statusCode', 'equals', '500']
+```
