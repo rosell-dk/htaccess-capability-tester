@@ -11,8 +11,6 @@ use \HtaccessCapabilityTester\Testers\Helpers\Interpreter;
 
 class CustomTester extends AbstractTester
 {
-    use TraitTestFileCreator;
-
     /** @var array  A definition defining the test */
     protected $test;
 

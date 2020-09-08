@@ -4,6 +4,7 @@ namespace HtaccessCapabilityTester;
 
 use \HtaccessCapabilityTester\Testers\AbstractTester;
 use \HtaccessCapabilityTester\Testers\AddTypeTester;
+
 use \HtaccessCapabilityTester\Testers\ContentDigestTester;
 use \HtaccessCapabilityTester\Testers\CrashTester;
 use \HtaccessCapabilityTester\Testers\DirectoryIndexTester;
@@ -39,6 +40,9 @@ class HtaccessCapabilityTester
     /** @var HttpRequesterInterface  The object used to make the HTTP request */
     private $requester;
 
+    /** @var TestFilesLineUpperInterface  The object used to line up the test files */
+    private $testFilesLineUpper;
+
     /**
      * Constructor.
      *
@@ -65,6 +69,9 @@ class HtaccessCapabilityTester
         if (isset($this->requester)) {
             $tester->setHTTPRequester($this->requester);
         }
+        if (isset($this->testFilesLineUpper)) {
+            $tester->setTestFilesLineUpper($this->testFilesLineUpper);
+        }
         if (TestResultCache::isCached($tester)) {
             $testResult = TestResultCache::getCached($tester);
         } else {
@@ -86,6 +93,17 @@ class HtaccessCapabilityTester
     public function setHttpRequester($requester)
     {
         $this->requester = $requester;
+    }
+
+    /**
+     * Set object responsible for lining up the test files.
+     *
+     * @param  TestFilesLineUpperInterface  $testFilesLineUpper
+     * @return void
+     */
+    public function setTestFilesLineUpper($testFilesLineUpper)
+    {
+        $this->testFilesLineUpper = $testFilesLineUpper;
     }
 
     /**

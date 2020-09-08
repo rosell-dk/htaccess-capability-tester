@@ -5,12 +5,12 @@ namespace HtaccessCapabilityTester\Testers;
 use \HtaccessCapabilityTester\HttpRequesterInterface;
 use \HtaccessCapabilityTester\HttpResponse;
 use \HtaccessCapabilityTester\SimpleHttpRequester;
+use \HtaccessCapabilityTester\SimpleTestFileLineUpper;
+use \HtaccessCapabilityTester\TestFilesLineUpperInterface;
 use \HtaccessCapabilityTester\TestResult;
 
 abstract class AbstractTester
 {
-    use TraitTestFileCreator;
-
     /** @var string  The dir where the test files should be put */
     protected $baseDir;
 
@@ -25,6 +25,9 @@ abstract class AbstractTester
 
     /** @var HttpRequesterInterface  An object for making the HTTP request */
     protected $httpRequester;
+
+    /** @var TestFilesLineUpperInterface  An object for lining up the test-files */
+    protected $testFilesLineUpper;
 
     /**
      * Register the test files using the "registerTestFile" method
@@ -76,11 +79,11 @@ abstract class AbstractTester
         if (!isset($this->testFiles)) {
             $this->testFiles = [];
         }
-        $this->testFiles[] = [$filename, $content];
+        $this->testFiles[] = [$this->baseDir . '/' . $filename, $content];
     }
 
     /**
-     * Child classes must implement this method - or use the trait: TraitStandardTestRunner.
+     * Child classes must implement this method
      *
      * Note: If the test involves making a HTTP request (which it probably does), the class should
      * use the makeHTTPRequest() method making the request.
@@ -104,7 +107,7 @@ abstract class AbstractTester
         $this->baseUrl = $baseUrl;
         $this->subDir = $this->getSubDir();
         $this->registerTestFiles();
-        $this->createTestFilesIfNeeded();
+        $this->lineUpTestFiles();
     }
 
     /**
@@ -132,4 +135,25 @@ abstract class AbstractTester
     {
         $this->httpRequester = $httpRequester;
     }
+
+    public function lineUpTestFiles()
+    {
+        if (!isset($this->testFilesLineUpper)) {
+            $this->testFilesLineUpper = new SimpleTestFileLineUpper();
+        }
+        $this->testFilesLineUpper->lineUp($this->testFiles);
+    }
+
+    /**
+     * Set object responsible for lining up the test files.
+     *
+     * @param  TestFilesLineUpperInterface  $testFilesLineUpper
+     * @return void
+     */
+    public function setTestFilesLineUpper($testFilesLineUpper)
+    {
+        $this->testFilesLineUpper = $testFilesLineUpper;
+    }
+
+
 }
