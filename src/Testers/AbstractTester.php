@@ -154,6 +154,4 @@ abstract class AbstractTester
     {
         $this->testFilesLineUpper = $testFilesLineUpper;
     }
-
-
 }
