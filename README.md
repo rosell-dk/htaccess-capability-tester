@@ -4,7 +4,7 @@
 
 Detect `.htaccess` capabilities through live tests.
 
-NOTE: the API in the master branch is currently undergoing a lot of change
+NOTE: the API in the master branch has been dramatically changed in comparison to the 0.6 release. It is stabilizing and I expect a 0.7 release in a few days.
 
 There are cases where the only way to to learn if a given `.htaccess` capability is enabled / supported on a system is by examining it "from the outside" through a HTTP request. This library is build to handle such testing easily.
 
