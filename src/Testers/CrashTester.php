@@ -53,7 +53,6 @@ class CrashTester extends CustomTester
         ];
 
         parent::__construct($baseDir, $baseUrl, $test);
-
     }
 
     /**
@@ -66,5 +65,4 @@ class CrashTester extends CustomTester
     {
         return 'crash-tester';
     }
-
 }
