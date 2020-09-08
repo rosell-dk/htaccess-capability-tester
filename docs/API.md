@@ -50,13 +50,15 @@ files:
           <IfModule mod_headers.c>
               Header set X-Response-Header-Test: test
           </IfModule>
-    - filename: 'dummy.txt'
+    - filename: 'request-me.txt'
       content: 'they needed someone, so here i am'
 
 request:
-    url: 'dummy.txt'
+    url: 'request-me.txt'
 
 interpretation:
     - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test'],
     - [failure, status-code, equals, '500']
+    - [inconclusive, status-code, not-equals, '200'],
+    - [failure],
 ```
