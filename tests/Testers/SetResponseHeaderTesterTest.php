@@ -1,24 +1,20 @@
 <?php
 /*
-subdir: rewrite-tester
+subdir: set-response-header-tester
 files:
     - filename: '.htaccess'
       content: |
-        <IfModule mod_rewrite.c>
-            RewriteEngine On
-            RewriteRule ^0\.txt$ 1\.txt [L]
-        </IfModule>
-    - filename: '0.txt'
-      content: '0'
-    - filename: '1.txt'
-      content: '1'
+          <IfModule mod_headers.c>
+              Header set X-Response-Header-Test: test
+          </IfModule>
+    - filename: 'request-me.txt'
+      content: 'they needed someone, so here i am'
 
 request:
-    url: '0.txt'
+    url: 'request-me.txt'
 
 interpretation:
-    - [success, body, equals, '1']
-    - [failure, body, equals, '0']
+    - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test'],
     - [failure, status-code, equals, '500']
 
 
@@ -44,18 +40,18 @@ otherwise                      |  success
 namespace HtaccessCapabilityTester\Tests\Testers;
 
 use HtaccessCapabilityTester\HttpResponse;
-use HtaccessCapabilityTester\Testers\RewriteTester;
+use HtaccessCapabilityTester\Testers\SetResponseHeaderTester;
 use HtaccessCapabilityTester\Tests\FakeServer;
 use PHPUnit\Framework\TestCase;
 
-class RewriteTesterTest extends BasisTestCase
+class SetResponseHeaderTesterTest extends BasisTestCase
 {
 
     public function testHtaccessDisabled()
     {
         $fakeServer = new FakeServer();
         $fakeServer->disableHtaccess();
-        $testResult = $fakeServer->runTester(new RewriteTester());
+        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
         $this->assertFailure($testResult);
     }
 
@@ -63,7 +59,7 @@ class RewriteTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->disallowAllDirectives('fatal');
-        $testResult = $fakeServer->runTester(new RewriteTester());
+        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
         $this->assertFailure($testResult);
     }
 
@@ -71,7 +67,7 @@ class RewriteTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->denyAllAccess();
-        $testResult = $fakeServer->runTester(new RewriteTester());
+        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
         $this->assertInconclusive($testResult);
     }
 
@@ -79,9 +75,9 @@ class RewriteTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/rewrite-tester/0.txt' => new HttpResponse('1', '200', [])
+            '/set-response-header-tester/request-me.txt' => new HttpResponse('they needed someone, so here i am', '200', ['X-Response-Header-Test: test'])
         ]);
-        $testResult = $fakeServer->runTester(new RewriteTester());
+        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
         $this->assertSuccess($testResult);
     }
 

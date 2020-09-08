@@ -17,17 +17,17 @@ class BasisTestCase extends TestCase
 
     protected function assertSuccess($testResult)
     {
-        $this->assertTrue($testResult->status);
+        $this->assertTrue($testResult->status, $testResult->info);
     }
 
     protected function assertFailure($testResult)
     {
-        $this->assertFalse($testResult->status);
+        $this->assertFalse($testResult->status, $testResult->info);
     }
 
     protected function assertInconclusive($testResult)
     {
-        $this->assertNull($testResult->status);
+        $this->assertNull($testResult->status, $testResult->info);
     }
 
     /**
