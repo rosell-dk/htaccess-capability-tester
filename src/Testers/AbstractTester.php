@@ -76,38 +76,36 @@ abstract class AbstractTester
      */
     protected function registerTestFile($filename, $content)
     {
-        if (!isset($this->testFiles)) {
-            $this->testFiles = [];
-        }
         $this->testFiles[] = [$this->baseDir . '/' . $filename, $content];
     }
 
     /**
-     * Child classes must implement this method
-     *
-     * Note: If the test involves making a HTTP request (which it probably does), the class should
-     * use the makeHTTPRequest() method making the request.
-     *
-     *  @return TestResult   Returns a test result
-     *  @throws \Exception  In case the test cannot be run due to serious issues
-     */
-    abstract public function run();
-
-    /**
-     * Constructor.
+     * Last moment preparations before running the test
      *
      * @param  string  $baseDir  Directory on the server where the test files can be put
      * @param  string  $baseUrl  The base URL of the test files
      *
-     * @return void
+     * @throws \Exception  In case the test cannot be prepared due to serious issues
      */
-    public function __construct($baseDir, $baseUrl)
+    protected function prepareForRun($baseDir, $baseUrl)
     {
         $this->baseDir = $baseDir;
         $this->baseUrl = $baseUrl;
-        $this->subDir = $this->getSubDir();
+        $this->testFiles = [];
         $this->registerTestFiles();
         $this->lineUpTestFiles();
+    }
+
+    abstract public function run($baseDir, $baseUrl);
+
+    /**
+     * Constructor.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->subDir = $this->getSubDir();
     }
 
     /**

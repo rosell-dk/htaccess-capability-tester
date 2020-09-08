@@ -33,7 +33,7 @@ use \HtaccessCapabilityTester\TestResult;
 class CrashTester extends CustomTester
 {
 
-    public function __construct($baseDir, $baseUrl, $htaccessRules, $subDir = null)
+    public function __construct($htaccessRules, $subDir = null)
     {
         if (is_null($subDir)) {
             $subDir = hash('md5', $htaccessRules);
@@ -52,7 +52,7 @@ class CrashTester extends CustomTester
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $test);
+        parent::__construct($test);
     }
 
     /**

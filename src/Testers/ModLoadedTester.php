@@ -274,12 +274,9 @@ EOD;
     /**
      * Constructor.
      *
-     * @param  string  $baseDir  Directory on the server where the test files can be put
-     * @param  string  $baseUrl  The base URL of the test files
-     *
      * @return void
      */
-    public function __construct($baseDir, $baseUrl, $moduleName)
+    public function __construct($moduleName)
     {
         $this->modName = $moduleName;
 
@@ -295,6 +292,6 @@ EOD;
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $tests);
+        parent::__construct($tests);
     }
 }

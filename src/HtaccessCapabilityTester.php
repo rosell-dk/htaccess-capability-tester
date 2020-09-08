@@ -72,11 +72,13 @@ class HtaccessCapabilityTester
         if (isset($this->testFilesLineUpper)) {
             $tester->setTestFilesLineUpper($this->testFilesLineUpper);
         }
-        if (TestResultCache::isCached($tester)) {
-            $testResult = TestResultCache::getCached($tester);
+
+        $cacheKeys = [$this->baseDir, $tester->getCacheKey()];
+        if (TestResultCache::isCached($cacheKeys)) {
+            $testResult = TestResultCache::getCached($cacheKeys);
         } else {
-            $testResult = $tester->run();
-            TestResultCache::cache($tester, $testResult);
+            $testResult = $tester->run($this->baseDir, $this->baseUrl);
+            TestResultCache::cache($cacheKeys, $testResult);
         }
 
         $this->infoFromLastTest = $testResult->info;
@@ -116,7 +118,7 @@ class HtaccessCapabilityTester
      */
     public function htaccessEnabled()
     {
-        return $this->runTest(new HtaccessEnabledTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new HtaccessEnabledTester());
     }
 
     /**
@@ -129,7 +131,7 @@ class HtaccessCapabilityTester
      */
     public function moduleLoaded($moduleName)
     {
-        return $this->runTest(new ModLoadedTester($this->baseDir, $this->baseUrl, $moduleName));
+        return $this->runTest(new ModLoadedTester($moduleName));
     }
 
     /**
@@ -144,7 +146,7 @@ class HtaccessCapabilityTester
      */
     public function canRewrite()
     {
-        return $this->runTest(new RewriteTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new RewriteTester());
     }
 
     /**
@@ -158,7 +160,7 @@ class HtaccessCapabilityTester
      */
     public function canAddType()
     {
-        return $this->runTest(new AddTypeTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new AddTypeTester());
     }
 
     /**
@@ -168,7 +170,7 @@ class HtaccessCapabilityTester
      */
     public function canSetResponseHeader()
     {
-        return $this->runTest(new SetResponseHeaderTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new SetResponseHeaderTester());
     }
 
     /**
@@ -178,7 +180,7 @@ class HtaccessCapabilityTester
      */
     public function canSetRequestHeader()
     {
-        return $this->runTest(new SetRequestHeaderTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new SetRequestHeaderTester());
     }
 
     /**
@@ -188,7 +190,7 @@ class HtaccessCapabilityTester
      */
     public function canContentDigest()
     {
-        return $this->runTest(new ContentDigestTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new ContentDigestTester());
     }
 
     /**
@@ -198,7 +200,7 @@ class HtaccessCapabilityTester
      */
     public function canSetServerSignature()
     {
-        return $this->runTest(new ServerSignatureTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new ServerSignatureTester());
     }
 
 
@@ -209,7 +211,7 @@ class HtaccessCapabilityTester
      */
     public function canSetDirectoryIndex()
     {
-        return $this->runTest(new DirectoryIndexTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new DirectoryIndexTester());
     }
 
     /**
@@ -219,7 +221,7 @@ class HtaccessCapabilityTester
      */
     public function canPassEnvThroughRequestHeader()
     {
-        return $this->runTest(new PassEnvThroughRequestHeaderTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new PassEnvThroughRequestHeaderTester());
     }
 
 
@@ -230,7 +232,7 @@ class HtaccessCapabilityTester
      */
     public function canPassEnvThroughRewrite()
     {
-        return $this->runTest(new PassEnvThroughRewriteTester($this->baseDir, $this->baseUrl));
+        return $this->runTest(new PassEnvThroughRewriteTester());
     }
 
     /**
@@ -281,7 +283,7 @@ class HtaccessCapabilityTester
      */
     public function crashTest($rules, $subDir = null)
     {
-        return $this->runTest(new CrashTester($this->baseDir, $this->baseUrl, $rules, $subDir));
+        return $this->runTest(new CrashTester($rules, $subDir));
     }
 
     /**
@@ -293,6 +295,6 @@ class HtaccessCapabilityTester
      */
     public function customTest($definition)
     {
-        return $this->runTest(new CustomTester($this->baseDir, $this->baseUrl, $definition));
+        return $this->runTest(new CustomTester($definition));
     }
 }

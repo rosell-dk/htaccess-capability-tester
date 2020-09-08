@@ -19,43 +19,39 @@ class TestResultCache
 
     /**
      *
-     * @param  AbstractTester  $tester
-     * @param  TestResult      $testResult  The test result
+     * @param  array       $cacheKeys   Two keys for caching (usually: basedir and the getCacheKey() for the Tester)
+     * @param  TestResult  $testResult  The test result to cache
      *
      * @return void
      */
-    public static function cache($tester, $testResult)
+    public static function cache($cacheKeys, $testResult)
     {
         if (is_null(self::$cache)) {
             self::$cache = [];
         }
-        $key1 = $tester->getBaseDir() . $tester->getBaseUrl();
-
+        list($key1, $key2) = $cacheKeys;
         if (!isset(self::$cache[$key1])) {
             self::$cache[$key1] = [];
         }
-
-        $key2 = $tester->getCacheKey();
         self::$cache[$key1][$key2] = $testResult;
     }
 
     /**
      * Check if in cache.
      *
-     * @param  AbstractTester  $tester
+     * @param  array       $cacheKeys   Keys for caching (usually: basedir and the getCacheKey() for the Tester)
      *
      * @return bool
      */
-    public static function isCached($tester)
+    public static function isCached($cacheKeys)
     {
         if (is_null(self::$cache)) {
             return false;
         }
-        $key1 = $tester->getBaseDir() . $tester->getBaseUrl();
+        list($key1, $key2) = $cacheKeys;
         if (!isset(self::$cache[$key1])) {
             return false;
         }
-        $key2 = $tester->getCacheKey();
         if (!isset(self::$cache[$key1][$key2])) {
             return false;
         }
@@ -65,19 +61,16 @@ class TestResultCache
     /**
      * Get from cache.
      *
-     * @param  AbstractTester  $tester
+     * @param  array       $cacheKeys   Keys for caching (usually: basedir and the getCacheKey() for the Tester)
      *
      * @return TestResult   The test result
      */
-    public static function getCached($tester)
+    public static function getCached($cacheKeys)
     {
-        if (!self::isCached($tester)) {
+        if (!self::isCached($cacheKeys)) {
             throw new \Exception('Not in cache');
-        } else {
         }
-        $key1 = $tester->getBaseDir() . $tester->getBaseUrl();
-        $key2 = $tester->getCacheKey();
-
+        list($key1, $key2) = $cacheKeys;
         return self::$cache[$key1][$key2];
     }
 }

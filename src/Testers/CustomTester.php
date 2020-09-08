@@ -20,13 +20,11 @@ class CustomTester extends AbstractTester
     /**
      * Constructor.
      *
-     * @param  string  $baseDir  Directory on the server where the test files can be put
-     * @param  string  $baseUrl  The base URL of the test files
      * @param  array   $test     The test (may contain subtests)
      *
      * @return void
      */
-    public function __construct($baseDir, $baseUrl, $test)
+    public function __construct($test)
     {
         $this->test = $test;
 
@@ -45,7 +43,7 @@ class CustomTester extends AbstractTester
 
         //echo '<pre>' . print_r($this->tests, true) . '</pre>';
         //echo json_encode($this->tests) . '<br>';
-        parent::__construct($baseDir, $baseUrl);
+        parent::__construct();
     }
 
     /**
@@ -84,11 +82,16 @@ class CustomTester extends AbstractTester
     /**
      *  Run
      *
-     *  @return TestResult   Returns a test result
-     *  @throws \Exception  In case the test cannot be run due to serious issues
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
+     *
+     * @return TestResult  Returns a test result
+     * @throws \Exception  In case the test cannot be run due to serious issues
      */
-    public function run()
+    public function run($baseDir, $baseUrl)
     {
+        $this->prepareForRun($baseDir, $baseUrl);
+
         $result = null;
         foreach ($this->tests as $i => $test) {
             if (isset($test['requirements'])) {

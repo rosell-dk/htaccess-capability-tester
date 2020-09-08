@@ -15,12 +15,9 @@ class PassEnvThroughRequestHeaderTester extends CustomTester
     /**
      * Constructor.
      *
-     * @param  string  $baseDir  Directory on the server where the test files can be put
-     * @param  string  $baseUrl  The base URL of the test files
-     *
      * @return void
      */
-    public function __construct($baseDir, $baseUrl)
+    public function __construct()
     {
         $htaccessFile = <<<'EOD'
 <IfModule mod_rewrite.c>
@@ -60,6 +57,6 @@ EOD;
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $test);
+        parent::__construct($test);
     }
 }

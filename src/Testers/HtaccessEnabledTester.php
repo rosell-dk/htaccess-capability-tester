@@ -38,13 +38,18 @@ class HtaccessEnabledTester extends AbstractTester
     /**
      *  Run the test.
      *
-     *  @return TestResult   Returns a test result
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
+     *
+     * @return TestResult   Returns a test result
      */
-    public function run()
+    public function run($baseDir, $baseUrl)
     {
+        $this->prepareForRun($baseDir, $baseUrl);
+
         $status = null;
         $info = '';
-        $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
+        $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
 
         // If we can find anything that works, well the .htaccess must have been proccesed!
         if ($hct->canSetServerSignature()    // Override: None,  Status: Core, REQUIRES PHP

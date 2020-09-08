@@ -27,12 +27,9 @@ class ServerSignatureTester extends CustomTester
     /**
      * Constructor.
      *
-     * @param  string  $baseDir  Directory on the server where the test files can be put
-     * @param  string  $baseUrl  The base URL of the test files
-     *
      * @return void
      */
-    public function __construct($baseDir, $baseUrl)
+    public function __construct()
     {
         $phpOn = <<<'EOD'
 <?php
@@ -85,6 +82,6 @@ EOD;
             ]
         ];
 
-        parent::__construct($baseDir, $baseUrl, $test);
+        parent::__construct($test);
     }
 }
