@@ -81,13 +81,13 @@ class HtaccessCapabilityTester
      *
      * @param  HttpRequesterInterface  $requester
      *
-     * @return bool|null   true=success, false=failure, null=inconclusive
+     * @return void
      */
     public function setHttpRequester($requester)
     {
         $this->requester = $requester;
     }
-    
+
     /**
      * Test if .htaccess files are enabled
      *
