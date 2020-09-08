@@ -36,7 +36,7 @@ class HtaccessCapabilityTester
     /** @var string  Additional info regarding last test (often empty) */
     public $infoFromLastTest;
 
-    /** @var HTTPRequesterInterface  The object used to make the HTTP request */
+    /** @var HttpRequesterInterface  The object used to make the HTTP request */
     private $requester;
 
     /**
@@ -79,7 +79,7 @@ class HtaccessCapabilityTester
     /**
      * Run a test, store the info and return the status.
      *
-     * @param  HTTPRequesterInterface  $requester
+     * @param  HttpRequesterInterface  $requester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */

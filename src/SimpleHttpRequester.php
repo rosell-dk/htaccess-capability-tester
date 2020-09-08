@@ -2,14 +2,14 @@
 
 namespace HtaccessCapabilityTester;
 
-class SimpleHttpRequester implements HTTPRequesterInterface
+class SimpleHttpRequester implements HttpRequesterInterface
 {
     /**
      * Make a HTTP request to a URL.
      *
      * @param  string  $url  The URL to make the HTTP request to
      *
-     * @return  HTTPResponse  A HTTPResponse object, which simply contains body and status code.
+     * @return  HttpResponse  A HttpResponse object, which simply contains body and status code.
      */
     public function makeHTTPRequest($url)
     {
@@ -26,6 +26,6 @@ class SimpleHttpRequester implements HTTPRequesterInterface
 
         $statusCode = $match[1];
 
-        return new HTTPResponse($body, $statusCode, $http_response_header);
+        return new HttpResponse($body, $statusCode, $http_response_header);
     }
 }

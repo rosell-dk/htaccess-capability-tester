@@ -3,13 +3,13 @@
 namespace HtaccessCapabilityTester;
 
 /**
- * Class for holding properties of a HTTPResponse
+ * Class for holding properties of a HttpResponse
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class HTTPResponse
+class HttpResponse
 {
 
     /* @var string  the body of the response */

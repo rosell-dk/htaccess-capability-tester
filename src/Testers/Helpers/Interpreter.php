@@ -2,7 +2,7 @@
 
 namespace HtaccessCapabilityTester\Testers\Helpers;
 
-use \HtaccessCapabilityTester\HTTPResponse;
+use \HtaccessCapabilityTester\HttpResponse;
 use \HtaccessCapabilityTester\TestResult;
 
 /**
@@ -18,7 +18,7 @@ class Interpreter
     /**
      * Interpret a response using an interpretation table.
      *
-     * @param HTTPResponse  $response
+     * @param HttpResponse  $response
      * @param array         $interpretationTable
      *
      * @return TestResult   If there is no match, the test result will have status = false and info = "no-match".

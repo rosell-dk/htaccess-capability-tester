@@ -3,8 +3,8 @@
 namespace HtaccessCapabilityTester\Testers;
 
 use \HtaccessCapabilityTester\HtaccessCapabilityTester;
-use \HtaccessCapabilityTester\HTTPRequesterInterface;
-use \HtaccessCapabilityTester\HTTPResponse;
+use \HtaccessCapabilityTester\HttpRequesterInterface;
+use \HtaccessCapabilityTester\HttpResponse;
 use \HtaccessCapabilityTester\SimpleHttpRequester;
 use \HtaccessCapabilityTester\TestResult;
 use \HtaccessCapabilityTester\Testers\Helpers\Interpreter;
@@ -111,6 +111,7 @@ class CustomTester extends AbstractTester
                 } else {
                     $requestUrl .= $test['request'];
                 }
+                //echo $requestUrl . '<br>';
                 $response = $this->makeHTTPRequest($requestUrl);
                 $result = Interpreter::interpret($response, $test['interpretation']);
                 if ($result->info != 'no-match') {

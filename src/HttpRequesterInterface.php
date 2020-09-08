@@ -2,12 +2,12 @@
 
 namespace HtaccessCapabilityTester;
 
-interface HTTPRequesterInterface
+interface HttpRequesterInterface
 {
     /**
      * Make a HTTP request to a URL.
      *
-     * @return  HTTPResponse  A HTTPResponse object, which simply contains body and status code.
+     * @return  HttpResponse  A HttpResponse object, which simply contains body and status code.
      */
     public function makeHTTPRequest($url);
 }

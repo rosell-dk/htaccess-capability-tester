@@ -2,8 +2,8 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
-use \HtaccessCapabilityTester\HTTPRequesterInterface;
-use \HtaccessCapabilityTester\HTTPResponse;
+use \HtaccessCapabilityTester\HttpRequesterInterface;
+use \HtaccessCapabilityTester\HttpResponse;
 use \HtaccessCapabilityTester\SimpleHttpRequester;
 use \HtaccessCapabilityTester\TestResult;
 
@@ -23,7 +23,7 @@ abstract class AbstractTester
     /** @var array  Test files for the test */
     protected $testFiles;
 
-    /** @var HTTPRequesterInterface  An object for making the HTTP request */
+    /** @var HttpRequesterInterface  An object for making the HTTP request */
     protected $httpRequester;
 
     /**
@@ -112,7 +112,7 @@ abstract class AbstractTester
      *
      * @param  string  $url  The URL to make the HTTP request to
      *
-     * @return  HTTPResponse  A HTTPResponse object, which simply contains body and status code.
+     * @return  HttpResponse  A HttpResponse object, which simply contains body and status code.
      */
     protected function makeHTTPRequest($url)
     {
@@ -125,7 +125,7 @@ abstract class AbstractTester
     /**
      * Set HTTP requester object, which handles making HTTP requests.
      *
-     * @param  HTTPRequesterInterface  $httpRequester  The HTTPRequester to use
+     * @param  HttpRequesterInterface  $httpRequester  The HTTPRequester to use
      * @return void
      */
     public function setHTTPRequester($httpRequester)
