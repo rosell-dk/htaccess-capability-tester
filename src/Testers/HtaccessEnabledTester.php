@@ -33,6 +33,7 @@ class HtaccessEnabledTester extends AbstractTester
      */
     public function registerTestFiles()
     {
+        // No test files for this test
     }
 
     /**
