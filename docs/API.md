@@ -148,7 +148,7 @@ interpretation:
 
 ```
 
-### `canSetResponseHeader()``
+### `canSetResponseHeader()`
 Tests if setting a response header works using this simple test:
 
 ```yaml
