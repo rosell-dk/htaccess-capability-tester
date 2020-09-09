@@ -40,7 +40,8 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
     {
         $this->files = $files;
         $this->filesMap = [];
-        foreach ($files as $i => list($filename, $content)) {
+        foreach ($files as $file) {
+            list($filename, $content) = $file;
             $this->filesMap[$filename] = $content;
         }
         //$m = new SetRequestHeaderTester();
