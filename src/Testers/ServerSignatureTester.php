@@ -50,7 +50,7 @@ if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != ''))
 EOD;
 
         $test = [
-            'subdir' => 'htaccess-enabled',
+            'subdir' => 'server-signature',
             'subtests' => [
                 [
                     'subdir' => 'on',
