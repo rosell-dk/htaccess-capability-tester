@@ -18,6 +18,7 @@ class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
      */
     public function lineUp($files)
     {
+        // 1. Put missing files / changed files
         foreach ($files as $file) {
             $success = true;
             list($filename, $content) = $file;
@@ -38,6 +39,28 @@ class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
             }
             if (!$success) {
                 throw new \Exception('Failed creating file: ' . $filename);
+            }
+        }
+
+        // 2. Remove unused files
+        $dirs = [];
+        foreach ($files as $file) {
+            list($filename, $content) = $file;
+            $dir = dirname($filename);
+            if (!isset($dirs[$dir])) {
+                $dirs[$dir] = [];
+            }
+            $dirs[$dir][] = basename($filename);
+        }
+
+        foreach ($dirs as $dir => $filesSupposedToBeInDir) {
+            $fileIterator = new \FilesystemIterator($dir);
+            while ($fileIterator->valid()) {
+                $filename = $fileIterator->getFilename();
+                if (!in_array($filename, $filesSupposedToBeInDir)) {
+                    unlink($dir . '/' . $filename);
+                }
+                $fileIterator->next();
             }
         }
     }
