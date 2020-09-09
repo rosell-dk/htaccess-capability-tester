@@ -8,7 +8,8 @@
     "ci": [
       "@phpcs src",
       "@composer validate --no-check-all --strict",
-      "@phpstan-global"
+      "@phpstan-global",
+      "@test-no-cov"
     ],
     "test": "phpunit --coverage-text",
     "phpunit": "phpunit --coverage-text",
