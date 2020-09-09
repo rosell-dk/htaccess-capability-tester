@@ -7,7 +7,7 @@ namespace HtaccessCapabilityTester\Testers;
  *
  * Testing the ServerSignature directive is of interest because the directive is a core feature.
  * If a core feature doesn't work, well, it it would seem that .htaccess files are disabled completely.
- * The test is thus special. If it returns "failure" it is highly probable that the .htaccess file has
+ * The test is thus special. If it returns *failure* it is highly probable that the .htaccess file has
  * not been read.
  *
  * Unfortunately, the test requires PHP to examine if a server variable has been set. So the test is not
@@ -50,7 +50,7 @@ if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != ''))
 EOD;
 
         $test = [
-            'subdir' => 'server-signature',
+            'subdir' => 'server-signature-tester',
             'subtests' => [
                 [
                     'subdir' => 'on',
@@ -65,18 +65,19 @@ EOD;
                         ['inconclusive', 'status-code', 'not-equals', '200'],
                         ['failure', 'body', 'equals', '0'],
                     ],
-                    [
-                        'subdir' => 'off',
-                        'files' => [
-                            ['.htaccess', 'ServerSignature Off'],
-                            ['test.php', $phpOff],
-                        ],
-                        'request' => 'test.php',
-                        'interpretation' => [
-                            ['inconclusive', 'body', 'isEmpty'],
-                            ['success', 'body', 'equals', '1'],
-                            ['failure', 'body', 'equals', '0'],
-                        ]
+                ],
+                [
+                    'subdir' => 'off',
+                    'files' => [
+                        ['.htaccess', 'ServerSignature Off'],
+                        ['test.php', $phpOff],
+                    ],
+                    'request' => 'test.php',
+                    'interpretation' => [
+                        ['inconclusive', 'body', 'isEmpty'],
+                        ['success', 'body', 'equals', '1'],
+                        ['failure', 'body', 'equals', '0'],
+                        ['inconclusive']
                     ]
                 ]
             ]
