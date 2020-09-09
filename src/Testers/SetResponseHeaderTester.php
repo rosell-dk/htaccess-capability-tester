@@ -29,7 +29,7 @@ EOD;
             'subdir' => 'set-response-header-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
-                ['request-me.txt', "they needed someone, so here i am"],
+                ['request-me.txt', "hi"],
             ],
             'request' => 'request-me.txt',
             'interpretation' => [
