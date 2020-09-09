@@ -29,9 +29,9 @@ EOD;
             'subdir' => 'add-type-tester',
             'files' => [
                 ['.htaccess', $htaccessFile],
-                ['dummy.test', "they needed someone, so here i am"],
+                ['request-me.test', 'hi'],
             ],
-            'request' => 'dummy.test',
+            'request' => 'request-me.test',
             'interpretation' => [
                 ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
                 ['failure', 'status-code', 'equals', '500'],
