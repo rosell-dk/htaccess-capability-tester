@@ -93,6 +93,11 @@ class Interpreter
                         return $result;
                     }
                     break;
+                case 'begins-with':
+                    if (strpos($val, $arg1) === 0) {
+                        return $result;
+                    }
+                    break;
                 case 'contains-key':
                     if (isset($val[$arg1])) {
                         return $result;
