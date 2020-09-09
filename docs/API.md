@@ -48,6 +48,52 @@ subtests:
         - ['success', 'status-code', 'equals', '200']
 ```
 
+### `canSetServerSignature()`
+
+```yaml
+subdir: server-signature
+subtests:
+  - subdir: on
+    files:
+    - filename: '.htaccess'
+      content: |
+        ServerSignature On
+    - filename: 'test.php'
+      content: |
+      <?php
+      if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != '')) {
+          echo 1;
+      } else {
+          echo 0;
+      }
+    request:
+      url: 'test.php'
+    interpretation:
+      - ['inconclusive', 'status-code', 'equals', '403']
+      - ['inconclusive', 'body', 'isEmpty']
+      - ['inconclusive', 'status-code', 'not-equals', '200']
+      - ['failure', 'body', 'equals', '0']
+
+  - subdir: off
+    files:
+    - filename: '.htaccess'
+      content: |
+        ServerSignature Off
+    - filename: 'test.php'
+      content: |
+      <?php
+      if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != '')) {
+          echo 0;
+      } else {
+          echo 1;
+      }
+    request:
+      url: 'test.php'
+    interpretation:
+      - ['inconclusive', 'body', 'isEmpty'],
+      - ['success', 'body', 'equals', '1'],
+      - ['failure', 'body', 'equals', '0'],
+```
 
 ### `canRewrite()`
 Tests if rewriting works using this simple test:

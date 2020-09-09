@@ -1,6 +1,6 @@
 <?php
 /*
-subdir: server-signature
+subdir: server-signature-tester
 subtests:
   - subdir: on
     files:
@@ -50,7 +50,7 @@ Tested:
 Server setup                   |  Test result
 --------------------------------------------------
 .htaccess disabled             |  failure
-forbidden directives (fatal)   |  failure
+forbidden directives (fatal)   |  inconclusive  (special!)
 access denied                  |  inconclusive  (it might be allowed to other files)
 directive has no effect        |  failure
                                |  success
@@ -67,20 +67,29 @@ use PHPUnit\Framework\TestCase;
 class ServerSignatureTesterTest extends BasisTestCase
 {
 
+/*
+    can't do this test as our fake server does not execute PHP
+
     public function testHtaccessDisabled()
     {
         $fakeServer = new FakeServer();
         $fakeServer->disableHtaccess();
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
         $this->assertFailure($testResult);
-    }
+    }*/
 
     public function testDisallowedDirectivesFatal()
     {
         $fakeServer = new FakeServer();
         $fakeServer->disallowAllDirectives('fatal');
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
-        $this->assertFailure($testResult);
+        //$this->assertFailure($testResult);
+
+        // SPECIAL!
+        // As ServerSignature is in core and AllowOverride is None, the tester assumes
+        // that this does not happen. The 500 must then be another problem, which is why
+        // it returns inconclusive
+        $this->assertInconclusive($testResult);
     }
 
     public function testAccessAllDenied()
@@ -96,22 +105,41 @@ class ServerSignatureTesterTest extends BasisTestCase
      * This could happen when:
      * - The directive is forbidden (non-fatal)
      * - The module is not loaded
+     *
+     * This tests when ServerSignature is set, and the directive has no effect.
      */
-    public function testDirectiveHasNoEffect()
+    public function testDirectiveHasNoEffect1()
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/rewrite-tester/0.txt' => new HttpResponse('0', '200', [])
+            '/server-signature-tester/on/test.php' => new HttpResponse('1', '200', []),
+            '/server-signature-tester/off/test.php' => new HttpResponse('0', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
         $this->assertFailure($testResult);
     }
 
+    /**
+     * This tests when ServerSignature is unset, and the directive has no effect.
+     */
+    public function testDirectiveHasNoEffect2()
+    {
+        $fakeServer = new FakeServer();
+        $fakeServer->setResponses([
+            '/server-signature-tester/on/test.php' => new HttpResponse('0', '200', []),
+            '/server-signature-tester/off/test.php' => new HttpResponse('1', '200', [])
+        ]);
+        $testResult = $fakeServer->runTester(new ServerSignatureTester());
+        $this->assertFailure($testResult);
+    }
+
+
     public function testSuccess()
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/rewrite-tester/0.txt' => new HttpResponse('1', '200', [])
+            '/server-signature-tester/on/test.php' => new HttpResponse('1', '200', []),
+            '/server-signature-tester/off/test.php' => new HttpResponse('1', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
         $this->assertSuccess($testResult);
