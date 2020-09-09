@@ -38,7 +38,7 @@ Tested:
 Server setup                   |  Test result
 --------------------------------------------------
 .htaccess disabled             |  failure
-forbidden directives (fatal)   |  failure       (highly unlikely, as it is part of core - but still possible)
+forbidden directives (fatal)   |  failure       (Required override: Options)
 access denied                  |  inconclusive  (it might be allowed to other files)
 directive has no effect        |  failure
                                |  success
