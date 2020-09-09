@@ -10,8 +10,8 @@ The method works by trying out a series of subtests until a conclusion is reache
 
 How does it work?
 - The first strategy is testing a series of features, such as `canRewrite()`. If any of them works, well, then the `.htaccess` must have been processed.
-- Secondly, the `canSetServerSignature()` is tested. It tests the "ServerSignature" directive. If this test comes out negative, it is highly likely that the .htaccess has not been read, as the directive is a core directive. So we return *failure*.
-- Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not.
+- Secondly, the `canSetServerSignature()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
+- Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not. This last method is bulletproof - so why not do it first? Because it might generate an entry in the error log.
 
 ### `canContentDigest()`
 ```yaml
@@ -146,6 +146,36 @@ interpretation:
   - ['failure', 'status-code', 'equals', '404']  # "index.html" might not be set to index
 
 
+```
+
+### `canSetRequestHeader()`
+```yaml
+subdir: set-request-header-tester
+files:
+  - filename: '.htaccess'
+    content: |
+      <IfModule mod_headers.c>
+          # Certain hosts seem to strip non-standard request headers,
+          # so we use a standard one to avoid a false negative
+          RequestHeader set User-Agent "request-header-test"
+      </IfModule>
+  - filename: 'test.php'
+    content: |
+      <?php
+      if (isset($_SERVER['HTTP_USER_AGENT'])) {
+          echo  $_SERVER['HTTP_USER_AGENT'] == 'request-header-test' ? 1 : 0;
+      } else {
+          echo 0;
+      }
+
+request:
+  url: 'test.php'
+
+interpretation:
+  - ['success', 'body', 'equals', '1']
+  - ['failure', 'body', 'equals', '0']
+  - ['failure', 'status-code', 'equals', '500']
+  - ['inconclusive', 'body', 'begins-with', '<?php']
 ```
 
 ### `canSetResponseHeader()`
