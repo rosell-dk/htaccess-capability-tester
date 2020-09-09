@@ -27,13 +27,8 @@ Server setup                   |  Test result
 .htaccess disabled             |  failure
 forbidden directives (fatal)   |  failure
 access denied                  |  inconclusive  (it might be allowed to other files)
-
-
-Not tested yet:
-
-forbidden directives (silent)  |  failure
-required module not loaded     |  failure
-otherwise                      |  success
+directive has no effect        |  failure
+                               |  success
 */
 
 
@@ -71,11 +66,27 @@ class SetResponseHeaderTesterTest extends BasisTestCase
         $this->assertInconclusive($testResult);
     }
 
+    /**
+     * Test when the directive has no effect.
+     * This could happen when:
+     * - The directive is forbidden (non-fatal)
+     * - The module is not loaded
+     */
+    public function testDirectiveHasNoEffect()
+    {
+        $fakeServer = new FakeServer();
+        $fakeServer->setResponses([
+            '/set-response-header-tester/request-me.txt' => new HttpResponse('hi', '200', [])
+        ]);
+        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
+        $this->assertFailure($testResult);
+    }
+
     public function testSuccess()
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/set-response-header-tester/request-me.txt' => new HttpResponse('they needed someone, so here i am', '200', ['X-Response-Header-Test: test'])
+            '/set-response-header-tester/request-me.txt' => new HttpResponse('hi', '200', ['X-Response-Header-Test: test'])
         ]);
         $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
         $this->assertSuccess($testResult);

@@ -31,13 +31,8 @@ Server setup                   |  Test result
 .htaccess disabled             |  failure
 forbidden directives (fatal)   |  failure
 access denied                  |  inconclusive  (it might be allowed to other files)
-
-
-Not tested yet:
-
-forbidden directives (silent)  |  failure
-required module not loaded     |  failure
-otherwise                      |  success
+directive has no effect        |  failure
+                               |  success
 */
 
 
@@ -73,6 +68,22 @@ class RewriteTesterTest extends BasisTestCase
         $fakeServer->denyAllAccess();
         $testResult = $fakeServer->runTester(new RewriteTester());
         $this->assertInconclusive($testResult);
+    }
+
+    /**
+     * Test when the directive has no effect.
+     * This could happen when:
+     * - The directive is forbidden (non-fatal)
+     * - The module is not loaded
+     */
+    public function testDirectiveHasNoEffect()
+    {
+        $fakeServer = new FakeServer();
+        $fakeServer->setResponses([
+            '/rewrite-tester/0.txt' => new HttpResponse('0', '200', [])
+        ]);
+        $testResult = $fakeServer->runTester(new RewriteTester());
+        $this->assertFailure($testResult);
     }
 
     public function testSuccess()
