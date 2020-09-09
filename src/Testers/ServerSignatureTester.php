@@ -49,6 +49,10 @@ if (isset($_SERVER['SERVER_SIGNATURE']) && ($_SERVER['SERVER_SIGNATURE'] != ''))
 }
 EOD;
 
+        // PS:
+        // There is a little edge case: When .htaccess is disabled AND phps are either not processed
+        // or access is denied. This ought to return *failure*, but it currently returns *inconclusive*.
+
         $test = [
             'subdir' => 'server-signature-tester',
             'subtests' => [

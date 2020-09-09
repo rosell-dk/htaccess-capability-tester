@@ -6,7 +6,7 @@ use \HtaccessCapabilityTester\HtaccessCapabilityTester;
 use \HtaccessCapabilityTester\TestResult;
 
 /**
- * Class for testing if rewriting works at the tested location.
+ * Class for testing if .htaccess files are processed
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
@@ -72,6 +72,7 @@ class HtaccessEnabledTester extends AbstractTester
             } else {
                 // Last bullet in the gun:
                 // Try an .htaccess with syntax errors in it.
+                // (we do this lastly because it may generate an entry in the error log)
                 $crash = ($hct->crashTest('aoeu', 'htaccess-enabled-tester/crash-test') === false);
                 if ($crash) {
                     $status = true;
