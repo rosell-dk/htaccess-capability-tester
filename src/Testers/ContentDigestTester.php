@@ -32,9 +32,9 @@ EOD;
                     'subdir' => 'on',
                     'files' => [
                         ['.htaccess', 'ContentDigest On'],
-                        ['dummy.txt', ""],
+                        ['request-me.txt', 'hi'],
                     ],
-                    'request' => 'dummy.txt',
+                    'request' => 'request-me.txt',
                     'interpretation' => [
                         ['failure', 'status-code', 'equals', '500'],
                         ['inconclusive', 'status-code', 'not-equals', '200'],    // calls the whole thing off
@@ -45,9 +45,9 @@ EOD;
                     'subdir' => 'off',
                     'files' => [
                         ['.htaccess', 'ContentDigest Off'],
-                        ['dummy.txt', ""],
+                        ['request-me.txt', "hi"],
                     ],
-                    'request' => 'dummy.txt',
+                    'request' => 'request-me.txt',
                     'interpretation' => [
                         ['failure', 'status-code', 'equals', '500'],
                         ['failure', 'headers', 'contains-key', 'Content-MD5'],
