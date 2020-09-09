@@ -29,6 +29,9 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
     /** @var bool  If access is denied for all requests */
     private $accessAllDenied = false;
 
+    /** @var bool  Returns the php text file rather than "Sorry, this server cannot process PHP!" */
+    private $handlePHPasText = false;
+
     /** @var array  Predefined responses for certain urls */
     private $responses;
 
@@ -60,7 +63,15 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
         if ($simplyServeRequested) {
             // Simply return the file that was requested
             if (isset($this->filesMap[$url])) {
-                return new HttpResponse($this->filesMap[$url], '200', []); ;
+
+                $isPhpFile = (strrpos($url, '.php') == strlen($url) - 4);
+                if ($isPhpFile && ($this->handlePHPasText)) {
+                    return new HttpResponse('Sorry, this server cannot process PHP!', '200', []); ;
+                } else {
+                    return new HttpResponse($this->filesMap[$url], '200', []); ;
+                }
+            } else {
+                return new HttpResponse('Not found', '404', []);
             }
         }
         if (($this->disallowAllDirectives) && ($this->fatal)) {
@@ -102,6 +113,11 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
     public function denyAllAccess()
     {
         $this->accessAllDenied = true;
+    }
+
+    public function handlePHPasText()
+    {
+        $this->handlePHPasText = true;
     }
 
     // TODO: denyAccessToPHP
