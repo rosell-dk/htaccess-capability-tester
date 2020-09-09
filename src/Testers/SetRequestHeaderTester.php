@@ -21,8 +21,8 @@ class SetRequestHeaderTester extends CustomTester
     {
         $htaccessFile = <<<'EOD'
 <IfModule mod_headers.c>
-	# Certain hosts seem to strip non-standard request headers,
-	# so we use a standard one to avoid a false negative
+  	# Certain hosts seem to strip non-standard request headers,
+  	# so we use a standard one to avoid a false negative
     RequestHeader set User-Agent "request-header-test"
 </IfModule>
 EOD;
@@ -30,11 +30,15 @@ EOD;
         $phpFile = <<<'EOD'
 <?php
 if (isset($_SERVER['HTTP_USER_AGENT'])) {
-echo  $_SERVER['HTTP_USER_AGENT'] == 'request-header-test' ? 1 : 0;
+    echo (($_SERVER['HTTP_USER_AGENT'] == 'request-header-test') ? "1" : "0");
 } else {
-echo 0;
+    echo "0";
 }
 EOD;
+
+        // PS:
+        // There is a little edge case: When .htaccess is disabled AND phps are either not processed
+        // or access is denied. This ought to return *failure*, but it currently returns *inconclusive*.
 
         $test = [
             'subdir' => 'set-request-header-tester',
@@ -47,6 +51,7 @@ EOD;
                 ['success', 'body', 'equals', '1'],
                 ['failure', 'body', 'equals', '0'],
                 ['failure', 'status-code', 'equals', '500'],
+                ['inconclusive', 'body', 'begins-with', '<' . '?php'],
             ]
         ];
 
