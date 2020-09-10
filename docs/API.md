@@ -15,6 +15,7 @@ The tests have the following in common:
 Tests if AddType directive works.
 
 <details><summary>Implementation</summary>
+<p>
 ```yaml
 subdir: add-type
 files:
@@ -34,6 +35,7 @@ interpretation:
  - ['inconclusive', 'status-code', 'not-equals', '200']
  - ['failure', 'headers', 'not-contains-key-value', 'Content-Type', 'image/gif']
 ```
+</p>
 </details>
 
 ### `canContentDigest()`
