@@ -9,7 +9,7 @@ namespace HtaccessCapabilityTester\Testers;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class PassEnvThroughRewriteTester extends CustomTester
+class PassInfoFromRewriteToScriptThroughEnvTester extends CustomTester
 {
 
     /**
@@ -62,7 +62,7 @@ echo ($result == $_SERVER['DOCUMENT_ROOT'] ? '1' : '0');
 EOD;
 
         $test = [
-            'subdir' => 'pass-env-through-rewrite',
+            'subdir' => 'pass-info-from-rewrite-to-script-through-env',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],
@@ -72,6 +72,8 @@ EOD;
                 ['success', 'body', 'equals', '1'],
                 ['failure', 'body', 'equals', '0'],
                 ['failure', 'status-code', 'equals', '500'],
+                ['inconclusive', 'body', 'begins-with', '<' . '?php'],
+                ['inconclusive']
             ]
         ];
 

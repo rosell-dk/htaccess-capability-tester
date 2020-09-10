@@ -12,7 +12,7 @@ use \HtaccessCapabilityTester\Testers\HtaccessEnabledTester;
 use \HtaccessCapabilityTester\Testers\CustomTester;
 use \HtaccessCapabilityTester\Testers\ModLoadedTester;
 use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughRequestHeaderTester;
-use \HtaccessCapabilityTester\Testers\PassEnvThroughRewriteTester;
+use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughEnvTester;
 use \HtaccessCapabilityTester\Testers\RewriteTester;
 use \HtaccessCapabilityTester\Testers\ServerSignatureTester;
 use \HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
@@ -230,9 +230,9 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function canPassEnvThroughRewrite()
+    public function canPassInfoFromRewriteToScriptThroughEnvTester()
     {
-        return $this->runTest(new PassEnvThroughRewriteTester());
+        return $this->runTest(new PassInfoFromRewriteToScriptThroughEnvTester());
     }
 
     /**
@@ -261,8 +261,8 @@ class HtaccessCapabilityTester
                 return $this->canSetDirectoryIndex();
             case 'canPassInfoFromRewriteToScriptThroughRequestHeader()':
                 return $this->canPassInfoFromRewriteToScriptThroughRequestHeader();
-            case 'canPassEnvThroughRewrite()':
-                return $this->canPassEnvThroughRewrite();
+            case 'canPassInfoFromRewriteToScriptThroughEnvTester()':
+                return $this->canPassInfoFromRewriteToScriptThroughEnvTester();
             default:
                 throw new \Exception('The method is not callable');
         }
