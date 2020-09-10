@@ -13,10 +13,10 @@ The tests have the following in common:
 Most tests are implemented as a definition such as the one accepted in *customTest()*. This means that if you want it to work slightly differently, you can easily grab the code in the corresponding class in the *Testers* directory and make your modification. Those definitions are also available in this document, in YAML format (because it is more readable).
 
 <details><summary><b>canAddType()</b></summary>
-<p>
+<p><br>
 Tests if the *AddType* directive works.
 
-Definition (YAML):
+Implementation (YAML definition):
 
 ```yaml
 subdir: add-type
@@ -42,7 +42,9 @@ interpretation:
 </details>
 
 <details><summary><b>canContentDigest()</b></summary>
-<p>Definition (YAML):
+<p>
+
+Implementation (YAML definition):
 
 ```yaml
 subdir: content-digest
@@ -81,14 +83,13 @@ subtests:
 </p>
 </details>
 
-### `canPassInfoFromRewriteToScriptThroughRequestHeader()`
+<details><summary><b>canPassInfoFromRewriteToScriptThroughRequestHeader()</b></summary>
+<p><br>
 
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here sets tells the RewriteRule directive to set an environment variable which a RequestHeader directive picks up on and passes on to the script in a request header.
 
-<details><summary>Implementation</summary>
-<p>Definition (YAML):
+Implementation (YAML definition):
 
-implementation:
 ```yaml
 subdir: pass-env-through-request-header
 files:
@@ -129,9 +130,11 @@ interpretation:
 </p>
 </details>
 
-### `canRewrite()`
-Tests if rewriting works using this simple test:
+<details><summary><b>canRewrite()</b></summary>
+<p><br>
+Tests if rewriting works.
 
+Implementation (YAML definition):
 ```yaml
 subdir: rewrite
 files:
@@ -155,7 +158,14 @@ interpretation:
   - [failure, status-code, equals, '500']
 ```
 
-### `canSetDirectoryIndex()`
+</p>
+</details>
+
+<details><summary><b>canSetDirectoryIndex()</b></summary>
+<p><br>
+Tests if DirectoryIndex works.
+
+Implementation (YAML definition):
 
 ```yaml
 subdir: directory-index
@@ -178,11 +188,17 @@ interpretation:
   - ['failure', 'body', 'equals', '0']
   - ['failure', 'status-code', 'equals', '500']
   - ['failure', 'status-code', 'equals', '404']  # "index.html" might not be set to index
-
-
 ```
 
-### `canSetRequestHeader()`
+</p>
+</details>
+
+<details><summary><b>canSetRequestHeader()</b></summary>
+<p><br>
+Tests if a request header can be set using the *RequestHeader* directive.
+
+Implementation (YAML definition):
+
 ```yaml
 subdir: set-request-header
 files:
@@ -212,8 +228,14 @@ interpretation:
   - ['inconclusive', 'body', 'begins-with', '<?php']
 ```
 
-### `canSetResponseHeader()`
-Tests if setting a response header works using this simple test:
+</p>
+</details>
+
+<details><summary><b>canSetResponseHeader()</b></summary>
+<p><br>
+Tests if setting a response header works using the *Header* directive.
+
+Implementation (YAML definition):
 
 ```yaml
 subdir: set-response-header
@@ -236,6 +258,14 @@ interpretation:
   - [failure]
 ```
 
+</p>
+</details>
+
+<details><summary><b>canSetServerSignature()</b></summary>
+<p><br>
+Tests if the *ServerSignature* directive works.
+
+Implementation (YAML definition):
 ### `canSetServerSignature()`
 ```yaml
 subdir: server-signature
@@ -282,7 +312,12 @@ subtests:
       - ['failure', 'body', 'equals', '0'],
 ```
 
-### `htaccessEnabled()`
+</p>
+</details>
+
+<details><summary><b>htaccessEnabled()</b></summary>
+<p><br>
+
 Apache can be configured to ignore `.htaccess` files altogether. This method tests if the `.htaccess` file is processed at all
 
 The method works by trying out a series of subtests until a conclusion is reached. It will never come out inconclusive.
@@ -291,3 +326,6 @@ How does it work?
 - The first strategy is testing a series of features, such as `canRewrite()`. If any of them works, well, then the `.htaccess` must have been processed.
 - Secondly, the `canSetServerSignature()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
 - Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not. This last method is bulletproof - so why not do it first? Because it might generate an entry in the error log.
+
+</p>
+</details>
