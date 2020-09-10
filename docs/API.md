@@ -12,11 +12,11 @@ The tests have the following in common:
 
 Most tests are implemented as a definition such as the one accepted in *customTest()*. This means that if you want it to work slightly differently, you can easily grab the code in the corresponding class in the *Testers* directory and make your modification. Those definitions are also available in this document, in YAML format (because it is more readable).
 
-### *canAddType()*
+<details><summary><b>canAddType()</b></summary>
+<p>
 Tests if the *AddType* directive works.
 
-<details><summary>Implementation</summary>
-<p>Definition (YAML):
+Definition (YAML):
 
 ```yaml
 subdir: add-type
@@ -41,9 +41,7 @@ interpretation:
 </p>
 </details>
 
-### `canContentDigest()`
-
-<details><summary>Implementation</summary>
+<details><summary><b>canContentDigest()</b></summary>
 <p>Definition (YAML):
 
 ```yaml
