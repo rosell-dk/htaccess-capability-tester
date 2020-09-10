@@ -4,7 +4,10 @@ This document is under development...
 ## Test methods in HtaccessCapabilityTester:
 
 ### `canAddType()`
-```yaml```
+Tests if AddType directive works.
+
+Implementation:
+```yaml
 subdir: add-type
 files:
   - filename: '.htaccess'
