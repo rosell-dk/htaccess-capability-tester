@@ -3,20 +3,18 @@ This document is under development...
 
 ## Test methods in HtaccessCapabilityTester:
 
-All the test methods returns a test result, which is *true* for success, *false* for failure or *null* for inconclusive. A *403 Forbidden* generally results in *inconclusive*. Why? Because it could be that the server has been set up to forbid access to files matching a pattern that our test file unluckily matches. In most cases, this is unlikely, as most tests requests harmless files, often a "request-me.txt". A few of the tests however requests a "test.php", which is more likely to be forbidden.
+All the test methods returns a test result, which is *true* for success, *false* for failure or *null* for inconclusive.
+
+The tests have the following in common:
+- If the server has been set up to ignore `.htaccess` files, the result will be *failure*.
+- If the server has been set up to disallow the directive being tested (AllowOverride), the result is *failure* (both when configured to ignore and when configured to go fatal)
+- A *403 Forbidden* results in *inconclusive*. Why? Because it could be that the server has been set up to forbid access to files matching a pattern that our test file unluckily matches. In most cases, this is unlikely, as most tests requests files with harmless-looking file extensions (often a "request-me.txt"). A few of the tests however requests a "test.php", which is more likely to be denied.
+
 
 ### `canAddType()`
 Tests if AddType directive works.
 
-| Case                           |  Test result
-| ------------------------------ | ------------------
-| .htaccess disabled             |  failure
-| forbidden directives (fatal)   |  failure
-| access denied                  |  inconclusive
-| directive has no effect        |  failure
-| it works                       |  success
-
-Implementation:
+<details><summary>Implementation</summary>
 ```yaml
 subdir: add-type
 files:
@@ -36,6 +34,7 @@ interpretation:
  - ['inconclusive', 'status-code', 'not-equals', '200']
  - ['failure', 'headers', 'not-contains-key-value', 'Content-Type', 'image/gif']
 ```
+</details>
 
 ### `canContentDigest()`
 ```yaml
