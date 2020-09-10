@@ -10,12 +10,13 @@ The tests have the following in common:
 - If the server has been set up to disallow the directive being tested (AllowOverride), the result is *failure* (both when configured to ignore and when configured to go fatal)
 - A *403 Forbidden* results in *inconclusive*. Why? Because it could be that the server has been set up to forbid access to files matching a pattern that our test file unluckily matches. In most cases, this is unlikely, as most tests requests files with harmless-looking file extensions (often a "request-me.txt"). A few of the tests however requests a "test.php", which is more likely to be denied.
 
+Most tests are implemented as a definition such as the one accepted in *customTest()*. This means that if you want it to work slightly differently, you can easily grab the code in the corresponding class in the *Testers* directory and make your modification. Those definitions are also available in this document, in YAML format (because it is more readable).
 
-### `canAddType()`
-Tests if AddType directive works.
+### *canAddType()*
+Tests if the *AddType* directive works.
 
 <details><summary>Implementation</summary>
-<p>
+<p>Definition (YAML):
 
 ```yaml
 subdir: add-type
@@ -41,6 +42,10 @@ interpretation:
 </details>
 
 ### `canContentDigest()`
+
+<details><summary>Implementation</summary>
+<p>Definition (YAML):
+
 ```yaml
 subdir: content-digest
 subtests:
@@ -74,9 +79,16 @@ subtests:
         - ['inconclusive', 'status-code', 'not-equals', '200']
         - ['success', 'status-code', 'equals', '200']
 ```
+
+</p>
+</details>
+
 ### `canPassInfoFromRewriteToScriptThroughRequestHeader()`
 
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here sets tells the RewriteRule directive to set an environment variable which a RequestHeader directive picks up on and passes on to the script in a request header.
+
+<details><summary>Implementation</summary>
+<p>Definition (YAML):
 
 implementation:
 ```yaml
@@ -115,19 +127,9 @@ interpretation:
   - ['inconclusive', 'body', 'begins-with', '<?php']
   - ['inconclusive']
 ```
-'subdir' => 'pass-env-through-request-header',
-'files' => [
-    ['.htaccess', $htaccessFile],
-    ['test.php', $phpFile],
-],
-'request' => 'test.php',
-'interpretation' => [
-    ['success', 'body', 'equals', '1'],
-    ['failure', 'body', 'equals', '0'],
-    ['failure', 'status-code', 'equals', '500'],
-    ['inconclusive', 'body', 'begins-with', '<?php'],
-    ['inconclusive']
 
+</p>
+</details>
 
 ### `canRewrite()`
 Tests if rewriting works using this simple test:
