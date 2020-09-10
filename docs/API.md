@@ -3,8 +3,18 @@ This document is under development...
 
 ## Test methods in HtaccessCapabilityTester:
 
+All the test methods returns a test result, which is *true* for success, *false* for failure or *null* for inconclusive. A *403 Forbidden* generally results in *inconclusive*. Why? Because it could be that the server has been set up to forbid access to files matching a pattern that our test file unluckily matches. In most cases, this is unlikely, as most tests requests harmless files, often a "request-me.txt". A few of the tests however requests a "test.php", which is more likely to be forbidden.
+
 ### `canAddType()`
 Tests if AddType directive works.
+
+| Case                           |  Test result
+| ------------------------------ | ------------------
+| .htaccess disabled             |  failure
+| forbidden directives (fatal)   |  failure
+| access denied                  |  inconclusive
+| directive has no effect        |  failure
+| it works                       |  success
 
 Implementation:
 ```yaml
