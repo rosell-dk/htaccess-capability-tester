@@ -144,6 +144,9 @@ interpretation:
   - ['inconclusive']
  ```
 
+</p>
+</details>
+
 <details><summary><b>canPassInfoFromRewriteToScriptThroughRequestHeader()</b></summary>
 <p><br>
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here tells the RewriteRule directive to set an environment variable which a RequestHeader directive picks up on and passes on to the script in a request header.
@@ -369,6 +372,62 @@ subtests:
       - ['inconclusive', 'body', 'isEmpty'],
       - ['success', 'body', 'equals', '1'],
       - ['failure', 'body', 'equals', '0'],
+```
+
+</p>
+</details>
+
+<details><summary><b>crashTest($rules, $subdir)</b></summary>
+<p><br>
+Test if some rules makes the server "crash" (respond with 500 Internal Server Error for requests to files in the folder).
+
+Implementation (PHP):
+
+```php
+/**
+ * @param string $htaccessRules  The rules to check
+ * @param string $subSubDir      subdir for the test files. If not supplied, a fingerprint of the rules will be used
+ */
+public function __construct($htaccessRules, $subSubDir = null)
+{
+    if (is_null($subSubDir)) {
+        $subSubDir = hash('md5', $htaccessRules);
+    }
+
+    $test = [
+        'subdir' => 'crash-tester/' . $subSubDir,
+        'subtests' => [
+            [
+                'subdir' => 'the-prospect',
+                'files' => [
+                    ['.htaccess', $htaccessRules],
+                    ['request-me.txt', 'thanks'],
+                ],
+                'request' => 'request-me.txt',
+                'interpretation' => [
+                    ['success', 'status-code', 'not-equals', '500'],
+                ]
+            ],
+            [
+                'subdir' => 'the-innocent',
+                'files' => [
+                    ['.htaccess', '# I am no trouble'],
+                    ['request-me.txt', 'thanks'],
+                ],
+                'request' => 'request-me.txt',
+                'interpretation' => [
+                    // The prospect crashed. But if the innocent crashes too, we cannot judge
+                    ['inconclusive', 'status-code', 'equals', '500'],
+
+                    // The innocent did not crash. The prospect is guilty!
+                    ['failure'],
+                ]
+            ],
+        ]
+    ];
+
+    parent::__construct($test);
+}
 ```
 
 </p>
