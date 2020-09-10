@@ -11,7 +11,7 @@ use \HtaccessCapabilityTester\Testers\DirectoryIndexTester;
 use \HtaccessCapabilityTester\Testers\HtaccessEnabledTester;
 use \HtaccessCapabilityTester\Testers\CustomTester;
 use \HtaccessCapabilityTester\Testers\ModLoadedTester;
-use \HtaccessCapabilityTester\Testers\PassEnvThroughRequestHeaderTester;
+use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughRequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\PassEnvThroughRewriteTester;
 use \HtaccessCapabilityTester\Testers\RewriteTester;
 use \HtaccessCapabilityTester\Testers\ServerSignatureTester;
@@ -215,13 +215,13 @@ class HtaccessCapabilityTester
     }
 
     /**
-     * Test if an environment variable can be passed through RequestHeader and received in PHP.
+     * Test a complex construct for passing information from a rewrite to a script through a request header.
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function canPassEnvThroughRequestHeader()
+    public function canPassInfoFromRewriteToScriptThroughRequestHeader()
     {
-        return $this->runTest(new PassEnvThroughRequestHeaderTester());
+        return $this->runTest(new PassInfoFromRewriteToScriptThroughRequestHeaderTester());
     }
 
 
@@ -259,8 +259,8 @@ class HtaccessCapabilityTester
                 return $this->canContentDigest();
             case 'canSetDirectoryIndex()':
                 return $this->canSetDirectoryIndex();
-            case 'canPassEnvThroughRequestHeader()':
-                return $this->canPassEnvThroughRequestHeader();
+            case 'canPassInfoFromRewriteToScriptThroughRequestHeader()':
+                return $this->canPassInfoFromRewriteToScriptThroughRequestHeader();
             case 'canPassEnvThroughRewrite()':
                 return $this->canPassEnvThroughRewrite();
             default:

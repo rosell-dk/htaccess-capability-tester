@@ -58,6 +58,60 @@ subtests:
         - ['inconclusive', 'status-code', 'not-equals', '200']
         - ['success', 'status-code', 'equals', '200']
 ```
+### `canPassInfoFromRewriteToScriptThroughRequestHeader()`
+
+Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here sets tells the RewriteRule directive to set an environment variable which a RequestHeader directive picks up on and passes on to the script in a request header.
+
+implementation:
+```yaml
+subdir: pass-env-through-request-header
+files:
+  - filename: '.htaccess'
+    content: |
+      <IfModule mod_rewrite.c>
+          RewriteEngine On
+
+          # Testing if we can pass an environment variable through a request header
+          # We pass document root, because that can easily be checked by the script
+
+          <IfModule mod_headers.c>
+            RequestHeader set PASSTHROUGHHEADER "%{PASSTHROUGHHEADER}e" env=PASSTHROUGHHEADER
+          </IfModule>
+          RewriteRule ^test\.php$ - [E=PASSTHROUGHHEADER:%{DOCUMENT_ROOT},L]
+
+      </IfModule>
+  - filename: 'test.php'
+    content: |
+      <?php
+      if (isset($_SERVER['HTTP_PASSTHROUGHHEADER'])) {
+          echo ($_SERVER['HTTP_PASSTHROUGHHEADER'] == $_SERVER['DOCUMENT_ROOT'] ? 1 : 0);
+          exit;
+      }
+      echo '0';
+
+request:
+  url: 'test.php'
+
+interpretation:
+  - ['success', 'body', 'equals', '1']
+  - ['failure', 'body', 'equals', '0']
+  - ['failure', 'status-code', 'equals', '500']
+  - ['inconclusive', 'body', 'begins-with', '<?php']
+  - ['inconclusive']
+```
+'subdir' => 'pass-env-through-request-header',
+'files' => [
+    ['.htaccess', $htaccessFile],
+    ['test.php', $phpFile],
+],
+'request' => 'test.php',
+'interpretation' => [
+    ['success', 'body', 'equals', '1'],
+    ['failure', 'body', 'equals', '0'],
+    ['failure', 'status-code', 'equals', '500'],
+    ['inconclusive', 'body', 'begins-with', '<?php'],
+    ['inconclusive']
+
 
 ### `canRewrite()`
 Tests if rewriting works using this simple test:

@@ -3,13 +3,17 @@
 namespace HtaccessCapabilityTester\Testers;
 
 /**
- * Class for testing if an environment variable can be passed through RequestHeader and received with PHP.
+ * Say you have a rewrite rule that points to a PHP script and you would like to pass some information
+ * along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information
+ * is sensitive. In that case, there are some tricks available. The trick being tested here sets tells the
+ * RewriteRule directive to set an environment variable which a RequestHeader directive picks up on and passes
+ * on to the script in a request header.
  *
  * @package    HtaccessCapabilityTester
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class PassEnvThroughRequestHeaderTester extends CustomTester
+class PassInfoFromRewriteToScriptThroughRequestHeaderTester extends CustomTester
 {
 
     /**
@@ -22,14 +26,12 @@ class PassEnvThroughRequestHeaderTester extends CustomTester
         $htaccessFile = <<<'EOD'
 <IfModule mod_rewrite.c>
     RewriteEngine On
-
-    # Testing if we can pass an environment variable through a request header
     # We pass document root, because that can easily be checked by the script
+    RewriteRule ^test\.php$ - [E=PASSTHROUGHHEADER:%{DOCUMENT_ROOT},L]
 
     <IfModule mod_headers.c>
       RequestHeader set PASSTHROUGHHEADER "%{PASSTHROUGHHEADER}e" env=PASSTHROUGHHEADER
     </IfModule>
-    RewriteRule ^test\.php$ - [E=PASSTHROUGHHEADER:%{DOCUMENT_ROOT},L]
 
 </IfModule>
 EOD;
@@ -44,7 +46,7 @@ echo '0';
 EOD;
 
         $test = [
-            'subdir' => 'pass-env-through-request-header',
+            'subdir' => 'pass-info-from-rewrite-to-script-through-request-header',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],
@@ -54,6 +56,8 @@ EOD;
                 ['success', 'body', 'equals', '1'],
                 ['failure', 'body', 'equals', '0'],
                 ['failure', 'status-code', 'equals', '500'],
+                ['inconclusive', 'body', 'begins-with', '<' . '?php'],
+                ['inconclusive']
             ]
         ];
 
