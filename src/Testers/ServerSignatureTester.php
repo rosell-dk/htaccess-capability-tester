@@ -54,7 +54,7 @@ EOD;
         // or access is denied. This ought to return *failure*, but it currently returns *inconclusive*.
 
         $test = [
-            'subdir' => 'server-signature-tester',
+            'subdir' => 'server-signature',
             'subtests' => [
                 [
                     'subdir' => 'on',

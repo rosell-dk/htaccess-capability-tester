@@ -1,6 +1,6 @@
 <?php
 /*
-subdir: directory-index-tester
+subdir: directory-index
 files:
   - filename: '.htaccess'
     content: |
@@ -81,7 +81,7 @@ class DirectoryIndexTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/directory-index-tester/' => new HttpResponse('0', '200', []),
+            '/directory-index/' => new HttpResponse('0', '200', []),
         ]);
         $testResult = $fakeServer->runTester(new DirectoryIndexTester());
         $this->assertFailure($testResult);
@@ -91,7 +91,7 @@ class DirectoryIndexTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/directory-index-tester/' => new HttpResponse('1', '200', [])
+            '/directory-index/' => new HttpResponse('1', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new DirectoryIndexTester());
         $this->assertSuccess($testResult);

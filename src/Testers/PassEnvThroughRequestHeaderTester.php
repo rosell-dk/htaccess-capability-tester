@@ -44,7 +44,7 @@ echo '0';
 EOD;
 
         $test = [
-            'subdir' => 'pass-env-through-request-header-tester',
+            'subdir' => 'pass-env-through-request-header',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],

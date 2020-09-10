@@ -281,7 +281,7 @@ EOD;
         $this->modName = $moduleName;
 
         $tests = [
-            'subdir' => 'mod-loaded-tester/' . $this->modName,
+            'subdir' => 'mod-loaded/' . $this->modName,
             'subtests' => [
                 $this->getServerSignatureBasedTest(),   // PHP
                 $this->getContentDigestBasedTest(),     // Override: Options

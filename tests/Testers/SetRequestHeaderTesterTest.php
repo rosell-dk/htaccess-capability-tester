@@ -1,6 +1,6 @@
 <?php
 /*
-subdir: set-request-header-tester
+subdir: set-request-header
 files:
   - filename: '.htaccess'
     content: |
@@ -95,7 +95,7 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/set-request-header-tester/test.php' => new HttpResponse('0', '200', [])
+            '/set-request-header/test.php' => new HttpResponse('0', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
         $this->assertFailure($testResult);
@@ -115,7 +115,7 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/set-request-header-tester/test.php' => new HttpResponse('1', '200', [])
+            '/set-request-header/test.php' => new HttpResponse('1', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
         $this->assertSuccess($testResult);

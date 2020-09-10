@@ -26,7 +26,7 @@ class DirectoryIndexTester extends CustomTester
 EOD;
 
         $test = [
-            'subdir' => 'directory-index-tester',
+            'subdir' => 'directory-index',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['index.html', "0"],

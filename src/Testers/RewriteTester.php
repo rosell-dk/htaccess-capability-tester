@@ -75,7 +75,7 @@ class RewriteTester extends CustomTester
 EOD;
 
         $test = [
-            'subdir' => 'rewrite-tester',
+            'subdir' => 'rewrite',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['0.txt', "0"],

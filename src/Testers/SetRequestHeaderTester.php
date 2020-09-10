@@ -41,7 +41,7 @@ EOD;
         // or access is denied. This ought to return *failure*, but it currently returns *inconclusive*.
 
         $test = [
-            'subdir' => 'set-request-header-tester',
+            'subdir' => 'set-request-header',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],

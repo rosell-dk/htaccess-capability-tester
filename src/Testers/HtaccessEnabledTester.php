@@ -23,7 +23,7 @@ class HtaccessEnabledTester extends AbstractTester
      */
     public function getSubDir()
     {
-        return 'htaccess-enabled-tester';
+        return 'htaccess-enabled';
     }
 
     /**
@@ -73,7 +73,7 @@ class HtaccessEnabledTester extends AbstractTester
                 // Last bullet in the gun:
                 // Try an .htaccess with syntax errors in it.
                 // (we do this lastly because it may generate an entry in the error log)
-                $crash = ($hct->crashTest('aoeu', 'htaccess-enabled-tester/crash-test') === false);
+                $crash = ($hct->crashTest('aoeu', 'htaccess-enabled/crash-test') === false);
                 if ($crash) {
                     $status = true;
                     $info = 'syntax error in an .htaccess causes crash';

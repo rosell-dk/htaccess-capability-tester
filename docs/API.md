@@ -5,7 +5,7 @@ This document is under development...
 
 ### `canAddType()`
 ```yaml```
-subdir: add-type-tester
+subdir: add-type
 files:
   - filename: '.htaccess'
     content: |
@@ -25,7 +25,7 @@ interpretation:
 
 ### `canContentDigest()`
 ```yaml
-subdir: content-digest-tester
+subdir: content-digest
 subtests:
   - subdir: on    
     files:
@@ -62,7 +62,7 @@ subtests:
 Tests if rewriting works using this simple test:
 
 ```yaml
-subdir: rewrite-tester
+subdir: rewrite
 files:
   - filename: '.htaccess'
     content: |
@@ -87,7 +87,7 @@ interpretation:
 ### `canSetDirectoryIndex()`
 
 ```yaml
-subdir: directory-index-tester
+subdir: directory-index
 files:
   - filename: '.htaccess'
     content: |
@@ -113,7 +113,7 @@ interpretation:
 
 ### `canSetRequestHeader()`
 ```yaml
-subdir: set-request-header-tester
+subdir: set-request-header
 files:
   - filename: '.htaccess'
     content: |
@@ -145,7 +145,7 @@ interpretation:
 Tests if setting a response header works using this simple test:
 
 ```yaml
-subdir: set-response-header-tester
+subdir: set-response-header
 files:
   - filename: '.htaccess'
     content: |

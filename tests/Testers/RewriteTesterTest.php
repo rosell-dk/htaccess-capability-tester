@@ -1,6 +1,6 @@
 <?php
 /*
-subdir: rewrite-tester
+subdir: rewrite
 files:
     - filename: '.htaccess'
       content: |
@@ -80,7 +80,7 @@ class RewriteTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/rewrite-tester/0.txt' => new HttpResponse('0', '200', [])
+            '/rewrite/0.txt' => new HttpResponse('0', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new RewriteTester());
         $this->assertFailure($testResult);
@@ -90,7 +90,7 @@ class RewriteTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/rewrite-tester/0.txt' => new HttpResponse('1', '200', [])
+            '/rewrite/0.txt' => new HttpResponse('1', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new RewriteTester());
         $this->assertSuccess($testResult);

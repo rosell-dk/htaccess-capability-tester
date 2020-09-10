@@ -26,7 +26,7 @@ class AddTypeTester extends CustomTester
 EOD;
 
         $test = [
-            'subdir' => 'add-type-tester',
+            'subdir' => 'add-type',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['request-me.test', 'hi'],

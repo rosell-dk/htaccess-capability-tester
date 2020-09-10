@@ -62,7 +62,7 @@ echo ($result == $_SERVER['DOCUMENT_ROOT'] ? '1' : '0');
 EOD;
 
         $test = [
-            'subdir' => 'pass-env-through-rewrite-tester',
+            'subdir' => 'pass-env-through-rewrite',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],

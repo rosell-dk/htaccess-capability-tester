@@ -1,6 +1,6 @@
 <?php
 /*
-subdir: server-signature-tester
+subdir: server-signature
 subtests:
   - subdir: on
     files:
@@ -112,8 +112,8 @@ class ServerSignatureTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/server-signature-tester/on/test.php' => new HttpResponse('1', '200', []),
-            '/server-signature-tester/off/test.php' => new HttpResponse('0', '200', [])
+            '/server-signature/on/test.php' => new HttpResponse('1', '200', []),
+            '/server-signature/off/test.php' => new HttpResponse('0', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
         $this->assertFailure($testResult);
@@ -126,8 +126,8 @@ class ServerSignatureTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/server-signature-tester/on/test.php' => new HttpResponse('0', '200', []),
-            '/server-signature-tester/off/test.php' => new HttpResponse('1', '200', [])
+            '/server-signature/on/test.php' => new HttpResponse('0', '200', []),
+            '/server-signature/off/test.php' => new HttpResponse('1', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
         $this->assertFailure($testResult);
@@ -138,8 +138,8 @@ class ServerSignatureTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/server-signature-tester/on/test.php' => new HttpResponse('1', '200', []),
-            '/server-signature-tester/off/test.php' => new HttpResponse('1', '200', [])
+            '/server-signature/on/test.php' => new HttpResponse('1', '200', []),
+            '/server-signature/off/test.php' => new HttpResponse('1', '200', [])
         ]);
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
         $this->assertSuccess($testResult);

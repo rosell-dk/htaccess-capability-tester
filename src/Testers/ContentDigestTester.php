@@ -26,7 +26,7 @@ class ContentDigestTester extends CustomTester
 EOD;
 
         $test = [
-            'subdir' => 'content-digest-tester',
+            'subdir' => 'content-digest',
             'subtests' => [
                 [
                     'subdir' => 'on',

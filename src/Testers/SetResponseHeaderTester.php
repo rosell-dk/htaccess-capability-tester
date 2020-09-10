@@ -26,7 +26,7 @@ class SetResponseHeaderTester extends CustomTester
 EOD;
 
         $test = [
-            'subdir' => 'set-response-header-tester',
+            'subdir' => 'set-response-header',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['request-me.txt', "hi"],
