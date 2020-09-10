@@ -22,13 +22,13 @@ interpretation:
 
 Tested:
 
-Server setup                   |  Test result
---------------------------------------------------
-.htaccess disabled             |  failure
-forbidden directives (fatal)   |  failure
-access denied                  |  inconclusive  (it might be allowed to other files)
-directive has no effect        |  failure
-                               |  success
+| Case                           |  Test result
+| ------------------------------ | ------------------
+| .htaccess disabled             |  failure
+| forbidden directives (fatal)   |  failure
+| access denied                  |  inconclusive
+| directive has no effect        |  failure
+| it works                       |  success
 */
 
 
