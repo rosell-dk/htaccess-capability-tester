@@ -1,3 +1,45 @@
+Which name is best?
+```php
+
+$hct->canRewrite();
+$hct->hasRewrite()
+$hct->mayRewrite()
+$hct->doesRewriteWork();
+$hct->rewriting();
+$hct->RewriteRule();
+$hct->rewriteSupported();
+$hct->rewriteWorks();
+$hct->testRewriting();
+$hct->test('RewriteRule');
+$hct->runTest(new RewriteTester());
+$hct->runTest()->RewriteRule();
+$hct->canDoRewrite();
+$hct->haveRewrite();
+$hct->isRewriteAvailable();
+$hct->isRewriteAccessible();
+$hct->isRewritePossible();
+
+$hct->canAddType();
+$hct->doesAddTypeWork();
+$hct->addType();
+$hct->AddType();
+$hct->addTypeSupported();
+$hct->addTypeWorks();
+$hct->testAddType();
+$hct->test('AddType');
+$hct->run(new AddTypeTester());
+$hct->runTest('AddType');
+$hct->runTest()->AddType();
+$hct->runTest(\HtaccessCapabilityTester\AddType);
+$hct->canIUse('AddType');
+
+$hct->canContentDigest();
+$hct->doesContentDigestWork();
+$hct->contentDigest();
+$hct->ContentDigest();
+
+```
+
 # IDEA:
 ```yaml
 subdir: rewrite
