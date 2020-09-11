@@ -1,11 +1,30 @@
 Which name is best?
 ```php
 
+
+if ($hct->rewriteWorks()) {
+
+}
+if ($hct->addTypeWorks()) {
+
+}
+if ($hct->serverSignatureWorks()) {
+
+}
+if ($hct->contentDigestWorks()) {
+}
+
+
+$hct->rewriteWorks();
 $hct->canRewrite();
+$hct->rewrite()
+$hct->isRewriteWorking();
+$hct->canUseRewrite();
 $hct->hasRewrite()
 $hct->mayRewrite()
 $hct->doesRewriteWork();
 $hct->rewriting();
+$hct->rewritingWorks();
 $hct->RewriteRule();
 $hct->rewriteSupported();
 $hct->rewriteWorks();
@@ -15,16 +34,51 @@ $hct->runTest(new RewriteTester());
 $hct->runTest()->RewriteRule();
 $hct->canDoRewrite();
 $hct->haveRewrite();
+$hct->rewriteAvail();
 $hct->isRewriteAvailable();
 $hct->isRewriteAccessible();
+$hct->isRewriteOperative();
+$hct->isRewriteOperational();
+$hct->isRewriteFunctional();
 $hct->isRewritePossible();
+$hct->isRewriteOk();
+$hct->isRewriteFlying();
+$hct->rewritePasses();
+
+if ($hct->canRewrite()) {
+
+}
+
+if ($hct->rewriteWorks()) {
+
+}
+
+if ($hct->rewriteOk()) {
+
+}
+if ($hct->rewriteQM()) {
+
+}
+
+if ($hct->rewriteNA()) {
+
+}
+
+// --------------
 
 $hct->canAddType();
+$hct->addTypeWorks();
+$hct->addTypeQM();
+
+$hct->canUseAddType();
 $hct->doesAddTypeWork();
 $hct->addType();
 $hct->AddType();
 $hct->addTypeSupported();
 $hct->addTypeWorks();
+$hct->addTypeLive();
+$hct->addTypeYes();
+$hct->addTypeFF();    // fully functional
 $hct->testAddType();
 $hct->test('AddType');
 $hct->run(new AddTypeTester());
@@ -33,10 +87,73 @@ $hct->runTest()->AddType();
 $hct->runTest(\HtaccessCapabilityTester\AddType);
 $hct->canIUse('AddType');
 
+// ------------------
+
+if ($hct->canContentDigest()) {
+}
+
+if ($hct->contentDigestWorks()) {
+}
+
+if ($hct->contentDigestOk()) {
+}
+
+if ($hct->contentDigestFF()) {
+}
+
+
 $hct->canContentDigest();
+$hct->contentDigestWorks();
+$hct->canUseContentDigest();
 $hct->doesContentDigestWork();
 $hct->contentDigest();
 $hct->ContentDigest();
+
+
+// ---------------------
+
+if ($hct->serverSignatureWorks()) {
+}
+
+if ($hct->canSetServerSignature()) {
+
+}
+
+if ($hct->testServerSignature()) {
+
+}
+
+if ($hct->doesServerSignatureWork()) {
+
+}
+if ($hct->isServerSignatureAllowed()) {
+
+}
+if ($hct->isServerSignatureWorking()) {
+
+
+}
+
+// --------------------
+
+$hct->modRewriteLoaded();
+
+$hct->moduleLoaded('rewrite');
+
+$hct->testModuleLoaded('rewrite');
+
+$hct->modLoaded('rewrite');
+
+// --------------------
+
+$hct->doesThisCrash();
+$hct->kaput();
+$hct->ooo();
+$hct->na();
+
+
+
+
 
 ```
 

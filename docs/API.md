@@ -12,7 +12,7 @@ The tests have the following in common:
 
 Most tests are implemented as a definition such as the one accepted in *customTest()*. This means that if you want it to work slightly differently, you can easily grab the code in the corresponding class in the *Testers* directory, make your modification and call *customTest()*. Those definitions are also available in this document, in YAML format (more readable).
 
-<details><summary><b>doesAddTypeWork()</b></summary>
+<details><summary><b>addTypeWorks()</b></summary>
 <p><br>
 Tests if the *AddType* directive works.
 
@@ -41,7 +41,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>doesContentDigestSetWork()</b></summary>
+<details><summary><b>contentDigestWorks()</b></summary>
 <p>
 
 Implementation (YAML definition):
@@ -83,7 +83,7 @@ subtests:
 </p>
 </details>
 
-<details><summary><b>doesPassingInfoFromRewriteToScriptThroughEnvWorkTester()</b></summary>
+<details><summary><b>passingInfoFromRewriteToScriptThroughEnvWorksTester()</b></summary>
 <p><br>
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here tells the RewriteRule directive to set an environment variable, which in many setups can be picked up in the script.
 
@@ -147,7 +147,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>doesPassingInfoFromRewriteToScriptThroughRequestHeaderWork()</b></summary>
+<details><summary><b>passingInfoFromRewriteToScriptThroughRequestHeaderWorks()</b></summary>
 <p><br>
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here tells the RewriteRule directive to set an environment variable which a RequestHeader directive picks up on and passes on to the script in a request header.
 
@@ -193,7 +193,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>doesRewritingWork()</b></summary>
+<details><summary><b>rewritingWorks()</b></summary>
 <p><br>
 Tests if rewriting works.
 
@@ -224,7 +224,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>doesDirectoryIndexWork()</b></summary>
+<details><summary><b>directoryIndexWorks()</b></summary>
 <p><br>
 Tests if DirectoryIndex works.
 
@@ -256,7 +256,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>doesSetRequestHeaderWork()</b></summary>
+<details><summary><b>requestHeaderWorks()</b></summary>
 <p><br>
 Tests if a request header can be set using the *RequestHeader* directive.
 
@@ -294,7 +294,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>doesSetResponseHeaderWork()</b></summary>
+<details><summary><b>headerSetWorks()</b></summary>
 <p><br>
 Tests if setting a response header works using the *Header* directive.
 
@@ -324,7 +324,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>doesServerSignatureWork()</b></summary>
+<details><summary><b>serverSignatureWorks()</b></summary>
 <p><br>
 Tests if the *ServerSignature* directive works.
 
@@ -441,8 +441,8 @@ Apache can be configured to ignore `.htaccess` files altogether. This method tes
 The method works by trying out a series of subtests until a conclusion is reached. It will never come out inconclusive.
 
 How does it work?
-- The first strategy is testing a series of features, such as `doesRewritingWork()`. If any of them works, well, then the `.htaccess` must have been processed.
-- Secondly, the `doesServerSignatureWork()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
+- The first strategy is testing a series of features, such as `rewritingWorks()`. If any of them works, well, then the `.htaccess` must have been processed.
+- Secondly, the `serverSignatureWorks()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
 - Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not. This last method is bulletproof - so why not do it first? Because it might generate an entry in the error log.
 
 </p>

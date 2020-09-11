@@ -26,7 +26,7 @@ $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
 if ($hct->moduleLoaded('headers')) {
     // mod_headers has been tested functional in a real .htaccess
 }
-if ($hct->doesRewritingWork()) {
+if ($hct->rewriteWorks()) {
     // rewriting works
 }
 if ($hct->htaccessEnabled() === false) {

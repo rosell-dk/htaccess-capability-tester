@@ -144,7 +144,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesRewritingWork()
+    public function rewritingWorks()
     {
         return $this->runTest(new RewriteTester());
     }
@@ -158,7 +158,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesAddTypeWork()
+    public function addTypeWorks()
     {
         return $this->runTest(new AddTypeTester());
     }
@@ -168,7 +168,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesSetResponseHeaderWork()
+    public function headerSetWorks()
     {
         return $this->runTest(new SetResponseHeaderTester());
     }
@@ -178,7 +178,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesSetRequestHeaderWork()
+    public function requestHeaderWorks()
     {
         return $this->runTest(new SetRequestHeaderTester());
     }
@@ -188,7 +188,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesContentDigestSetWork()
+    public function contentDigestWorks()
     {
         return $this->runTest(new ContentDigestTester());
     }
@@ -198,7 +198,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesServerSignatureWork()
+    public function serverSignatureWorks()
     {
         return $this->runTest(new ServerSignatureTester());
     }
@@ -209,7 +209,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesDirectoryIndexWork()
+    public function directoryIndexWorks()
     {
         return $this->runTest(new DirectoryIndexTester());
     }
@@ -219,7 +219,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesPassingInfoFromRewriteToScriptThroughRequestHeaderWork()
+    public function passingInfoFromRewriteToScriptThroughRequestHeaderWorks()
     {
         return $this->runTest(new PassInfoFromRewriteToScriptThroughRequestHeaderTester());
     }
@@ -230,7 +230,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function doesPassingInfoFromRewriteToScriptThroughEnvWorkTester()
+    public function passingInfoFromRewriteToScriptThroughEnvWorksTester()
     {
         return $this->runTest(new PassInfoFromRewriteToScriptThroughEnvTester());
     }
@@ -238,7 +238,7 @@ class HtaccessCapabilityTester
     /**
      * Call one of the methods of this class (not all allowed).
      *
-     * @param string  $functionCall  ie "doesRewritingWork()"
+     * @param string  $functionCall  ie "rewritingWorks()"
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
@@ -247,22 +247,22 @@ class HtaccessCapabilityTester
         switch ($functionCall) {
             case 'htaccessEnabled()':
                 return $this->htaccessEnabled();
-            case 'doesRewritingWork()':
-                return $this->doesRewritingWork();
-            case 'doesAddTypeWork()':
-                return $this->doesAddTypeWork();
-            case 'doesSetResponseHeaderWork()':
-                return $this->doesSetResponseHeaderWork();
-            case 'doesSetRequestHeaderWork()':
-                return $this->doesSetRequestHeaderWork();
-            case 'doesContentDigestSetWork()':
-                return $this->doesContentDigestSetWork();
-            case 'doesDirectoryIndexWork()':
-                return $this->doesDirectoryIndexWork();
-            case 'doesPassingInfoFromRewriteToScriptThroughRequestHeaderWork()':
-                return $this->doesPassingInfoFromRewriteToScriptThroughRequestHeaderWork();
-            case 'doesPassingInfoFromRewriteToScriptThroughEnvWorkTester()':
-                return $this->doesPassingInfoFromRewriteToScriptThroughEnvWorkTester();
+            case 'rewritingWorks()':
+                return $this->rewritingWorks();
+            case 'addTypeWorks()':
+                return $this->addTypeWorks();
+            case 'headerSetWorks()':
+                return $this->headerSetWorks();
+            case 'requestHeaderWorks()':
+                return $this->requestHeaderWorks();
+            case 'contentDigestWorks()':
+                return $this->contentDigestWorks();
+            case 'directoryIndexWorks()':
+                return $this->directoryIndexWorks();
+            case 'passingInfoFromRewriteToScriptThroughRequestHeaderWorks()':
+                return $this->passingInfoFromRewriteToScriptThroughRequestHeaderWorks();
+            case 'passingInfoFromRewriteToScriptThroughEnvWorksTester()':
+                return $this->passingInfoFromRewriteToScriptThroughEnvWorksTester();
             default:
                 throw new \Exception('The method is not callable');
         }

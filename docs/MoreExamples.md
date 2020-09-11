@@ -20,14 +20,14 @@ if ($hct->crashTest($rulesToCrashTest)) {
     //  500 Internal Server Error - see "docs/TheManyWaysOfHtaccessFailure.md")
 }
 
-if ($hct->doesAddTypeWork()) {
+if ($hct->addTypeWorks()) {
     // AddType directive works
 }
 
-if ($hct->doesSetResponseHeaderWork()) {
+if ($hct->headerSetWorks()) {
     // "Header set" works
 }
-if ($hct->doesSetRequestHeaderWork()) {
+if ($hct->requestHeaderWorks()) {
     // "RequestHeader set" works
 }
 
@@ -43,7 +43,7 @@ if (is_null($testResult)) {
 // Also note that an exception will be thrown if test files cannot be created.
 // You might want to wrap your call in a try-catch statement.
 try {
-    if ($hct->doesSetRequestHeaderWork()) {
+    if ($hct->requestHeaderWorks()) {
         // "RequestHeader set" works
     }
 

@@ -52,9 +52,9 @@ class HtaccessEnabledTester extends AbstractTester
         PS: We could implement this as a definition:
 
 
-        - [success, doesServerSignatureWork, is-success]
-        - [success, doesContentDigestSetWork, is-success]
-        - [failure, doesServerSignatureWork, is-failure]
+        - [success, serverSignatureWorks, is-success]
+        - [success, contentDigestWorks, is-success]
+        - [failure, serverSignatureWorks, is-failure]
         - [success, canCrash, is-success]
         */
 
@@ -64,20 +64,20 @@ class HtaccessEnabledTester extends AbstractTester
         $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
 
         // If we can find anything that works, well the .htaccess must have been proccesed!
-        if ($hct->doesServerSignatureWork()    // Override: None,  Status: Core, REQUIRES PHP
-            || $hct->doesContentDigestSetWork()      // Override: Options,  Status: Core
-            || $hct->doesAddTypeWork()            // Override: FileInfo, Status: Base, Module: mime
-            || $hct->doesDirectoryIndexWork()  // Override: Indexes,  Status: Base, Module: mod_dir
-            || $hct->doesRewritingWork()            // Override: FileInfo, Status: Extension, Module: rewrite
-            || $hct->doesSetResponseHeaderWork()  // Override: FileInfo, Status: Extension, Module: headers
+        if ($hct->serverSignatureWorks()    // Override: None,  Status: Core, REQUIRES PHP
+            || $hct->contentDigestWorks()      // Override: Options,  Status: Core
+            || $hct->addTypeWorks()            // Override: FileInfo, Status: Base, Module: mime
+            || $hct->directoryIndexWorks()  // Override: Indexes,  Status: Base, Module: mod_dir
+            || $hct->rewritingWorks()            // Override: FileInfo, Status: Extension, Module: rewrite
+            || $hct->headerSetWorks()  // Override: FileInfo, Status: Extension, Module: headers
         ) {
             $status = true;
         } else {
-            // The doesServerSignatureWork() test is special because if it comes out as a failure,
+            // The serverSignatureWorks() test is special because if it comes out as a failure,
             // we can be *almost* certain that the .htaccess has been completely disabled
 
-            $doesServerSignatureWork = $hct->doesServerSignatureWork();
-            if ($doesServerSignatureWork === false) {
+            $serverSignatureWorks = $hct->serverSignatureWorks();
+            if ($serverSignatureWorks === false) {
                 $status = false;
                 $info = 'ServerSignature directive does not work - and it is in core';
             } else {
