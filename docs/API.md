@@ -83,6 +83,68 @@ subtests:
 </p>
 </details>
 
+<details><summary><b>directoryIndexWorks()</b></summary>
+<p><br>
+Tests if DirectoryIndex works.
+
+Implementation (YAML definition):
+
+```yaml
+subdir: directory-index
+files:
+  - filename: '.htaccess'
+    content: |
+      <IfModule mod_dir.c>
+          DirectoryIndex index2.html
+      </IfModule>
+  - filename: 'index.html'
+    content: '0'
+  - filename: 'index2.html'
+    content: '1'
+
+request:
+  url: ''   # We request the index, that is why its empty
+
+interpretation:
+  - ['success', 'body', 'equals', '1']
+  - ['failure', 'body', 'equals', '0']
+  - ['failure', 'status-code', 'equals', '500']
+  - ['failure', 'status-code', 'equals', '404']  # "index.html" might not be set to index
+```
+
+</p>
+</details>
+
+<details><summary><b>headerSetWorks()</b></summary>
+<p><br>
+Tests if setting a response header works using the *Header* directive.
+
+Implementation (YAML definition):
+
+```yaml
+subdir: set-response-header
+files:
+  - filename: '.htaccess'
+    content: |
+      <IfModule mod_headers.c>
+          Header set X-Response-Header-Test: test
+      </IfModule>
+  - filename: 'request-me.txt'
+    content: 'hi'
+
+request:
+  url: 'request-me.txt'
+
+interpretation:
+  - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test']
+  - [failure, status-code, equals, '500']
+  - [inconclusive, status-code, not-equals, '200']
+  - [failure]
+```
+
+</p>
+</details>
+
 <details><summary><b>passingInfoFromRewriteToScriptThroughEnvWorksTester()</b></summary>
 <p><br>
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here tells the RewriteRule directive to set an environment variable, which in many setups can be picked up in the script.
@@ -224,38 +286,6 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>directoryIndexWorks()</b></summary>
-<p><br>
-Tests if DirectoryIndex works.
-
-Implementation (YAML definition):
-
-```yaml
-subdir: directory-index
-files:
-  - filename: '.htaccess'
-    content: |
-      <IfModule mod_dir.c>
-          DirectoryIndex index2.html
-      </IfModule>
-  - filename: 'index.html'
-    content: '0'
-  - filename: 'index2.html'
-    content: '1'
-
-request:
-  url: ''   # We request the index, that is why its empty
-
-interpretation:
-  - ['success', 'body', 'equals', '1']
-  - ['failure', 'body', 'equals', '0']
-  - ['failure', 'status-code', 'equals', '500']
-  - ['failure', 'status-code', 'equals', '404']  # "index.html" might not be set to index
-```
-
-</p>
-</details>
-
 <details><summary><b>requestHeaderWorks()</b></summary>
 <p><br>
 Tests if a request header can be set using the *RequestHeader* directive.
@@ -289,36 +319,6 @@ interpretation:
   - ['failure', 'body', 'equals', '0']
   - ['failure', 'status-code', 'equals', '500']
   - ['inconclusive', 'body', 'begins-with', '<?php']
-```
-
-</p>
-</details>
-
-<details><summary><b>headerSetWorks()</b></summary>
-<p><br>
-Tests if setting a response header works using the *Header* directive.
-
-Implementation (YAML definition):
-
-```yaml
-subdir: set-response-header
-files:
-  - filename: '.htaccess'
-    content: |
-      <IfModule mod_headers.c>
-          Header set X-Response-Header-Test: test
-      </IfModule>
-  - filename: 'request-me.txt'
-    content: 'hi'
-
-request:
-  url: 'request-me.txt'
-
-interpretation:
-  - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test']
-  - [failure, status-code, equals, '500']
-  - [inconclusive, status-code, not-equals, '200']
-  - [failure]
 ```
 
 </p>
