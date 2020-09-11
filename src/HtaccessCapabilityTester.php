@@ -230,7 +230,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function passingInfoFromRewriteToScriptThroughEnvWorksTester()
+    public function passingInfoFromRewriteToScriptThroughEnvWorks()
     {
         return $this->runTest(new PassInfoFromRewriteToScriptThroughEnvTester());
     }
@@ -261,8 +261,8 @@ class HtaccessCapabilityTester
                 return $this->directoryIndexWorks();
             case 'passingInfoFromRewriteToScriptThroughRequestHeaderWorks()':
                 return $this->passingInfoFromRewriteToScriptThroughRequestHeaderWorks();
-            case 'passingInfoFromRewriteToScriptThroughEnvWorksTester()':
-                return $this->passingInfoFromRewriteToScriptThroughEnvWorksTester();
+            case 'passingInfoFromRewriteToScriptThroughEnvWorks()':
+                return $this->passingInfoFromRewriteToScriptThroughEnvWorks();
             default:
                 throw new \Exception('The method is not callable');
         }

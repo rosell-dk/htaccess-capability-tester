@@ -145,7 +145,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>passingInfoFromRewriteToScriptThroughEnvWorksTester()</b></summary>
+<details><summary><b>passingInfoFromRewriteToScriptThroughEnvWorks()</b></summary>
 <p><br>
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here tells the RewriteRule directive to set an environment variable, which in many setups can be picked up in the script.
 
