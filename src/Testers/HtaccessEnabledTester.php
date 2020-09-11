@@ -48,6 +48,17 @@ class HtaccessEnabledTester extends AbstractTester
     {
         $this->prepareForRun($baseDir, $baseUrl);
 
+        /*
+        PS: We could implement this as a definition:
+
+
+        - [success, canSetServerSignature, is-success]
+        - [success, canContentDigest, is-success]
+        - [failure, canSetServerSignature, is-failure]
+        - [success, canCrash, is-success]
+        */
+
+
         $status = null;
         $info = '';
         $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
