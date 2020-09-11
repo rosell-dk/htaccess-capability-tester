@@ -91,7 +91,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'requirements' => ['canRewrite()'],
+            'requirements' => ['doesRewritingWork()'],
             'subdir' => 'rewrite',
             'files' => [
                 ['.htaccess', $htaccess],
@@ -134,7 +134,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'requirements' => ['canSetResponseHeader()'],
+            'requirements' => ['doesSetResponseHeaderWork()'],
             'subdir' => 'response-header',
             'files' => [
                 ['.htaccess', $htaccess],
@@ -174,7 +174,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'requirements' => ['canContentDigest()'],
+            'requirements' => ['doesContentDigestSetWork()'],
             'subdir' => 'content-digest',
             'files' => [
                 ['.htaccess', $htaccess],
@@ -214,7 +214,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'requirements' => ['canSetDirectoryIndex()'],
+            'requirements' => ['doesDirectoryIndexWork()'],
             'subdir' => 'directory-index',
             'files' => [
                 ['.htaccess', $htaccess],
@@ -256,7 +256,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'requirements' => ['canAddType()'],
+            'requirements' => ['doesAddTypeWork()'],
             'subdir' => 'add-type',
             'files' => [
                 ['.htaccess', $htaccess],

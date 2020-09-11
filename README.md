@@ -26,7 +26,7 @@ $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
 if ($hct->moduleLoaded('headers')) {
     // mod_headers has been tested functional in a real .htaccess
 }
-if ($hct->canRewrite()) {
+if ($hct->doesRewritingWork()) {
     // rewriting works
 }
 if ($hct->htaccessEnabled() === false) {
@@ -44,7 +44,7 @@ As mentioned, a test has three phases:
 
 As it turns out, for these purposes interpreting is in most cases dead simple. The response is examined and mapped into one of three possible results: *success*, *failure* or *inconclusive*.
 
-As an example, lets see what goes on for the *canRewrite()* test:
+As an example, lets see what goes on for the *doesRewritingWork()* test:
 
 ### 1. The files
 
@@ -80,9 +80,9 @@ A HTTP request is made to "0.txt"
 
 ## Running your own custom tests
 
-The API provides the *customTest()* method for running custom tests easily, by just providing a definition. It isn't capable of handling complex interpretation, but it takes care of simple cases like *canRewrite()* in a breeze (for complex interpretation, you will need to extend `HtaccessCapabilityTester\Testers\AbstractTester`).
+The API provides the *customTest()* method for running custom tests easily, by just providing a definition. It isn't capable of handling complex interpretation, but it takes care of simple cases like *doesRewritingWork()* in a breeze (for complex interpretation, you will need to extend `HtaccessCapabilityTester\Testers\AbstractTester`).
 
-As an example, here is how the mapping used in *canRewrite()* is defined:
+As an example, here is how the mapping used in *doesRewritingWork()* is defined:
 
 ```php
 $mapping = [
@@ -94,7 +94,7 @@ $mapping = [
 
 The list of mappings is read from the top until one of the conditions is met. The first line for example translates to "Map to success if the body of the response equals '1'". If none of the conditions are met, the result is automatically mapped to 'inconclusive'.
 
-*canRewrite()* does not need to examine response headers, but this is possible too, like this:
+*doesRewritingWork()* does not need to examine response headers, but this is possible too, like this:
 
 ```php
 [
@@ -103,7 +103,7 @@ The list of mappings is read from the top until one of the conditions is met. Th
 ]
 ```
 
-Here is a full example for replicating *canRewrite()*:
+Here is a full example for replicating *doesRewritingWork()*:
 
 ```php
 $htaccessFile = <<<'EOD'
@@ -135,7 +135,7 @@ $testResult = $hct->customTest($test);
 
 Bonus info:
 - A test can contain subtests. The second test will only run if there is no match in the first, and so on. Check out ie. `ContentDigestTester.php` for how to use.
-- You can make each test-definition conditional upon a test such as `canRewrite()`. To do so, add a "requirements" property like this: 'requirements' => `['canRewrite()']` (see for example `ModLoadedTester.php`)
+- You can make each test-definition conditional upon a test such as `doesRewritingWork()`. To do so, add a "requirements" property like this: 'requirements' => `['doesRewritingWork()']` (see for example `ModLoadedTester.php`)
 
 Almost all of the build-in tests are written in this "language". You can look at the source code in the classes in "Testers" for inspiration.
 
