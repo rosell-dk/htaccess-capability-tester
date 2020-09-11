@@ -271,9 +271,13 @@ class HtaccessCapabilityTester
     }
 
     /**
-     * Crash-test some .htaccess.
+     * Crash-test some .htaccess rules.
      *
-     * This test detects if directives inside a "IfModule" is run for a given module
+     * Tests if the server can withstand the given rules without going fatal.
+     *
+     * - success: if the rules does not result in status 500.
+     * - failure: if the rules results in status 500 while a request to a file in a directory without any .htaccess succeeds (<> 500)
+     * - inconclusive: if the rules results in status 500 while a request to a file in a directory without any .htaccess also fails (500)
      *
      * @param string       $rules   Rules to crash-test
      * @param string       $subDir  (optional) Subdir for the .htaccess to reside.
@@ -284,6 +288,27 @@ class HtaccessCapabilityTester
     public function crashTest($rules, $subDir = null)
     {
         return $this->runTest(new CrashTester($rules, $subDir));
+    }
+
+    /**
+     * Crash-test an innocent request.
+     *
+     * Confirm that an innocent request does not results in a 500.
+     * The "innocent request" is a request to a "request-me.txt" file in a directory that does not contain a .htaccess.
+     *
+     * - success: if the request does not result in status 500.
+     * - failure: if the request results in status 500
+     * - inconclusive: if the request fails (ie timeout)
+     *
+     * @return bool|null   true=success, false=failure, null=inconclusive
+     */
+    public function crashTestInnocentRequest()
+    {
+        // TODO:
+        // We are interested in other status codes. For example a 404 probably means that the URL supplied was wrong.
+        // 403 is also interesting.
+        // But we do not want to make separate tests for each. So make sure the innocent request is only made once and
+        // the status is cached.
     }
 
     /**

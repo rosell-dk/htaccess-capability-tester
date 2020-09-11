@@ -8,18 +8,7 @@ use \HtaccessCapabilityTester\TestResult;
  * Class for testing if a .htaccess results in a 500 Internal Server Error
  * (ie due to being malformed or containing directives that are unknown or not allowed)
  *
- * The tester reports success when:
- * - A request to a certain file in the directory does not result in a 500 Internal Server Error
- *
- * The tester reports failure when:
- * - A request to a certain file in the directory results in a 500 Internal Server Error
- *
- * The tester reports indeterminate (null) when:
- * - get_headers() call fails (What kind of failure could this be, I wonder?)
- *
  * Notes:
- * - There might be false negatives, as there could be other reasons behind a 501 error than
- *       than a malformed .htaccess.
  * - The tester only reports failure on a 500 Internal Server Error. All other status codes (even server errors)
  *       are treated as a success. The assumption here is that malformed .htaccess files / .htaccess
  *       files containing unknown or disallowed directives always results in a 500
@@ -33,22 +22,45 @@ use \HtaccessCapabilityTester\TestResult;
 class CrashTester extends CustomTester
 {
 
-    public function __construct($htaccessRules, $subDir = null)
+    /**
+     * @param string $htaccessRules  The rules to check
+     * @param string $subSubDir      subdir for the test files. If not supplied, a fingerprint of the rules will be used
+     */
+    public function __construct($htaccessRules, $subSubDir = null)
     {
-        if (is_null($subDir)) {
-            $subDir = hash('md5', $htaccessRules);
+        if (is_null($subSubDir)) {
+            $subSubDir = hash('md5', $htaccessRules);
         }
 
         $test = [
-            'subdir' => $subDir,
-            'files' => [
-                ['.htaccess', $htaccessRules],
-                ['request-me.txt', 'thanks'],
-            ],
-            'request' => 'request-me.txt',
-            'interpretation' => [
-                ['failure', 'status-code', 'equals', '500'],
-                ['success', 'status-code', 'not-equals', '500'],
+            'subdir' => 'crash-tester/' . $subSubDir,
+            'subtests' => [
+                [
+                    'subdir' => 'the-suspect',
+                    'files' => [
+                        ['.htaccess', $htaccessRules],
+                        ['request-me.txt', 'thanks'],
+                    ],
+                    'request' => 'request-me.txt',
+                    'interpretation' => [
+                        ['success', 'status-code', 'not-equals', '500'],
+                    ]
+                ],
+                [
+                    'subdir' => 'the-innocent',
+                    'files' => [
+                        ['.htaccess', '# I am no trouble'],
+                        ['request-me.txt', 'thanks'],
+                    ],
+                    'request' => 'request-me.txt',
+                    'interpretation' => [
+                        // The suspect crashed. But if the innocent crashes too, we cannot judge
+                        ['inconclusive', 'status-code', 'equals', '500'],
+
+                        // The innocent did not crash. The suspect is guilty!
+                        ['failure'],
+                    ]
+                ],
             ]
         ];
 
