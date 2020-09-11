@@ -276,8 +276,10 @@ class HtaccessCapabilityTester
      * Tests if the server can withstand the given rules without going fatal.
      *
      * - success: if the rules does not result in status 500.
-     * - failure: if the rules results in status 500 while a request to a file in a directory without any .htaccess succeeds (<> 500)
-     * - inconclusive: if the rules results in status 500 while a request to a file in a directory without any .htaccess also fails (500)
+     * - failure: if the rules results in status 500 while a request to a file in a directory
+     *        without any .htaccess succeeds (<> 500)
+     * - inconclusive: if the rules results in status 500 while a request to a file in a directory
+     *        without any .htaccess also fails (500)
      *
      * @param string       $rules   Rules to crash-test
      * @param string       $subDir  (optional) Subdir for the .htaccess to reside.
@@ -309,6 +311,7 @@ class HtaccessCapabilityTester
         // 403 is also interesting.
         // But we do not want to make separate tests for each. So make sure the innocent request is only made once and
         // the status is cached.
+        return true;
     }
 
     /**
