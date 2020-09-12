@@ -9,8 +9,8 @@ NOTE: the API in the master branch has been dramatically changed in comparison t
 There are cases where the only way to to learn if a given `.htaccess` capability is enabled / supported on a system is by examining it "from the outside" through a HTTP request. This library is build to handle such testing easily.
 
 This is what happens behind the scenes:
-1. Some test files for a given test are put on the server. Typically these at least includes an `.htaccess` file. For many tests, a `test.php` file is also generated.
-2. The test is triggered by doing a HTTP request (often to `test.php`)
+1. Some test files for a given test are put on the server. Typically these at least includes an `.htaccess` file
+2. The test is triggered by doing a HTTP request (most often to a `.txt` file, however a few of the tests need to request a `.php` file)
 3. The response is interpreted
 
 ## Usage
