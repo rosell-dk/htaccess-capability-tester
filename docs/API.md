@@ -33,7 +33,7 @@ request:
 
 interpretation:
  - ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif']
- - ['failure', 'status-code', 'equals', '500']
+ - ['handle-errors']
  - ['inconclusive', 'status-code', 'not-equals', '200']
  - ['failure', 'headers', 'not-contains-key-value', 'Content-Type', 'image/gif']
 ```
@@ -59,9 +59,9 @@ subtests:
     request:
       url: 'request-me.txt'
     interpretation:
-      - ['failure', 'status-code', 'equals', '500'],
-      - ['inconclusive', 'status-code', 'not-equals', '200'],    // calls the whole thing off
-      - ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
+      - ['failure', 'status-code', 'equals', '500']
+      - ['handle-errors']    # calls the whole thing off
+      - ['failure', 'headers', 'not-contains-key', 'Content-MD5']
 
     - subdir: off
       files:
@@ -108,8 +108,8 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['failure', 'status-code', 'equals', '500']
   - ['failure', 'status-code', 'equals', '404']  # "index.html" might not be set to index
+  - ['handle-errors']
 ```
 
 </p>
@@ -122,7 +122,7 @@ Tests if setting a response header works using the *Header* directive.
 Implementation (YAML definition):
 
 ```yaml
-subdir: set-response-header
+subdir: header-set
 files:
   - filename: '.htaccess'
     content: |
@@ -137,8 +137,7 @@ request:
 
 interpretation:
   - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test']
-  - [failure, status-code, equals, '500']
-  - [inconclusive, status-code, not-equals, '200']
+  - ['handle-errors']
   - [failure]
 ```
 
@@ -201,7 +200,7 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['failure', 'status-code', 'equals', '500']
+  - ['handle-errors']
   - ['inconclusive', 'body', 'begins-with', '<?php']
   - ['inconclusive']
  ```
@@ -247,7 +246,7 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['failure', 'status-code', 'equals', '500']
+  - ['handle-errors']
   - ['inconclusive', 'body', 'begins-with', '<?php']
   - ['inconclusive']
 ```
@@ -280,7 +279,7 @@ request:
 interpretation:
   - [success, body, equals, '1']
   - [failure, body, equals, '0']
-  - [failure, status-code, equals, '500']
+  - ['handle-errors']
 ```
 
 </p>
@@ -317,7 +316,7 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['failure', 'status-code', 'equals', '500']
+  - ['handle-errors']
   - ['inconclusive', 'body', 'begins-with', '<?php']
 ```
 

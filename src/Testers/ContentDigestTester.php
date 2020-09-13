@@ -37,7 +37,7 @@ EOD;
                     'request' => 'request-me.txt',
                     'interpretation' => [
                         ['failure', 'status-code', 'equals', '500'],
-                        ['inconclusive', 'status-code', 'not-equals', '200'],    // calls the whole thing off
+                        ['handle-errors'],      // calls the whole thing off in case of error
                         ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
                     ]
                 ],
