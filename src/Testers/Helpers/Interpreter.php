@@ -52,19 +52,22 @@ class Interpreter
                         return new TestResult(null, '403 Forbidden');
                     } elseif ($response->statusCode == '500') {
                         $hct = $tester->getHtaccessCapabilityTester();
-                        if ($hct->innocentRequestWorks()) {
+
+                        // Run innocent request / get it from cache. This sets
+                        // $statusCodeOfLastRequest, which we need now
+                        $hct->innocentRequestWorks();
+                        if ($hct->statusCodeOfLastRequest == '500') {
+                            return new TestResult(null, 'Errored with 500. Everything errors with 500.');
+                        } else {
                             return new TestResult(
                                 false,
                                 'Errored with 500. ' .
                                 'Not all goes 500, so it must be a forbidden directive in the .htaccess'
                             );
-                        } else {
-                            return new TestResult(null, 'Errored with 500. Everything errors with 500.');
                         }
                     } else {
                         continue 2;
                     }
-                    break;
             }
 
             if (!isset($entry[1])) {
