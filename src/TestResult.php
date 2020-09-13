@@ -18,6 +18,9 @@ class TestResult
     /* @var string   Information about how the test failed / became inconclusive */
     public $info;
 
+    /* @var string   Status code of last request in the test */
+    public $statusCodeOfLastRequest;
+
     /**
      * Constructor.
      *
@@ -26,9 +29,10 @@ class TestResult
      *
      * @return void
      */
-    public function __construct($status, $info)
+    public function __construct($status, $info, $statusCodeOfLastRequest = null)
     {
         $this->status = $status;
         $this->info = $info;
+        $this->statusCodeOfLastRequest = $statusCodeOfLastRequest;
     }
 }
