@@ -9,7 +9,7 @@ namespace HtaccessCapabilityTester\Testers;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class SetRequestHeaderTester extends CustomTester
+class RequestHeaderTester extends CustomTester
 {
 
     /**
@@ -41,7 +41,7 @@ EOD;
         // or access is denied. This ought to return *failure*, but it currently returns *inconclusive*.
 
         $test = [
-            'subdir' => 'set-request-header',
+            'subdir' => 'request-header',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['test.php', $phpFile],

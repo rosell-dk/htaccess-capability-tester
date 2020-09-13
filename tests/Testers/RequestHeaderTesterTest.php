@@ -1,6 +1,6 @@
 <?php
 /*
-subdir: set-request-header
+subdir: request-header
 files:
   - filename: '.htaccess'
     content: |
@@ -53,11 +53,11 @@ TODO:
 namespace HtaccessCapabilityTester\Tests\Testers;
 
 use HtaccessCapabilityTester\HttpResponse;
-use HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
+use HtaccessCapabilityTester\Testers\RequestHeaderTester;
 use HtaccessCapabilityTester\Tests\FakeServer;
 use PHPUnit\Framework\TestCase;
 
-class SetRequestHeaderTesterTest extends BasisTestCase
+class RequestHeaderTesterTest extends BasisTestCase
 {
 
     /* can't do this test, it would require processing PHP
@@ -65,7 +65,7 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->disableHtaccess();
-        $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
+        $testResult = $fakeServer->runTester(new RequestHeaderTester());
         $this->assertFailure($testResult);
     }*/
 
@@ -73,7 +73,7 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->disallowAllDirectives('fatal');
-        $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
+        $testResult = $fakeServer->runTester(new RequestHeaderTester());
         $this->assertFailure($testResult);
     }
 
@@ -81,7 +81,7 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->denyAllAccess();
-        $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
+        $testResult = $fakeServer->runTester(new RequestHeaderTester());
         $this->assertInconclusive($testResult);
     }
 
@@ -95,9 +95,9 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/set-request-header/test.php' => new HttpResponse('0', '200', [])
+            '/request-header/test.php' => new HttpResponse('0', '200', [])
         ]);
-        $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
+        $testResult = $fakeServer->runTester(new RequestHeaderTester());
         $this->assertFailure($testResult);
     }
 
@@ -106,7 +106,7 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->handlePHPasText();
-        $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
+        $testResult = $fakeServer->runTester(new RequestHeaderTester());
         $this->assertInconclusive($testResult);
     }
 
@@ -115,9 +115,9 @@ class SetRequestHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/set-request-header/test.php' => new HttpResponse('1', '200', [])
+            '/request-header/test.php' => new HttpResponse('1', '200', [])
         ]);
-        $testResult = $fakeServer->runTester(new SetRequestHeaderTester());
+        $testResult = $fakeServer->runTester(new RequestHeaderTester());
         $this->assertSuccess($testResult);
     }
 

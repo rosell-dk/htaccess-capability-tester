@@ -15,8 +15,8 @@ use \HtaccessCapabilityTester\Testers\ModLoadedTester;
 use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughRequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughEnvTester;
 use \HtaccessCapabilityTester\Testers\RewriteTester;
+use \HtaccessCapabilityTester\Testers\RequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\ServerSignatureTester;
-use \HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
 
 /**
  * Main entrance.
@@ -187,7 +187,7 @@ class HtaccessCapabilityTester
      */
     public function requestHeaderWorks()
     {
-        return $this->runTest(new SetRequestHeaderTester());
+        return $this->runTest(new RequestHeaderTester());
     }
 
     /**
