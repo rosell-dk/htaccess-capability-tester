@@ -21,7 +21,10 @@ class InnocentRequestTester extends CustomTester
             'files' => [
                 ['request-me.txt', 'thank you my dear'],
             ],
-            'request' => 'request-me.txt',
+            'request' => [
+                'url' => 'request-me.txt',
+                'bypass-standard-error-handling' => ['all']
+            ],
             'interpretation' => [
                 ['success', 'status-code', 'equals', '200'],
                 ['inconclusive', 'status-code', 'equals', '403'],

@@ -1,6 +1,6 @@
 <?php
 /*
-subdir: set-response-header
+subdir: header-set
 files:
     - filename: '.htaccess'
       content: |
@@ -8,14 +8,14 @@ files:
               Header set X-Response-Header-Test: test
           </IfModule>
     - filename: 'request-me.txt'
-      content: 'they needed someone, so here i am'
+      content: 'hi'
 
 request:
     url: 'request-me.txt'
 
 interpretation:
     - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test'],
-    - [failure, status-code, equals, '500']
+    - [failure]
 
 
 ----

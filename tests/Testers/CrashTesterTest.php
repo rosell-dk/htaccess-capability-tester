@@ -1,26 +1,36 @@
 <?php
 /*
-subdir: rewrite
-files:
-    - filename: '.htaccess'
-      content: |
-        <IfModule mod_rewrite.c>
-            RewriteEngine On
-            RewriteRule ^0\.txt$ 1\.txt [L]
-        </IfModule>
-    - filename: '0.txt'
-      content: '0'
-    - filename: '1.txt'
-      content: '1'
+subdir: 'crash-tester/xxx'  # xxx is a subdir for the specific crash-test
+subtests:
+  - subdir: the-suspect
+    files:
+        - filename: '.htaccess'
+          content:                          # the rules goes here
+        - filename: 'request-me.txt'
+          content: 'thanks'
+    request:
+        url: 'request-me.txt'
+        bypass-standard-error-handling': ['all']
+    interpretation:
+        - [success, body, equals, '1']
+        - [failure, body, equals, '0']
+        - [success, status-code, not-equals, '500']
 
-request:
-    url: '0.txt'
+  - subdir: the-innocent
+    files:
+        - filename: '.htaccess'
+          content: '# I am no trouble'
+        - filename: 'request-me.txt'
+          content: 'thanks'
+    request:
+        url: 'request-me.txt'
+        bypass-standard-error-handling: ['all']
+    interpretation:
+      # The suspect crashed. But if the innocent crashes too, we cannot judge
+      [inconclusive, status-code, equals, '500']
 
-interpretation:
-    - [success, body, equals, '1']
-    - [failure, body, equals, '0']
-    - [failure, status-code, equals, '500']
-
+      # The innocent did not crash. The suspect is guilty!
+      [failure]
 
 ----
 

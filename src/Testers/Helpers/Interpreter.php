@@ -19,14 +19,13 @@ class Interpreter
     /**
      * Interpret a response using an interpretation table.
      *
-     * @param AbstractTester  $tester
      * @param HttpResponse    $response
      * @param array           $interpretationTable
      *
      * @return TestResult   If there is no match, the test result will have status = false and
      *                      info = "no-match".
      */
-    public static function interpret($tester, $response, $interpretationTable)
+    public static function interpret($response, $interpretationTable)
     {
         foreach ($interpretationTable as $i => $entry) {
             // ie:
@@ -47,27 +46,6 @@ class Interpreter
                 case 'success':
                     $status = true;
                     break;
-                case 'handle-errors':
-                    if ($response->statusCode == '403') {
-                        return new TestResult(null, '403 Forbidden');
-                    } elseif ($response->statusCode == '500') {
-                        $hct = $tester->getHtaccessCapabilityTester();
-
-                        // Run innocent request / get it from cache. This sets
-                        // $statusCodeOfLastRequest, which we need now
-                        $hct->innocentRequestWorks();
-                        if ($hct->statusCodeOfLastRequest == '500') {
-                            return new TestResult(null, 'Errored with 500. Everything errors with 500.');
-                        } else {
-                            return new TestResult(
-                                false,
-                                'Errored with 500. ' .
-                                'Not all goes 500, so it must be a forbidden directive in the .htaccess'
-                            );
-                        }
-                    } else {
-                        continue 2;
-                    }
             }
 
             if (!isset($entry[1])) {

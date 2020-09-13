@@ -50,7 +50,6 @@ EOD;
             'interpretation' => [
                 ['success', 'body', 'equals', '1'],
                 ['failure', 'body', 'equals', '0'],
-                ['handle-errors'],
                 ['inconclusive', 'body', 'begins-with', '<' . '?php'],
             ]
         ];

@@ -41,7 +41,10 @@ class CrashTester extends CustomTester
                         ['.htaccess', $htaccessRules],
                         ['request-me.txt', 'thanks'],
                     ],
-                    'request' => 'request-me.txt',
+                    'request' => [
+                        'url' => 'request-me.txt',
+                        'bypass-standard-error-handling' => ['all']
+                    ],
                     'interpretation' => [
                         ['success', 'status-code', 'not-equals', '500'],
                     ]
@@ -52,7 +55,10 @@ class CrashTester extends CustomTester
                         ['.htaccess', '# I am no trouble'],
                         ['request-me.txt', 'thanks'],
                     ],
-                    'request' => 'request-me.txt',
+                    'request' => [
+                        'url' => 'request-me.txt',
+                        'bypass-standard-error-handling' => ['all']
+                    ],
                     'interpretation' => [
                         // The suspect crashed. But if the innocent crashes too, we cannot judge
                         ['inconclusive', 'status-code', 'equals', '500'],

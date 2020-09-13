@@ -33,7 +33,6 @@ request:
 
 interpretation:
  - ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif']
- - ['handle-errors']
  - ['inconclusive', 'status-code', 'not-equals', '200']
  - ['failure', 'headers', 'not-contains-key-value', 'Content-Type', 'image/gif']
 ```
@@ -49,7 +48,7 @@ Implementation (YAML definition):
 ```yaml
 subdir: content-digest
 subtests:
-  - subdir: on    
+  - subdir: on
     files:
     - filename: '.htaccess'
       content: |
@@ -59,9 +58,7 @@ subtests:
     request:
       url: 'request-me.txt'
     interpretation:
-      - ['failure', 'status-code', 'equals', '500']
-      - ['handle-errors']    # calls the whole thing off
-      - ['failure', 'headers', 'not-contains-key', 'Content-MD5']
+      - ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
 
     - subdir: off
       files:
@@ -74,7 +71,6 @@ subtests:
         url: 'request-me.txt'
 
       interpretation:
-        - ['failure', 'status-code', 'equals', '500']
         - ['failure', 'headers', 'contains-key', 'Content-MD5']
         - ['inconclusive', 'status-code', 'not-equals', '200']
         - ['success', 'status-code', 'equals', '200']
@@ -104,12 +100,12 @@ files:
 
 request:
   url: ''   # We request the index, that is why its empty
+  bypass-standard-error-handling: ['404']
 
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
   - ['failure', 'status-code', 'equals', '404']  # "index.html" might not be set to index
-  - ['handle-errors']
 ```
 
 </p>
@@ -124,21 +120,20 @@ Implementation (YAML definition):
 ```yaml
 subdir: header-set
 files:
-  - filename: '.htaccess'
-    content: |
-      <IfModule mod_headers.c>
-          Header set X-Response-Header-Test: test
-      </IfModule>
-  - filename: 'request-me.txt'
-    content: 'hi'
+    - filename: '.htaccess'
+      content: |
+          <IfModule mod_headers.c>
+              Header set X-Response-Header-Test: test
+          </IfModule>
+    - filename: 'request-me.txt'
+      content: 'hi'
 
 request:
-  url: 'request-me.txt'
+    url: 'request-me.txt'
 
 interpretation:
-  - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test']
-  - ['handle-errors']
-  - [failure]
+    - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test'],
+    - [failure]
 ```
 
 </p>
@@ -200,7 +195,6 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['handle-errors']
   - ['inconclusive', 'body', 'begins-with', '<?php']
   - ['inconclusive']
  ```
@@ -246,7 +240,6 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['handle-errors']
   - ['inconclusive', 'body', 'begins-with', '<?php']
   - ['inconclusive']
 ```
@@ -279,7 +272,6 @@ request:
 interpretation:
   - [success, body, equals, '1']
   - [failure, body, equals, '0']
-  - ['handle-errors']
 ```
 
 </p>
@@ -292,7 +284,7 @@ Tests if a request header can be set using the *RequestHeader* directive.
 Implementation (YAML definition):
 
 ```yaml
-subdir: set-request-header
+subdir: request-header
 files:
   - filename: '.htaccess'
     content: |
@@ -316,7 +308,6 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['handle-errors']
   - ['inconclusive', 'body', 'begins-with', '<?php']
 ```
 
@@ -347,7 +338,6 @@ subtests:
     request:
       url: 'test.php'
     interpretation:
-      - ['inconclusive', 'status-code', 'equals', '403']
       - ['inconclusive', 'body', 'isEmpty']
       - ['inconclusive', 'status-code', 'not-equals', '200']
       - ['failure', 'body', 'equals', '0']
@@ -368,9 +358,10 @@ subtests:
     request:
       url: 'test.php'
     interpretation:
-      - ['inconclusive', 'body', 'isEmpty'],
-      - ['success', 'body', 'equals', '1'],
-      - ['failure', 'body', 'equals', '0'],
+      - ['inconclusive', 'body', 'isEmpty']
+      - ['success', 'body', 'equals', '1']
+      - ['failure', 'body', 'equals', '0']
+      - ['inconclusive']
 ```
 
 </p>
@@ -397,12 +388,15 @@ public function __construct($htaccessRules, $subSubDir = null)
         'subdir' => 'crash-tester/' . $subSubDir,
         'subtests' => [
             [
-                'subdir' => 'the-prospect',
+                'subdir' => 'the-suspect',
                 'files' => [
                     ['.htaccess', $htaccessRules],
                     ['request-me.txt', 'thanks'],
                 ],
-                'request' => 'request-me.txt',
+                'request' => [
+                    'url' => 'request-me.txt',
+                    'bypass-standard-error-handling' => ['all']
+                ],
                 'interpretation' => [
                     ['success', 'status-code', 'not-equals', '500'],
                 ]
@@ -413,12 +407,15 @@ public function __construct($htaccessRules, $subSubDir = null)
                     ['.htaccess', '# I am no trouble'],
                     ['request-me.txt', 'thanks'],
                 ],
-                'request' => 'request-me.txt',
+                'request' => [
+                    'url' => 'request-me.txt',
+                    'bypass-standard-error-handling' => ['all']
+                ],
                 'interpretation' => [
-                    // The prospect crashed. But if the innocent crashes too, we cannot judge
+                    // The suspect crashed. But if the innocent crashes too, we cannot judge
                     ['inconclusive', 'status-code', 'equals', '500'],
 
-                    // The innocent did not crash. The prospect is guilty!
+                    // The innocent did not crash. The suspect is guilty!
                     ['failure'],
                 ]
             ],

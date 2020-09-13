@@ -31,7 +31,6 @@ request:
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['failure', 'status-code', 'equals', '500']
   - ['inconclusive', 'body', 'begins-with', '<?php']
   - ['inconclusive']
 ----

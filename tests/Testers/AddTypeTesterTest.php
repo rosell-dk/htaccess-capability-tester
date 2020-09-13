@@ -14,7 +14,6 @@ request:
 
 interpretation:
  - ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif']
- - ['failure', 'status-code', 'equals', '500']
  - ['inconclusive', 'status-code', 'not-equals', '200']
  - ['failure', 'headers', 'not-contains-key-value', 'Content-Type', 'image/gif']
 

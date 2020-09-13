@@ -14,11 +14,11 @@ files:
 
 request:
   url: ''   # We request the index, that is why its empty
+  bypass-standard-error-handling: ['404']
 
 interpretation:
   - ['success', 'body', 'equals', '1']
   - ['failure', 'body', 'equals', '0']
-  - ['failure', 'status-code', 'equals', '500']
   - ['failure', 'status-code', 'equals', '404']  # "index.html" might not be set to index
 
 ----

@@ -131,7 +131,39 @@ class CustomTester extends AbstractTester
                 }
                 //echo $requestUrl . '<br>';
                 $response = $this->makeHTTPRequest($requestUrl);
-                $result = Interpreter::interpret($this, $response, $test['interpretation']);
+
+                // Standard error handling
+                $bypassErrors = [];
+                $byPass = false;
+                if (isset($test['request']['bypass-standard-error-handling'])) {
+                    $bypassErrors = $test['request']['bypass-standard-error-handling'];
+                }
+                if (in_array($response->statusCode, $bypassErrors) || in_array('all', $bypassErrors)) {
+                    $byPass = true;
+                }
+
+                if (!$byPass) {
+                    if ($response->statusCode == '403') {
+                        return new TestResult(null, '403 Forbidden');
+                    } elseif ($response->statusCode == '500') {
+                        $hct = $this->getHtaccessCapabilityTester();
+
+                        // Run innocent request / get it from cache. This sets
+                        // $statusCodeOfLastRequest, which we need now
+                        $hct->innocentRequestWorks();
+                        if ($hct->statusCodeOfLastRequest == '500') {
+                            return new TestResult(null, 'Errored with 500. Everything errors with 500.');
+                        } else {
+                            return new TestResult(
+                                false,
+                                'Errored with 500. ' .
+                                'Not all goes 500, so it must be a forbidden directive in the .htaccess'
+                            );
+                        }
+                    }
+                }
+
+                $result = Interpreter::interpret($response, $test['interpretation']);
                 if ($result->info != 'no-match') {
                     return $result;
                 }

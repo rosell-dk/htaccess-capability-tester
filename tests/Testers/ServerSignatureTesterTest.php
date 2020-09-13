@@ -18,7 +18,6 @@ subtests:
     request:
       url: 'test.php'
     interpretation:
-      - ['inconclusive', 'status-code', 'equals', '403']
       - ['inconclusive', 'body', 'isEmpty']
       - ['inconclusive', 'status-code', 'not-equals', '200']
       - ['failure', 'body', 'equals', '0']
@@ -39,9 +38,10 @@ subtests:
     request:
       url: 'test.php'
     interpretation:
-      - ['inconclusive', 'body', 'isEmpty'],
-      - ['success', 'body', 'equals', '1'],
-      - ['failure', 'body', 'equals', '0'],
+      - ['inconclusive', 'body', 'isEmpty']
+      - ['success', 'body', 'equals', '1']
+      - ['failure', 'body', 'equals', '0']
+      - ['inconclusive']
 
 ----
 
@@ -83,13 +83,13 @@ class ServerSignatureTesterTest extends BasisTestCase
         $fakeServer = new FakeServer();
         $fakeServer->disallowAllDirectives('fatal');
         $testResult = $fakeServer->runTester(new ServerSignatureTester());
-        //$this->assertFailure($testResult);
+        $this->assertFailure($testResult);
 
         // SPECIAL!
         // As ServerSignature is in core and AllowOverride is None, the tester assumes
         // that this does not happen. The 500 must then be another problem, which is why
         // it returns inconclusive
-        $this->assertInconclusive($testResult);
+        //$this->assertInconclusive($testResult);
     }
 
     public function testAccessAllDenied()

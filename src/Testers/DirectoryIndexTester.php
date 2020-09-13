@@ -32,12 +32,14 @@ EOD;
                 ['index.html', "0"],
                 ['index2.html', "1"]
             ],
-            'request' => '',    // We request the index, that is why its empty
+            'request' => [
+                'url' => '',    // We request the index, that is why its empty
+                'bypass-standard-error-handling' => ['404']
+            ],
             'interpretation' => [
                 ['success', 'body', 'equals', '1'],
                 ['failure', 'body', 'equals', '0'],
                 ['failure', 'status-code', 'equals', '404'],  // "index.html" might not be set to index
-                ['handle-errors'],
             ]
         ];
 

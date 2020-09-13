@@ -34,7 +34,6 @@ EOD;
             'request' => 'request-me.test',
             'interpretation' => [
                 ['success', 'headers', 'contains-key-value', 'Content-Type', 'image/gif'],
-                ['handle-errors'],
                 ['inconclusive', 'status-code', 'not-equals', '200'],
                 ['failure', 'headers', 'not-contains-key-value', 'Content-Type', 'image/gif'],
             ]

@@ -62,9 +62,10 @@ EOD;
                         ['.htaccess', 'ServerSignature On'],
                         ['test.php', $phpOn],
                     ],
-                    'request' => 'test.php',
+                    'request' => [
+                        'url' => 'test.php',
+                    ],
                     'interpretation' => [
-                        ['inconclusive', 'status-code', 'equals', '403'],
                         ['inconclusive', 'body', 'isEmpty'],
                         ['inconclusive', 'status-code', 'not-equals', '200'],
                         ['failure', 'body', 'equals', '0'],

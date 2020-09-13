@@ -34,7 +34,6 @@ EOD;
             'request' => 'request-me.txt',
             'interpretation' => [
                 ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
-                ['handle-errors'],
                 ['failure'],
             ]
         ];

@@ -12,8 +12,6 @@ subtests:
     request:
       url: 'request-me.txt'
     interpretation:
-      - ['failure', 'status-code', 'equals', '500'],
-      - ['inconclusive', 'status-code', 'not-equals', '200'],    // calls the whole thing off
       - ['failure', 'headers', 'not-contains-key', 'Content-MD5'],
 
     - subdir: off
@@ -27,7 +25,6 @@ subtests:
         url: 'request-me.txt'
 
       interpretation:
-        - ['failure', 'status-code', 'equals', '500']
         - ['failure', 'headers', 'contains-key', 'Content-MD5']
         - ['inconclusive', 'status-code', 'not-equals', '200']
         - ['success', 'status-code', 'equals', '200']
