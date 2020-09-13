@@ -35,18 +35,18 @@ directive has no effect        |  failure
 namespace HtaccessCapabilityTester\Tests\Testers;
 
 use HtaccessCapabilityTester\HttpResponse;
-use HtaccessCapabilityTester\Testers\SetResponseHeaderTester;
+use HtaccessCapabilityTester\Testers\HeaderSetTester;
 use HtaccessCapabilityTester\Tests\FakeServer;
 use PHPUnit\Framework\TestCase;
 
-class SetResponseHeaderTesterTest extends BasisTestCase
+class HeaderSetTesterTest extends BasisTestCase
 {
 
     public function testHtaccessDisabled()
     {
         $fakeServer = new FakeServer();
         $fakeServer->disableHtaccess();
-        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
+        $testResult = $fakeServer->runTester(new HeaderSetTester());
         $this->assertFailure($testResult);
     }
 
@@ -54,7 +54,7 @@ class SetResponseHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->disallowAllDirectives('fatal');
-        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
+        $testResult = $fakeServer->runTester(new HeaderSetTester());
         $this->assertFailure($testResult);
     }
 
@@ -62,7 +62,7 @@ class SetResponseHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->denyAllAccess();
-        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
+        $testResult = $fakeServer->runTester(new HeaderSetTester());
         $this->assertInconclusive($testResult);
     }
 
@@ -76,9 +76,9 @@ class SetResponseHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/set-response-header/request-me.txt' => new HttpResponse('hi', '200', [])
+            '/header-set/request-me.txt' => new HttpResponse('hi', '200', [])
         ]);
-        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
+        $testResult = $fakeServer->runTester(new HeaderSetTester());
         $this->assertFailure($testResult);
     }
 
@@ -86,9 +86,9 @@ class SetResponseHeaderTesterTest extends BasisTestCase
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/set-response-header/request-me.txt' => new HttpResponse('hi', '200', ['X-Response-Header-Test: test'])
+            '/header-set/request-me.txt' => new HttpResponse('hi', '200', ['X-Response-Header-Test: test'])
         ]);
-        $testResult = $fakeServer->runTester(new SetResponseHeaderTester());
+        $testResult = $fakeServer->runTester(new HeaderSetTester());
         $this->assertSuccess($testResult);
     }
 

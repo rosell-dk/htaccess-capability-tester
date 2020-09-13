@@ -79,6 +79,7 @@ class CustomTester extends AbstractTester
     }
 
 
+
     /**
      *  Run
      *
@@ -90,12 +91,28 @@ class CustomTester extends AbstractTester
      */
     public function run($baseDir, $baseUrl)
     {
+        $testResult = $this->realRun($baseDir, $baseUrl);
+        $testResult->statusCodeOfLastRequest = $this->lastHttpResponse->statusCode;
+        return $testResult;
+    }
+
+    /**
+     *  Run
+     *
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
+     *
+     * @return TestResult  Returns a test result
+     * @throws \Exception  In case the test cannot be run due to serious issues
+     */
+    private function realRun($baseDir, $baseUrl)
+    {
         $this->prepareForRun($baseDir, $baseUrl);
 
         $result = null;
         foreach ($this->tests as $i => $test) {
             if (isset($test['requirements'])) {
-                $hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
+                $hct = $this->getHtaccessCapabilityTester();
 
                 foreach ($test['requirements'] as $requirement) {
                     $requirementResult = $hct->callMethod($requirement);
@@ -114,7 +131,7 @@ class CustomTester extends AbstractTester
                 }
                 //echo $requestUrl . '<br>';
                 $response = $this->makeHTTPRequest($requestUrl);
-                $result = Interpreter::interpret($response, $test['interpretation']);
+                $result = Interpreter::interpret($this, $response, $test['interpretation']);
                 if ($result->info != 'no-match') {
                     return $result;
                 }

@@ -4,19 +4,19 @@ namespace HtaccessCapabilityTester;
 
 use \HtaccessCapabilityTester\Testers\AbstractTester;
 use \HtaccessCapabilityTester\Testers\AddTypeTester;
-
 use \HtaccessCapabilityTester\Testers\ContentDigestTester;
 use \HtaccessCapabilityTester\Testers\CrashTester;
-use \HtaccessCapabilityTester\Testers\DirectoryIndexTester;
-use \HtaccessCapabilityTester\Testers\HtaccessEnabledTester;
 use \HtaccessCapabilityTester\Testers\CustomTester;
+use \HtaccessCapabilityTester\Testers\DirectoryIndexTester;
+use \HtaccessCapabilityTester\Testers\HeaderSetTester;
+use \HtaccessCapabilityTester\Testers\HtaccessEnabledTester;
+use \HtaccessCapabilityTester\Testers\InnocentRequestTester;
 use \HtaccessCapabilityTester\Testers\ModLoadedTester;
 use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughRequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughEnvTester;
 use \HtaccessCapabilityTester\Testers\RewriteTester;
 use \HtaccessCapabilityTester\Testers\ServerSignatureTester;
 use \HtaccessCapabilityTester\Testers\SetRequestHeaderTester;
-use \HtaccessCapabilityTester\Testers\SetResponseHeaderTester;
 
 /**
  * Main entrance.
@@ -36,6 +36,10 @@ class HtaccessCapabilityTester
 
     /** @var string  Additional info regarding last test (often empty) */
     public $infoFromLastTest;
+
+    /** @var string  Status code from last test (can be empty) */
+    public $statusCodeOfLastRequest;
+
 
     /** @var HttpRequesterInterface  The object used to make the HTTP request */
     private $requester;
@@ -66,12 +70,14 @@ class HtaccessCapabilityTester
      */
     private function runTest($tester)
     {
+        //$tester->setHtaccessCapabilityTester($this);
         if (isset($this->requester)) {
             $tester->setHTTPRequester($this->requester);
         }
         if (isset($this->testFilesLineUpper)) {
             $tester->setTestFilesLineUpper($this->testFilesLineUpper);
         }
+        //$tester->setHtaccessCapabilityTester($this);
 
         $cacheKeys = [$this->baseDir, $tester->getCacheKey()];
         if (TestResultCache::isCached($cacheKeys)) {
@@ -82,6 +88,7 @@ class HtaccessCapabilityTester
         }
 
         $this->infoFromLastTest = $testResult->info;
+        $this->statusCodeOfLastRequest = $testResult->statusCodeOfLastRequest;
         return $testResult->status;
     }
 
@@ -170,7 +177,7 @@ class HtaccessCapabilityTester
      */
     public function headerSetWorks()
     {
-        return $this->runTest(new SetResponseHeaderTester());
+        return $this->runTest(new HeaderSetTester());
     }
 
     /**
@@ -293,25 +300,29 @@ class HtaccessCapabilityTester
     }
 
     /**
-     * Crash-test an innocent request.
+     * Test an innocent request to a text file.
      *
-     * Confirm that an innocent request does not results in a 500.
-     * The "innocent request" is a request to a "request-me.txt" file in a directory that does not contain a .htaccess.
+     * If this fails, everything else will also fail.
      *
-     * - success: if the request does not result in status 500.
-     * - failure: if the request results in status 500
-     * - inconclusive: if the request fails (ie timeout)
+     * Possible reasons for failure:
+     * - A .htaccess in a parent folder has forbidden tags / syntax errors
+     * -
+     *
+     * Possible reasons for inconclusive (= test could not be run)
+     * - 403 Forbidden
+     * - 404 Not Found
+     * - Request fails (ie due to timeout)
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function crashTestInnocentRequest()
+    public function innocentRequestWorks()
     {
         // TODO:
         // We are interested in other status codes. For example a 404 probably means that the URL supplied was wrong.
         // 403 is also interesting.
         // But we do not want to make separate tests for each. So make sure the innocent request is only made once and
         // the status is cached.
-        return true;
+        return $this->runTest(new InnocentRequestTester());
     }
 
     /**

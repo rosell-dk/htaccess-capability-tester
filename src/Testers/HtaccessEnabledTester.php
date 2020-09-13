@@ -61,7 +61,7 @@ class HtaccessEnabledTester extends AbstractTester
 
         $status = null;
         $info = '';
-        $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
+        $hct = $this->getHtaccessCapabilityTester();
 
         // If we can find anything that works, well the .htaccess must have been proccesed!
         if ($hct->serverSignatureWorks()    // Override: None,  Status: Core, REQUIRES PHP

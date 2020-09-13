@@ -188,9 +188,17 @@ interpretation:
         else: failure
   - [inconclusive]
 
-
-
 ```
+or:
+```yaml
+interpretation:
+  - [success, body, equals, '1']
+  - [failure, body, equals, '0']
+  - [handle-errors]   # Standard error handling (403, 404, 500)
+
+
+```   
+
 
 ```php
 [

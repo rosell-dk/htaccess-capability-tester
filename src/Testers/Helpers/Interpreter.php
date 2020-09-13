@@ -4,6 +4,7 @@ namespace HtaccessCapabilityTester\Testers\Helpers;
 
 use \HtaccessCapabilityTester\HttpResponse;
 use \HtaccessCapabilityTester\TestResult;
+use \HtaccessCapabilityTester\Testers\AbstractTester;
 
 /**
  * Class for interpreting responses using a defined interpretation table.
@@ -18,12 +19,14 @@ class Interpreter
     /**
      * Interpret a response using an interpretation table.
      *
-     * @param HttpResponse  $response
-     * @param array         $interpretationTable
+     * @param AbstractTester  $tester
+     * @param HttpResponse    $response
+     * @param array           $interpretationTable
      *
-     * @return TestResult   If there is no match, the test result will have status = false and info = "no-match".
+     * @return TestResult   If there is no match, the test result will have status = false and
+     *                      info = "no-match".
      */
-    public static function interpret($response, $interpretationTable)
+    public static function interpret($tester, $response, $interpretationTable)
     {
         foreach ($interpretationTable as $i => $entry) {
             // ie:
@@ -43,6 +46,24 @@ class Interpreter
                     break;
                 case 'success':
                     $status = true;
+                    break;
+                case 'handle-errors':
+                    if ($response->statusCode == '403') {
+                        return new TestResult(null, '403 Forbidden');
+                    } elseif ($response->statusCode == '500') {
+                        $hct = $tester->getHtaccessCapabilityTester();
+                        if ($hct->innocentRequestWorks()) {
+                            return new TestResult(
+                                false,
+                                'Errored with 500. ' .
+                                'Not all goes 500, so it must be a forbidden directive in the .htaccess'
+                            );
+                        } else {
+                            return new TestResult(null, 'Errored with 500. Everything errors with 500.');
+                        }
+                    } else {
+                        continue 2;
+                    }
                     break;
             }
 

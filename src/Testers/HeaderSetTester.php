@@ -9,7 +9,7 @@ namespace HtaccessCapabilityTester\Testers;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class SetResponseHeaderTester extends CustomTester
+class HeaderSetTester extends CustomTester
 {
 
     /**
@@ -26,7 +26,7 @@ class SetResponseHeaderTester extends CustomTester
 EOD;
 
         $test = [
-            'subdir' => 'set-response-header',
+            'subdir' => 'header-set',
             'files' => [
                 ['.htaccess', $htaccessFile],
                 ['request-me.txt', "hi"],
@@ -34,8 +34,9 @@ EOD;
             'request' => 'request-me.txt',
             'interpretation' => [
                 ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
-                ['failure', 'status-code', 'equals', '500'],
-                ['inconclusive', 'status-code', 'not-equals', '200'],
+                //['failure', 'status-code', 'equals', '500'],
+                //['inconclusive', 'status-code', 'not-equals', '200'],
+                ['handle-errors'],
                 ['failure'],
             ]
         ];

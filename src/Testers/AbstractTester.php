@@ -2,6 +2,7 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
+use \HtaccessCapabilityTester\HtaccessCapabilityTester;
 use \HtaccessCapabilityTester\HttpRequesterInterface;
 use \HtaccessCapabilityTester\HttpResponse;
 use \HtaccessCapabilityTester\SimpleHttpRequester;
@@ -26,8 +27,14 @@ abstract class AbstractTester
     /** @var HttpRequesterInterface  An object for making the HTTP request */
     protected $httpRequester;
 
+    /** @var HttpResponse  The response of the previous HTTP request (if any) */
+    public $lastHttpResponse;
+
     /** @var TestFilesLineUpperInterface  An object for lining up the test-files */
     protected $testFilesLineUpper;
+
+    /** @var HtaccessCapabilityTester  The HtaccessCapabilityTester to use for subtests */
+    private $hct;
 
     /**
      * Register the test files using the "registerTestFile" method
@@ -120,7 +127,8 @@ abstract class AbstractTester
         if (!isset($this->httpRequester)) {
             $this->httpRequester = new SimpleHttpRequester();
         }
-        return $this->httpRequester->makeHTTPRequest($url);
+        $this->lastHttpResponse = $this->httpRequester->makeHTTPRequest($url);
+        return $this->lastHttpResponse;
     }
 
     /**
@@ -132,6 +140,9 @@ abstract class AbstractTester
     public function setHTTPRequester($httpRequester)
     {
         $this->httpRequester = $httpRequester;
+        if (isset($this->hct)) {
+            $this->hct->setHTTPRequester($this->httpRequester);
+        }
     }
 
     public function lineUpTestFiles()
@@ -151,5 +162,30 @@ abstract class AbstractTester
     public function setTestFilesLineUpper($testFilesLineUpper)
     {
         $this->testFilesLineUpper = $testFilesLineUpper;
+        if (isset($this->hct)) {
+            $this->hct->setTestFilesLineUpper($this->testFilesLineUpper);
+        }
+    }
+
+    /**
+     * Get HtaccessCapabilityTester.
+     *
+     * Some tests use HtaccessCapabilityTester to run other tests.
+     * This gets such object with baseDir and baseUrl set up
+     *
+     * @return HtaccessCapabilityTester
+     */
+    public function getHtaccessCapabilityTester()
+    {
+        if (!isset($this->hct)) {
+            $this->hct = new HtaccessCapabilityTester($this->baseDir, $this->baseUrl);
+            if (isset($this->testFilesLineUpper)) {
+                $this->hct->setTestFilesLineUpper($this->testFilesLineUpper);
+            }
+            if (isset($this->httpRequester)) {
+                $this->hct->setHTTPRequester($this->httpRequester);
+            }
+        }
+        return $this->hct;
     }
 }
