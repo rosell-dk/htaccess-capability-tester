@@ -1,6 +1,6 @@
 # htaccess-capability-tester
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/rosell-dk/webp-convert.svg?style=flat-square)](https://packagist.org/packages/rosell-dk/htaccess-capability-tester)
+[![Latest Stable Version](https://img.shields.io/packagist/v/rosell-dk/htaccess-capability-tester.svg?style=flat-square)](https://packagist.org/packages/rosell-dk/htaccess-capability-tester)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg?style=flat-square)](https://php.net)
 [![Build Status](https://travis-ci.org/rosell-dk/htaccess-capability-tester.png?branch=master)](https://travis-ci.org/rosell-dk/htaccess-capability-tester)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/rosell-dk/htaccess-capability-tester.svg?style=flat-square)](https://scrutinizer-ci.com/g/rosell-dk/htaccess-capability-tester/code-structure/master)
