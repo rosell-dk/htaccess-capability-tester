@@ -47,29 +47,29 @@ class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
      *
      * @return  void
      */
-     private function removeUnusedFiles($files)
-     {
-         $dirs = [];
-         foreach ($files as $file) {
-             list($filename, $content) = $file;
-             $dir = dirname($filename);
-             if (!isset($dirs[$dir])) {
-                 $dirs[$dir] = [];
-             }
-             $dirs[$dir][] = basename($filename);
-         }
+    private function removeUnusedFiles($files)
+    {
+        $dirs = [];
+        foreach ($files as $file) {
+            list($filename, $content) = $file;
+            $dir = dirname($filename);
+            if (!isset($dirs[$dir])) {
+                $dirs[$dir] = [];
+            }
+            $dirs[$dir][] = basename($filename);
+        }
 
-         foreach ($dirs as $dir => $filesSupposedToBeInDir) {
-             $fileIterator = new \FilesystemIterator($dir);
-             while ($fileIterator->valid()) {
-                 $filename = $fileIterator->getFilename();
-                 if (!in_array($filename, $filesSupposedToBeInDir)) {
-                     unlink($dir . '/' . $filename);
-                 }
-                 $fileIterator->next();
-             }
-         }
-     }
+        foreach ($dirs as $dir => $filesSupposedToBeInDir) {
+            $fileIterator = new \FilesystemIterator($dir);
+            while ($fileIterator->valid()) {
+                $filename = $fileIterator->getFilename();
+                if (!in_array($filename, $filesSupposedToBeInDir)) {
+                    unlink($dir . '/' . $filename);
+                }
+                $fileIterator->next();
+            }
+        }
+    }
 
     /**
      * Line-up test files.
