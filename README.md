@@ -48,7 +48,32 @@ A typical test s mentioned, a test has three phases:
 
 So, in order for `customTest()`, it needs to know. 1) What files are needed? 2) Which file should be requested? 3) How should the response be interpreted?
 
-Here is how you could implement the `headerSetWorks` functionality yourself.
+Here is a definition which can be used for implementing the `headerSetWorks` functionality yourself. It's in YAML because it is more readable like this.
+
+```yaml
+subdir: header-set
+files:
+    - filename: '.htaccess'
+      content: |
+          <IfModule mod_headers.c>
+              Header set X-Response-Header-Test: test
+          </IfModule>
+    - filename: 'request-me.txt'
+      content: 'hi'
+
+request:
+    url: 'request-me.txt'
+
+interpretation:
+    - [success, headers, contains-key-value, 'X-Response-Header-Test', 'test']
+    - [failure, status-code, equals, '500']       # actually not needed (part of standard error handling)
+    - [inconclusive, status-code, equals, '403']  # actually not needed (part of standard error handling)
+    - [inconclusive, status-code, equals, '404']  # actually not needed (part of standard error handling)
+    - [failure]
+```
+
+<details><summary>Click here to see the PHP example instead</summary>
+<p><br>
 
 ```php
 $htaccessFile = <<<'EOD'
@@ -79,6 +104,9 @@ if ($hct->customTest($test)) {
     // setting a header in the .htaccess works!
 }
 ```
+
+</p>
+</details>
 
 In fact, this is more or less how this library implements it.
 
