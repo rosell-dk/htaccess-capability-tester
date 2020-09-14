@@ -113,19 +113,20 @@ class ResponseInterpreter
             $arg1 = (isset($entry[3]) ? $entry[3] : '');
             $arg2 = (isset($entry[4]) ? $entry[4] : '');
 
-            $val = '';
+            $valString = '';
+            $valHash = [];
             $valType = '';
             switch ($propertyToExamine) {
                 case 'status-code':
-                    $val = $response->statusCode;
+                    $valString = $response->statusCode;
                     $valType = 'string';
                     break;
                 case 'body':
-                    $val = $response->body;
+                    $valString = $response->body;
                     $valType = 'string';
                     break;
                 case 'headers':
-                    $val = $response->getHeadersHash();
+                    $valHash = $response->getHeadersHash();
                     $valType = 'hash';
                     break;
             }
@@ -135,15 +136,15 @@ class ResponseInterpreter
                 $reason .= ' "' . implode('" "', array_slice($entry, 3)) . '"';
             }
             if (($propertyToExamine == 'status-code') && ($operator == 'not-equals')) {
-                $reason .= ' - it was: ' . $val;
+                $reason .= ' - it was: ' . $valString;
             }
             $result = new TestResult($status, $reason);
 
             $match = false;
             if ($valType == 'string') {
-                $match = self::evaluateConditionForString($operator, $val, $arg1);
+                $match = self::evaluateConditionForString($operator, $valString, $arg1);
             } elseif ($valType == 'hash') {
-                $match =  self::evaluateConditionForHash($operator, $val, $arg1, $arg2);
+                $match =  self::evaluateConditionForHash($operator, $valHash, $arg1, $arg2);
             }
             if ($match) {
                 return $result;
