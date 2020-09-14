@@ -72,7 +72,7 @@ class HtaccessCapabilityTester
     {
         //$tester->setHtaccessCapabilityTester($this);
         if (isset($this->requester)) {
-            $tester->setHTTPRequester($this->requester);
+            $tester->setHttpRequester($this->requester);
         }
         if (isset($this->testFilesLineUpper)) {
             $tester->setTestFilesLineUpper($this->testFilesLineUpper);

@@ -137,7 +137,7 @@ class CustomTester extends AbstractTester
                     $requestUrl .= $test['request'];
                 }
                 //echo $requestUrl . '<br>';
-                $response = $this->makeHTTPRequest($requestUrl);
+                $response = $this->makeHttpRequest($requestUrl);
 
                 // Standard error handling
                 $bypassErrors = [];

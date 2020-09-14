@@ -122,12 +122,12 @@ abstract class AbstractTester
      *
      * @return  HttpResponse  A HttpResponse object, which simply contains body and status code.
      */
-    protected function makeHTTPRequest($url)
+    protected function makeHttpRequest($url)
     {
         if (!isset($this->httpRequester)) {
             $this->httpRequester = new SimpleHttpRequester();
         }
-        $this->lastHttpResponse = $this->httpRequester->makeHTTPRequest($url);
+        $this->lastHttpResponse = $this->httpRequester->makeHttpRequest($url);
         return $this->lastHttpResponse;
     }
 
@@ -137,11 +137,11 @@ abstract class AbstractTester
      * @param  HttpRequesterInterface  $httpRequester  The HTTPRequester to use
      * @return void
      */
-    public function setHTTPRequester($httpRequester)
+    public function setHttpRequester($httpRequester)
     {
         $this->httpRequester = $httpRequester;
         if (isset($this->hct)) {
-            $this->hct->setHTTPRequester($this->httpRequester);
+            $this->hct->setHttpRequester($this->httpRequester);
         }
     }
 
@@ -183,7 +183,7 @@ abstract class AbstractTester
                 $this->hct->setTestFilesLineUpper($this->testFilesLineUpper);
             }
             if (isset($this->httpRequester)) {
-                $this->hct->setHTTPRequester($this->httpRequester);
+                $this->hct->setHttpRequester($this->httpRequester);
             }
         }
         return $this->hct;

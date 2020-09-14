@@ -53,7 +53,7 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
         //print_r($files);
     }
 
-    public function makeHTTPRequest($url)
+    public function makeHttpRequest($url)
     {
         $body = '';
         $statusCode = '200';

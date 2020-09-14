@@ -11,7 +11,7 @@ class SimpleHttpRequester implements HttpRequesterInterface
      *
      * @return  HttpResponse  A HttpResponse object, which simply contains body and status code.
      */
-    public function makeHTTPRequest($url)
+    public function makeHttpRequest($url)
     {
         // PS: We suppress the E_WARNING level error generated on failure
         $body = @file_get_contents($url);
