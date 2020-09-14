@@ -114,15 +114,19 @@ class ResponseInterpreter
             $arg2 = (isset($entry[4]) ? $entry[4] : '');
 
             $val = '';
+            $valType = '';
             switch ($propertyToExamine) {
                 case 'status-code':
                     $val = $response->statusCode;
+                    $valType = 'string';
                     break;
                 case 'body':
                     $val = $response->body;
+                    $valType = 'string';
                     break;
                 case 'headers':
                     $val = $response->getHeadersHash();
+                    $valType = 'hash';
                     break;
             }
 
@@ -135,10 +139,11 @@ class ResponseInterpreter
             }
             $result = new TestResult($status, $reason);
 
-            if ($propertyToExamine == 'headers') {
-                $match =  self::evaluateConditionForHash($operator, $val, $arg1, $arg2);
-            } else {
+            $match = false;
+            if ($valType == 'string') {
                 $match = self::evaluateConditionForString($operator, $val, $arg1);
+            } elseif ($valType == 'hash') {
+                $match =  self::evaluateConditionForHash($operator, $val, $arg1, $arg2);
             }
             if ($match) {
                 return $result;
