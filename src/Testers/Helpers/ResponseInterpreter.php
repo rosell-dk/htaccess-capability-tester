@@ -17,6 +17,75 @@ class ResponseInterpreter
 {
 
     /**
+     * Parse status string (failure | success | inconclusive) to bool|null.
+     *
+     * @param  string  $statusString  (failure | success | inconclusive)
+     * @return bool|null
+     */
+    private static function parseStatusString($statusString)
+    {
+        $status = null;
+        switch ($statusString) {
+            case 'failure':
+                $status = false;
+                break;
+            case 'inconclusive':
+                $status = null;
+                break;
+            case 'success':
+                $status = true;
+                break;
+        }
+        return $status;
+    }
+
+    /**
+     * Evaluate condition (string examination)
+     *
+     * @param  string  $val
+     * @param  string  $operator  (is-empty | equals | not-equals | begins-with)
+     * @param  string  $arg1  (only required for some operators)
+     * @return bool
+     */
+    private static function evaluateConditionForString($operator, $val, $arg1)
+    {
+        switch ($operator) {
+            case 'is-empty':
+                return ($val == '');
+            case 'equals':
+                return ($val == $arg1);
+            case 'not-equals':
+                return ($val != $arg1);
+            case 'begins-with':
+                return (strpos($val, $arg1) === 0);
+        }
+        return false;
+    }
+
+    /**
+     * Evaluate condition  (hash examination)
+     *
+     * @param  array  $val
+     * @param  string $operator  (is-empty | equals | not-equals | begins-with)
+     * @param  string $arg1  (only required for some operators)
+     * @return bool
+     */
+    private static function evaluateConditionForHash($operator, $val, $arg1, $arg2)
+    {
+        switch ($operator) {
+            case 'contains-key':
+                return (isset($val[$arg1]));
+            case 'not-contains-key':
+                return (!isset($val[$arg1]));
+            case 'contains-key-value':
+                return (isset($val[$arg1]) && ($val[$arg1] == $arg2));
+            case 'not-contains-key-value':
+                return (!isset($val[$arg1]) || ($val[$arg1] != $arg2));
+        }
+        return false;
+    }
+
+    /**
      * Interpret a response using an interpretation table.
      *
      * @param HttpResponse    $response
@@ -33,20 +102,7 @@ class ResponseInterpreter
             // ['failure', 'statusCode', 'equals', '500']
             // ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
 
-            $statusStr = $entry[0];
-
-            $status = null;
-            switch ($statusStr) {
-                case 'failure':
-                    $status = false;
-                    break;
-                case 'inconclusive':
-                    $status = null;
-                    break;
-                case 'success':
-                    $status = true;
-                    break;
-            }
+            $status = self::parseStatusString($entry[0]);
 
             if (!isset($entry[1])) {
                 return new TestResult($status, '');
@@ -79,47 +135,13 @@ class ResponseInterpreter
             }
             $result = new TestResult($status, $reason);
 
-            switch ($operator) {
-                case 'is-empty':
-                    if ($val == '') {
-                        return $result;
-                    }
-                    break;
-                case 'equals':
-                    if ($val == $arg1) {
-                        return $result;
-                    }
-                    break;
-                case 'not-equals':
-                    if ($val != $arg1) {
-                        return $result;
-                    }
-                    break;
-                case 'begins-with':
-                    if (strpos($val, $arg1) === 0) {
-                        return $result;
-                    }
-                    break;
-                case 'contains-key':
-                    if (isset($val[$arg1])) {
-                        return $result;
-                    }
-                    break;
-                case 'not-contains-key':
-                    if (!isset($val[$arg1])) {
-                        return $result;
-                    }
-                    break;
-                case 'contains-key-value':
-                    if (isset($val[$arg1]) && ($val[$arg1] == $arg2)) {
-                        return $result;
-                    }
-                    break;
-                case 'not-contains-key-value':
-                    if (!isset($val[$arg1]) || ($val[$arg1] != $arg2)) {
-                        return $result;
-                    }
-                    break;
+            if ($propertyToExamine == 'headers') {
+                $match =  self::evaluateConditionForHash($operator, $val, $arg1, $arg2);
+            } else {
+                $match = self::evaluateConditionForString($operator, $val, $arg1);
+            }
+            if ($match) {
+                return $result;
             }
         }
         return new TestResult(null, 'no-match');
