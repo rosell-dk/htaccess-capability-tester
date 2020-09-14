@@ -151,7 +151,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
-    public function rewritingWorks()
+    public function rewriteWorks()
     {
         return $this->runTest(new RewriteTester());
     }
@@ -245,7 +245,7 @@ class HtaccessCapabilityTester
     /**
      * Call one of the methods of this class (not all allowed).
      *
-     * @param string  $functionCall  ie "rewritingWorks()"
+     * @param string  $functionCall  ie "rewriteWorks()"
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
@@ -254,8 +254,8 @@ class HtaccessCapabilityTester
         switch ($functionCall) {
             case 'htaccessEnabled()':
                 return $this->htaccessEnabled();
-            case 'rewritingWorks()':
-                return $this->rewritingWorks();
+            case 'rewriteWorks()':
+                return $this->rewriteWorks();
             case 'addTypeWorks()':
                 return $this->addTypeWorks();
             case 'headerSetWorks()':

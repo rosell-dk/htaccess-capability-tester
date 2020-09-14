@@ -147,11 +147,11 @@ Main part of implementation:
 ```php
 // If we can find anything that works, well the .htaccess must have been proccesed!
 if ($hct->serverSignatureWorks()    // Override: None,  Status: Core, REQUIRES PHP
-    || $hct->contentDigestWorks()      // Override: Options,  Status: Core
-    || $hct->addTypeWorks()            // Override: FileInfo, Status: Base, Module: mime
+    || $hct->contentDigestWorks()   // Override: Options,  Status: Core
+    || $hct->addTypeWorks()         // Override: FileInfo, Status: Base, Module: mime
     || $hct->directoryIndexWorks()  // Override: Indexes,  Status: Base, Module: mod_dir
-    || $hct->rewritingWorks()            // Override: FileInfo, Status: Extension, Module: rewrite
-    || $hct->headerSetWorks()  // Override: FileInfo, Status: Extension, Module: headers
+    || $hct->rewriteWorks()         // Override: FileInfo, Status: Extension, Module: rewrite
+    || $hct->headerSetWorks()       // Override: FileInfo, Status: Extension, Module: headers
 ) {
     $status = true;
 } else {
@@ -325,7 +325,7 @@ interpretation:
 </p>
 </details>
 
-<details><summary><b>rewritingWorks()</b></summary>
+<details><summary><b>rewriteWorks()</b></summary>
 <p><br>
 Tests if rewriting works.
 
@@ -515,7 +515,7 @@ Apache can be configured to ignore `.htaccess` files altogether. This method tes
 The method works by trying out a series of subtests until a conclusion is reached. It will never come out inconclusive.
 
 How does it work?
-- The first strategy is testing a series of features, such as `rewritingWorks()`. If any of them works, well, then the `.htaccess` must have been processed.
+- The first strategy is testing a series of features, such as `rewriteWorks()`. If any of them works, well, then the `.htaccess` must have been processed.
 - Secondly, the `serverSignatureWorks()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
 - Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not. This last method is bulletproof - so why not do it first? Because it might generate an entry in the error log.
 

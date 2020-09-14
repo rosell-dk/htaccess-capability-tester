@@ -65,11 +65,11 @@ class HtaccessEnabledTester extends AbstractTester
 
         // If we can find anything that works, well the .htaccess must have been proccesed!
         if ($hct->serverSignatureWorks()    // Override: None,  Status: Core, REQUIRES PHP
-            || $hct->contentDigestWorks()      // Override: Options,  Status: Core
-            || $hct->addTypeWorks()            // Override: FileInfo, Status: Base, Module: mime
+            || $hct->contentDigestWorks()   // Override: Options,  Status: Core
+            || $hct->addTypeWorks()         // Override: FileInfo, Status: Base, Module: mime
             || $hct->directoryIndexWorks()  // Override: Indexes,  Status: Base, Module: mod_dir
-            || $hct->rewritingWorks()            // Override: FileInfo, Status: Extension, Module: rewrite
-            || $hct->headerSetWorks()  // Override: FileInfo, Status: Extension, Module: headers
+            || $hct->rewriteWorks()         // Override: FileInfo, Status: Extension, Module: rewrite
+            || $hct->headerSetWorks()       // Override: FileInfo, Status: Extension, Module: headers
         ) {
             $status = true;
         } else {

@@ -49,8 +49,8 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'requirements' => ['htaccessEnabled()'],
             'subdir' => 'server-signature',
+            'requirements' => ['htaccessEnabled()'],
             'files' => [
                 ['.htaccess', $htaccess],
                 ['test.php', $php],
@@ -91,7 +91,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
 
         return [
-            'requirements' => ['rewritingWorks()'],
+            'requirements' => ['rewriteWorks()'],
             'subdir' => 'rewrite',
             'files' => [
                 ['.htaccess', $htaccess],
@@ -281,7 +281,7 @@ EOD;
         $this->modName = $moduleName;
 
         $tests = [
-            'subdir' => 'mod-loaded/' . $this->modName,
+            'subdir' => 'module-loaded/' . $this->modName,
             'subtests' => [
                 $this->getServerSignatureBasedTest(),   // PHP
                 $this->getContentDigestBasedTest(),     // Override: Options
@@ -291,7 +291,6 @@ EOD;
                 $this->getResponseHeaderBasedTest()     // Override: FileInfo, Module: mod_headers
             ]
         ];
-
         parent::__construct($tests);
     }
 }
