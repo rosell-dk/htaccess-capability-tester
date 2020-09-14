@@ -60,21 +60,6 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
             return $this->responses[$url];
         }
 
-        $simplyServeRequested = ($this->htaccessDisabled || ($this->disallowAllDirectives && (!$this->fatal)));
-        if ($simplyServeRequested) {
-            // Simply return the file that was requested
-            if (isset($this->filesMap[$url])) {
-
-                $isPhpFile = (strrpos($url, '.php') == strlen($url) - 4);
-                if ($isPhpFile && ($this->handlePHPasText)) {
-                    return new HttpResponse('Sorry, this server cannot process PHP!', '200', []); ;
-                } else {
-                    return new HttpResponse($this->filesMap[$url], '200', []); ;
-                }
-            } else {
-                return new HttpResponse('Not found', '404', []);
-            }
-        }
         if (($this->disallowAllDirectives) && ($this->fatal)) {
 
             $urlToHtaccessInSameFolder = dirname($url) . '/.htaccess';
@@ -90,7 +75,23 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
             return new HttpResponse('', '403', []);
         }
 
-        return new HttpResponse('Not found', '404', []);
+
+        //$simplyServeRequested = ($this->htaccessDisabled || ($this->disallowAllDirectives && (!$this->fatal)));
+
+        // Simply return the file that was requested
+        if (isset($this->filesMap[$url])) {
+
+            $isPhpFile = (strrpos($url, '.php') == strlen($url) - 4);
+            if ($isPhpFile && ($this->handlePHPasText)) {
+                return new HttpResponse('Sorry, this server cannot process PHP!', '200', []); ;
+            } else {
+                return new HttpResponse($this->filesMap[$url], '200', []); ;
+            }
+        } else {
+            return new HttpResponse('Not found', '404', []);
+        }
+
+        //return new HttpResponse('Not found', '404', []);
     }
 
     /**
