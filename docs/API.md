@@ -79,6 +79,70 @@ subtests:
 </p>
 </details>
 
+<details><summary><b>crashTest($rules, $subdir)</b></summary>
+<p><br>
+Test if some rules makes the server "crash" (respond with 500 Internal Server Error for requests to files in the folder).
+You pass the rules that you want to check.
+You can optionally pass in a subdir for the tests. If you do not do that, a hash of the rules will be used.
+
+Implementation (PHP):
+
+```php
+/**
+ * @param string $htaccessRules  The rules to check
+ * @param string $subSubDir      subdir for the test files. If not supplied, a fingerprint of the rules will be used
+ */
+public function __construct($htaccessRules, $subSubDir = null)
+{
+    if (is_null($subSubDir)) {
+        $subSubDir = hash('md5', $htaccessRules);
+    }
+
+    $test = [
+        'subdir' => 'crash-tester/' . $subSubDir,
+        'subtests' => [
+            [
+                'subdir' => 'the-suspect',
+                'files' => [
+                    ['.htaccess', $htaccessRules],
+                    ['request-me.txt', 'thanks'],
+                ],
+                'request' => [
+                    'url' => 'request-me.txt',
+                    'bypass-standard-error-handling' => ['all']
+                ],
+                'interpretation' => [
+                    ['success', 'status-code', 'not-equals', '500'],
+                ]
+            ],
+            [
+                'subdir' => 'the-innocent',
+                'files' => [
+                    ['.htaccess', '# I am no trouble'],
+                    ['request-me.txt', 'thanks'],
+                ],
+                'request' => [
+                    'url' => 'request-me.txt',
+                    'bypass-standard-error-handling' => ['all']
+                ],
+                'interpretation' => [
+                    // The suspect crashed. But if the innocent crashes too, we cannot judge
+                    ['inconclusive', 'status-code', 'equals', '500'],
+
+                    // The innocent did not crash. The suspect is guilty!
+                    ['failure'],
+                ]
+            ],
+        ]
+    ];
+
+    parent::__construct($test);
+}
+```
+
+</p>
+</details>
+
 <details><summary><b>directoryIndexWorks()</b></summary>
 <p><br>
 Tests if DirectoryIndex works.
@@ -141,7 +205,14 @@ interpretation:
 
 <details><summary><b>htaccessEnabled()</b></summary>
 <p><br>
-Apache can be configured to completely ignore .htaccess files. This test examines if .htaccess files are proccesed.
+Apache can be configured to ignore `.htaccess` files altogether. This method tests if the `.htaccess` file is processed at all
+
+The method works by trying out a series of subtests until a conclusion is reached. It will never come out inconclusive.
+
+How does it work?
+- The first strategy is testing a series of features, such as `rewriteWorks()`. If any of them works, well, then the `.htaccess` must have been processed.
+- Secondly, the `serverSignatureWorks()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
+- Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not. This last method is bulletproof - so why not do it first? Because it might generate an entry in the error log.
 
 Main part of implementation:
 ```php
@@ -460,83 +531,6 @@ subtests:
       - ['failure', 'body', 'equals', '0']
       - ['inconclusive']
 ```
-
-</p>
-</details>
-
-<details><summary><b>crashTest($rules, $subdir)</b></summary>
-<p><br>
-Test if some rules makes the server "crash" (respond with 500 Internal Server Error for requests to files in the folder).
-
-Implementation (PHP):
-
-```php
-/**
- * @param string $htaccessRules  The rules to check
- * @param string $subSubDir      subdir for the test files. If not supplied, a fingerprint of the rules will be used
- */
-public function __construct($htaccessRules, $subSubDir = null)
-{
-    if (is_null($subSubDir)) {
-        $subSubDir = hash('md5', $htaccessRules);
-    }
-
-    $test = [
-        'subdir' => 'crash-tester/' . $subSubDir,
-        'subtests' => [
-            [
-                'subdir' => 'the-suspect',
-                'files' => [
-                    ['.htaccess', $htaccessRules],
-                    ['request-me.txt', 'thanks'],
-                ],
-                'request' => [
-                    'url' => 'request-me.txt',
-                    'bypass-standard-error-handling' => ['all']
-                ],
-                'interpretation' => [
-                    ['success', 'status-code', 'not-equals', '500'],
-                ]
-            ],
-            [
-                'subdir' => 'the-innocent',
-                'files' => [
-                    ['.htaccess', '# I am no trouble'],
-                    ['request-me.txt', 'thanks'],
-                ],
-                'request' => [
-                    'url' => 'request-me.txt',
-                    'bypass-standard-error-handling' => ['all']
-                ],
-                'interpretation' => [
-                    // The suspect crashed. But if the innocent crashes too, we cannot judge
-                    ['inconclusive', 'status-code', 'equals', '500'],
-
-                    // The innocent did not crash. The suspect is guilty!
-                    ['failure'],
-                ]
-            ],
-        ]
-    ];
-
-    parent::__construct($test);
-}
-```
-
-</p>
-</details>
-
-<details><summary><b>htaccessEnabled()</b></summary>
-<p><br>
-
-Apache can be configured to ignore `.htaccess` files altogether. This method tests if the `.htaccess` file is processed at all
-
-The method works by trying out a series of subtests until a conclusion is reached. It will never come out inconclusive.
-
-How does it work?
-- The first strategy is testing a series of features, such as `rewriteWorks()`. If any of them works, well, then the `.htaccess` must have been processed.
-- Secondly, the `serverSignatureWorks()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
-- Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not. This last method is bulletproof - so why not do it first? Because it might generate an entry in the error log.
 
 </p>
 </details>
