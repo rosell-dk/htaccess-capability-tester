@@ -127,7 +127,7 @@ For more info, look in the API (below). For real examples, check out the classes
 
 # API overview
 
-## Test methods in HtaccessCapabilityTester:
+## Test methods in HtaccessCapabilityTester
 
 All the test methods returns a test result, which is *true* for success, *false* for failure or *null* for inconclusive.
 
@@ -666,6 +666,20 @@ subtests:
       - ['inconclusive']
 ```
 
+</p>
+</details>
+
+## Other methods in HtaccessCapabilityTester
+
+<details><summary><b>setHttpRequester($requester)</b></summary>
+<p><br>
+This allows you to use another object for making HTTP requests than the standard one provided by this library. The standard one uses `file_get_contents` to make the request and is implemented in `SimpleHttpRequester.php`. You might for example prefer to use *curl* or, if you are making a Wordpress plugin, you might want to use the one provided by the Wordpress framework.
+</p>
+</details>
+
+<details><summary><b>setTestFilesLineUpper($testFilesLineUpper)</b></summary>
+<p><br>
+This allows you to use another object for lining up the test files than the standard one provided by this library. The standard one uses `file_put_contents` to save files and is implemented in `SimpleTestFileLineUpper.php`. You will probably not need to swap the test file line-upper.
 </p>
 </details>
 
