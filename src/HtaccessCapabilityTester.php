@@ -11,7 +11,7 @@ use \HtaccessCapabilityTester\Testers\DirectoryIndexTester;
 use \HtaccessCapabilityTester\Testers\HeaderSetTester;
 use \HtaccessCapabilityTester\Testers\HtaccessEnabledTester;
 use \HtaccessCapabilityTester\Testers\InnocentRequestTester;
-use \HtaccessCapabilityTester\Testers\ModLoadedTester;
+use \HtaccessCapabilityTester\Testers\ModuleLoadedTester;
 use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughRequestHeaderTester;
 use \HtaccessCapabilityTester\Testers\PassInfoFromRewriteToScriptThroughEnvTester;
 use \HtaccessCapabilityTester\Testers\RewriteTester;
@@ -138,7 +138,7 @@ class HtaccessCapabilityTester
      */
     public function moduleLoaded($moduleName)
     {
-        return $this->runTest(new ModLoadedTester($moduleName));
+        return $this->runTest(new ModuleLoadedTester($moduleName));
     }
 
     /**
