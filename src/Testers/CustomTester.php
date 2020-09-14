@@ -145,6 +145,8 @@ class CustomTester extends AbstractTester
                 if (!$byPass) {
                     if ($response->statusCode == '403') {
                         return new TestResult(null, '403 Forbidden');
+                    } elseif ($response->statusCode == '404') {
+                        return new TestResult(null, '404 Not Found');
                     } elseif ($response->statusCode == '500') {
                         $hct = $this->getHtaccessCapabilityTester();
 
