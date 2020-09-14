@@ -27,6 +27,9 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
     /** @var bool  If server should go fatal about forbidden directives */
     private $fatal = false;
 
+    /** @var bool  If all requests should crash! (500) */
+    private $crashAll = false;
+
     /** @var bool  If access is denied for all requests */
     private $accessAllDenied = false;
 
@@ -61,13 +64,17 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
             return $this->responses[$url];
         }
 
+        if ($this->crashAll) {
+            return new HttpResponse('', '500', []);
+        }
+        
         if (($this->disallowAllDirectives) && ($this->fatal)) {
 
             $urlToHtaccessInSameFolder = dirname($url) . '/.htaccess';
             $doesFolderContainHtaccess = isset($this->filesMap[$urlToHtaccessInSameFolder]);
 
             if ($doesFolderContainHtaccess) {
-                return new HttpResponse('', '500', []); ;
+                return new HttpResponse('', '500', []);
             }
         }
 
@@ -117,6 +124,12 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
     {
         $this->accessAllDenied = true;
     }
+
+    public function makeAllCrash()
+    {
+        $this->crashAll = true;
+    }
+
 
     public function handlePHPasText()
     {
