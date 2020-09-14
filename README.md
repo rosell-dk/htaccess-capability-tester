@@ -56,6 +56,11 @@ Here is a definition which can be used for implementing the `headerSetWorks` fun
 
 ```php
 <?php
+require 'vendor/autoload.php';
+use HtaccessCapabilityTester\HtaccessCapabilityTester;
+
+$hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
+
 $htaccessFile = <<<'EOD'
 <IfModule mod_headers.c>
 Header set X-Response-Header-Test: test
