@@ -4,6 +4,73 @@ namespace HtaccessCapabilityTester;
 
 class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
 {
+
+    /**
+     * Write missing and changed files.
+     *
+     * @param  array  $files   The files that needs to be there
+     *
+     * @return  void
+     */
+    private function writeMissingAndChangedFiles($files)
+    {
+        foreach ($files as $file) {
+            $success = true;
+            list($filename, $content) = $file;
+            $dir = dirname($filename);
+            if (!is_dir($dir)) {
+                if (!mkdir($dir, 0777, true)) {
+                    // TODO: Use custom exception
+                    throw new \Exception('Failed creating dir: ' . $dir);
+                }
+            }
+            if (file_exists($filename)) {
+                // file already exists, now check if content is the same
+                $existingContent = file_get_contents($filename);
+                if (($existingContent === false) || ($content != $existingContent)) {
+                    $success = file_put_contents($filename, $content);
+                }
+            } else {
+                $success = file_put_contents($filename, $content);
+            }
+            if (!$success) {
+                // TODO: Use custom exception
+                throw new \Exception('Failed creating file: ' . $filename);
+            }
+        }
+    }
+
+    /**
+     * Remove unused files.
+     *
+     * @param  array  $files   The files that needs to be there (others will be removed)
+     *
+     * @return  void
+     */
+     private function removeUnusedFiles($files)
+     {
+         $dirs = [];
+         foreach ($files as $file) {
+             list($filename, $content) = $file;
+             $dir = dirname($filename);
+             if (!isset($dirs[$dir])) {
+                 $dirs[$dir] = [];
+             }
+             $dirs[$dir][] = basename($filename);
+         }
+
+         foreach ($dirs as $dir => $filesSupposedToBeInDir) {
+             $fileIterator = new \FilesystemIterator($dir);
+             while ($fileIterator->valid()) {
+                 $filename = $fileIterator->getFilename();
+                 if (!in_array($filename, $filesSupposedToBeInDir)) {
+                     unlink($dir . '/' . $filename);
+                 }
+                 $fileIterator->next();
+             }
+         }
+     }
+
     /**
      * Line-up test files.
      *
@@ -19,49 +86,9 @@ class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
     public function lineUp($files)
     {
         // 1. Put missing files / changed files
-        foreach ($files as $file) {
-            $success = true;
-            list($filename, $content) = $file;
-            $dir = dirname($filename);
-            if (!is_dir($dir)) {
-                if (!mkdir($dir, 0777, true)) {
-                    throw new \Exception('Failed creating dir: ' . $dir);
-                }
-            }
-            if (file_exists($filename)) {
-                // file already exists, now check if content is the same
-                $existingContent = file_get_contents($filename);
-                if (($existingContent === false) || ($content != $existingContent)) {
-                    $success = file_put_contents($filename, $content);
-                }
-            } else {
-                $success = file_put_contents($filename, $content);
-            }
-            if (!$success) {
-                throw new \Exception('Failed creating file: ' . $filename);
-            }
-        }
+        $this->writeMissingAndChangedFiles($files);
 
         // 2. Remove unused files
-        $dirs = [];
-        foreach ($files as $file) {
-            list($filename, $content) = $file;
-            $dir = dirname($filename);
-            if (!isset($dirs[$dir])) {
-                $dirs[$dir] = [];
-            }
-            $dirs[$dir][] = basename($filename);
-        }
-
-        foreach ($dirs as $dir => $filesSupposedToBeInDir) {
-            $fileIterator = new \FilesystemIterator($dir);
-            while ($fileIterator->valid()) {
-                $filename = $fileIterator->getFilename();
-                if (!in_array($filename, $filesSupposedToBeInDir)) {
-                    unlink($dir . '/' . $filename);
-                }
-                $fileIterator->next();
-            }
-        }
+        $this->removeUnusedFiles($files);
     }
 }
