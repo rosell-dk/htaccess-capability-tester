@@ -280,6 +280,25 @@ interpretation:
 </p>
 </details>
 
+<details><summary><b>moduleLoaded($moduleName)</b></summary>
+<p><br>
+Tests if a given module is loaded. Note that you in most cases would want to not just know if a module is loaded, but also ensure that the directives you are using are allowed. So for example, instead of calling `moduleLoaded("rewrite")`, you should probably call `rewriteWorks()`;
+
+Implementation:
+
+The method has many ways to test if a module is loaded, based on what works. If for example setting headers has been established to be working and we want to know if "setenvif" module is loaded, the following .htaccess rules will be tested, and the response will be examined.
+```
+<IfModule mod_setenvif.c>
+    Header set X-Response-Header-Test: 1
+</IfModule>
+<IfModule !mod_setenvif.c>
+    Header set X-Response-Header-Test: 0
+</IfModule>
+```
+
+</p>
+</details>
+
 <details><summary><b>passingInfoFromRewriteToScriptThroughRequestHeaderWorks()</b></summary>
 <p><br>
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here tells the RewriteRule directive to set an environment variable which a RequestHeader directive picks up on and passes on to the script in a request header.
