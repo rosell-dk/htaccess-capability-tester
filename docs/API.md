@@ -143,6 +143,14 @@ public function __construct($htaccessRules, $subSubDir = null)
 </p>
 </details>
 
+<details><summary><b>customTest($definition)</b></summary>
+<p>
+
+Allows you to run a custom test. Check out README.md for instructions
+
+</p>
+</details>
+
 <details><summary><b>directoryIndexWorks()</b></summary>
 <p><br>
 Tests if DirectoryIndex works.
