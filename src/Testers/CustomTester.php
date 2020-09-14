@@ -7,7 +7,7 @@ use \HtaccessCapabilityTester\HttpRequesterInterface;
 use \HtaccessCapabilityTester\HttpResponse;
 use \HtaccessCapabilityTester\SimpleHttpRequester;
 use \HtaccessCapabilityTester\TestResult;
-use \HtaccessCapabilityTester\Testers\Helpers\Interpreter;
+use \HtaccessCapabilityTester\Testers\Helpers\ResponseInterpreter;
 
 class CustomTester extends AbstractTester
 {
@@ -172,7 +172,7 @@ class CustomTester extends AbstractTester
                     }
                 }
 
-                $result = Interpreter::interpret($response, $test['interpretation']);
+                $result = ResponseInterpreter::interpret($response, $test['interpretation']);
                 if ($result->info != 'no-match') {
                     return $result;
                 }

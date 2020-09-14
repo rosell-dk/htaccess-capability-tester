@@ -13,7 +13,7 @@ use \HtaccessCapabilityTester\Testers\AbstractTester;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class Interpreter
+class ResponseInterpreter
 {
 
     /**
