@@ -6,6 +6,7 @@ use HtaccessCapabilityTester\HttpResponse;
 use HtaccessCapabilityTester\HttpRequesterInterface;
 use HtaccessCapabilityTester\TestFilesLineUpperInterface;
 use HtaccessCapabilityTester\TestResult;
+use HtaccessCapabilityTester\TestResultCache;
 use HtaccessCapabilityTester\Testers\AbstractTester;
 
 class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
@@ -138,6 +139,7 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
      */
     public function runTester($tester)
     {
+        TestResultCache::empty();
         $tester->setTestFilesLineUpper($this);
         $tester->setHttpRequester($this);
 
