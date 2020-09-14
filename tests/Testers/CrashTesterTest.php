@@ -38,11 +38,13 @@ Tested:
 
 Server setup                   |  Test result
 --------------------------------------------------
-.htaccess disabled             |  failure
-forbidden directives (fatal)   |  failure
-access denied                  |  inconclusive  (it might be allowed to other files)
-directive has no effect        |  failure
-                               |  success
+.htaccess disabled             |  success!  (nothing crashes)
+access denied                  |  success!  (nothing crashes. In case there is both errors and
+                                             access denied, the response is 500. This is however
+                                             only tested on Apache 2.4.29)
+all requests crash             |  inconclusive  (even innocent request crashes means that we cannot
+                                             conclude that the rules are "crashy", or that they are not
+
 */
 
 
@@ -55,54 +57,50 @@ use PHPUnit\Framework\TestCase;
 
 class CrashTesterTest extends BasisTestCase
 {
-  public function testHtaccessDisabled()
-  {
-    $this->assertFalse(false);
-  }
-  /*
-
     public function testHtaccessDisabled()
     {
-        $fakeServer = new FakeServer();
-        $fakeServer->disableHtaccess();
-        $testResult = $fakeServer->runTester(new CrashTester(''));
-        $this->assertFailure($testResult);
-    }
-
-    public function testDisallowedDirectivesFatal()
-    {
-        $fakeServer = new FakeServer();
-        $fakeServer->disallowAllDirectives('fatal');
-        $testResult = $fakeServer->runTester(new CrashTester());
-        $this->assertFailure($testResult);
+      $fakeServer = new FakeServer();
+      $fakeServer->disableHtaccess();
+      $testResult = $fakeServer->runTester(new CrashTester(''));
+      $this->assertSuccess($testResult);
     }
 
     public function testAccessAllDenied()
     {
         $fakeServer = new FakeServer();
         $fakeServer->denyAllAccess();
-        $testResult = $fakeServer->runTester(new CrashTester());
+        $testResult = $fakeServer->runTester(new CrashTester(''));
+        $this->assertSuccess($testResult);
+    }
+
+    public function testWhenAllRequestsCrashes()
+    {
+        $fakeServer = new FakeServer();
+        $fakeServer->makeAllCrash();
+        $testResult = $fakeServer->runTester(new CrashTester(''));
         $this->assertInconclusive($testResult);
     }
 
-    public function testDirectiveHasNoEffect()
+    public function testWhenAllRequestsCrashes2()
     {
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
-            '/rewrite/0.txt' => new HttpResponse('0', '200', [])
+            '/crash-tester/test/the-suspect/request-me.txt' => new HttpResponse('', '500', []),
+            '/crash-tester/test/the-innocent/request-me.txt' => new HttpResponse('', '500', [])
         ]);
-        $testResult = $fakeServer->runTester(new CrashTester());
+        $testResult = $fakeServer->runTester(new CrashTester('aoeu', 'test'));
+        $this->assertInconclusive($testResult);
+    }
+
+    public function testWhenRequestCrashesButInnocentDoesNot()
+    {
+        $fakeServer = new FakeServer();
+        $fakeServer->setResponses([
+            '/crash-tester/test/the-suspect/request-me.txt' => new HttpResponse('', '500', []),
+            '/crash-tester/test/the-innocent/request-me.txt' => new HttpResponse('thanks', '200', [])
+        ]);
+        $testResult = $fakeServer->runTester(new CrashTester('aoeu', 'test'));
         $this->assertFailure($testResult);
     }
 
-    public function testSuccess()
-    {
-        $fakeServer = new FakeServer();
-        $fakeServer->setResponses([
-            '/rewrite/0.txt' => new HttpResponse('1', '200', [])
-        ]);
-        $testResult = $fakeServer->runTester(new CrashTester());
-        $this->assertSuccess($testResult);
-    }
-*/
 }
