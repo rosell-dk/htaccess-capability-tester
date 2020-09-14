@@ -2,6 +2,8 @@
 
 namespace HtaccessCapabilityTester\Testers;
 
+use \HtaccessCapabilityTester\TestResult;
+
 /**
  * Class for testing if a module is loaded.
  *
@@ -9,12 +11,42 @@ namespace HtaccessCapabilityTester\Testers;
  * @author     Bjørn Rosell <it@rosell.dk>
  * @since      Class available since 0.7
  */
-class ModuleLoadedTester extends CustomTester
+class ModuleLoadedTester extends AbstractTester
 {
 
     /* @var string A valid Apache module name (ie "rewrite") */
-    protected $modName;
+    protected $moduleName;
 
+    /**
+     * Constructor.
+     *
+     * @return void
+     */
+    public function __construct($moduleName)
+    {
+        $this->moduleName = $moduleName;
+    }
+
+    /**
+     * Child classes must implement this method, which tells which subdir the
+     * test files are to be put.
+     *
+     * @return  string  A subdir for the test files
+     */
+    public function getSubDir()
+    {
+        return 'module-loaded/' . $this->moduleName;
+    }
+
+    /**
+     * Register the test files using the "registerTestFile" method
+     *
+     * @return  void
+     */
+    public function registerTestFiles()
+    {
+        // No test files for this test
+    }
 
     private function getServerSignatureBasedTest()
     {
@@ -46,11 +78,11 @@ ServerSignature On
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
-            'subdir' => 'server-signature',
             'requirements' => ['htaccessEnabled()'],
+            'subdir' => 'server-signature',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['test.php', $php],
@@ -88,7 +120,7 @@ RewriteEngine On
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
             'requirements' => ['rewriteWorks()'],
@@ -111,7 +143,7 @@ EOD;
     /**
      *  @return  array
      */
-    private function getResponseHeaderBasedTest()
+    private function getHeaderSetBasedTest()
     {
 
         // Test files, method: Using Response Header
@@ -131,7 +163,7 @@ EOD;
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
             'requirements' => ['headerSetWorks()'],
@@ -171,7 +203,7 @@ EOD;
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
             'requirements' => ['contentDigestWorks()'],
@@ -211,7 +243,7 @@ EOD;
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
             'requirements' => ['directoryIndexWorks()'],
@@ -253,7 +285,7 @@ EOD;
 </IfModule>
 EOD;
 
-        $htaccess = str_replace('mod_xxx', 'mod_' . $this->modName, $htaccess);
+        $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
             'requirements' => ['addTypeWorks()'],
@@ -270,27 +302,93 @@ EOD;
         ];
     }
 
-
     /**
-     * Constructor.
-     *
-     * @return void
+     *  @return  array
      */
-    public function __construct($moduleName)
+    private function getLastTest()
     {
-        $this->modName = $moduleName;
-
-        $tests = [
-            'subdir' => 'module-loaded/' . $this->modName,
-            'subtests' => [
-                $this->getServerSignatureBasedTest(),   // PHP
-                $this->getContentDigestBasedTest(),     // Override: Options
-                $this->getAddTypeBasedTest(),           // Override: FileInfo, Status: Base (mod_mime)
-                $this->getDirectoryIndexBasedTest(),    // Override: Indexes, Status: Base (mod_dir)
-                $this->getRewriteBasedTest(),           // Override: FileInfo, Module: mod_rewrite
-                $this->getResponseHeaderBasedTest()     // Override: FileInfo, Module: mod_headers
+        return [
+            'requirements' => ['htaccessEnabled()'],
+            'subdir' => 'last-test',
+            'files' => [
+                ['request-me.test', '0'],
+            ],
+            'request' => 'request-me.test',
+            'interpretation' => [
+                ['inconclusive'],
             ]
         ];
-        parent::__construct($tests);
+    }
+
+    /**
+     * @return  bool|null
+     */
+    private function run2()
+    {
+        $hct = $this->getHtaccessCapabilityTester();
+
+        $testResult = $hct->customTest($this->getServerSignatureBasedTest());
+        if (!is_null($testResult)) {
+            // PHP
+            return $testResult;
+        }
+
+        if ($hct->contentDigestWorks()) {
+            // Override: Options
+            return $hct->customTest($this->getContentDigestBasedTest());
+        }
+
+        if ($hct->addTypeWorks()) {
+            // Override: FileInfo, Status: Base (mod_mime)
+            return $hct->customTest($this->getAddTypeBasedTest());
+        }
+
+        if ($hct->directoryIndexWorks()) {
+            // Override: Indexes, Status: Base (mod_dir)
+            return $hct->customTest($this->getDirectoryIndexBasedTest());
+        }
+
+        if ($hct->rewriteWorks()) {
+            // Override: FileInfo, Module: mod_rewrite
+            return $hct->customTest($this->getRewriteBasedTest());
+        }
+
+        if ($hct->headerSetWorks()) {
+            //Override: FileInfo, Module: mod_headers
+            return $hct->customTest($this->getHeaderSetBasedTest());
+        }
+        return null;
+    }
+
+    /**
+     *  Run the test.
+     *
+     * @param  string  $baseDir  Directory on the server where the test files can be put
+     * @param  string  $baseUrl  The base URL of the test files
+     *
+     * @return TestResult   Returns a test result
+     */
+    public function run($baseDir, $baseUrl)
+    {
+        $this->prepareForRun($baseDir, $baseUrl);
+
+        $hct = $this->getHtaccessCapabilityTester();
+
+        $htaccessEnabledTest = $hct->htaccessEnabled();
+        if ($htaccessEnabledTest === false) {
+            return new TestResult(false, '.htaccess files are ignored');
+        }
+        if ($htaccessEnabledTest === null) {
+            // We happen to know that if that test cannot establish anything,
+            // then none of the usual weapons works - we can surrender
+            return new TestResult(null, 'no methods available');
+        }
+
+        $status = $this->run2();
+        if (is_null($status)) {
+            return new TestResult(null, 'no methods available');
+        } else {
+            return new TestResult($status, '');
+        }
     }
 }
