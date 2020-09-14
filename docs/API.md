@@ -139,6 +139,58 @@ interpretation:
 </p>
 </details>
 
+<details><summary><b>htaccessEnabled()</b></summary>
+<p><br>
+Apache can be configured to completely ignore .htaccess files. This test examines if .htaccess files are proccesed.
+
+Main part of implementation:
+```php
+// If we can find anything that works, well the .htaccess must have been proccesed!
+if ($hct->serverSignatureWorks()    // Override: None,  Status: Core, REQUIRES PHP
+    || $hct->contentDigestWorks()      // Override: Options,  Status: Core
+    || $hct->addTypeWorks()            // Override: FileInfo, Status: Base, Module: mime
+    || $hct->directoryIndexWorks()  // Override: Indexes,  Status: Base, Module: mod_dir
+    || $hct->rewritingWorks()            // Override: FileInfo, Status: Extension, Module: rewrite
+    || $hct->headerSetWorks()  // Override: FileInfo, Status: Extension, Module: headers
+) {
+    $status = true;
+} else {
+    // The serverSignatureWorks() test is special because if it comes out as a failure,
+    // we can be *almost* certain that the .htaccess has been completely disabled
+
+    $serverSignatureWorks = $hct->serverSignatureWorks();
+    if ($serverSignatureWorks === false) {
+        $status = false;
+        $info = 'ServerSignature directive does not work - and it is in core';
+    } else {
+        // Last bullet in the gun:
+        // Try an .htaccess with syntax errors in it.
+        // (we do this lastly because it may generate an entry in the error log)
+        $crashTestResult = $hct->crashTest('aoeu', 'htaccess-enabled-malformed-htaccess');
+        if ($crashTestResult === false) {
+            // It crashed, - which means .htaccess is processed!
+            $status = true;
+            $info = 'syntax error in an .htaccess causes crash';
+        } elseif ($crashTestResult === true) {
+            // It did not crash. So the .htaccess is not processed, as syntax errors
+            // makes servers crash
+            $status = false;
+            $info = 'syntax error in an .htaccess does not cause crash';
+        } elseif (is_null($crashTestResult)) {
+            // It did crash. But so did a request to an innocent text file in a directory
+            // without a .htaccess file in it. Something is making all requests fail and
+            // we cannot judge.
+            $status = null;
+            $info = 'all requests results in 500 Internal Server Error';
+        }
+    }
+}
+return new TestResult($status, $info);
+```
+
+</p>
+</details>
+
 <details><summary><b>innocentRequestWorks()</b></summary>
 <p><br>
 Tests if an innocent request to a text file works. Most tests use this test when they get a 500 Internal Error, in order to decide if this is a general problem (general problem => inconclusive, specific problem => failure).
