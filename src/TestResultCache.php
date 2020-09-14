@@ -26,7 +26,7 @@ class TestResultCache
      */
     public static function cache($cacheKeys, $testResult)
     {
-        if (is_null(self::$cache)) {
+        if (!isset(self::$cache)) {
             self::$cache = [];
         }
         list($key1, $key2) = $cacheKeys;
@@ -45,7 +45,7 @@ class TestResultCache
      */
     public static function isCached($cacheKeys)
     {
-        if (is_null(self::$cache)) {
+        if (!isset(self::$cache)) {
             return false;
         }
         list($key1, $key2) = $cacheKeys;
