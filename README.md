@@ -48,27 +48,24 @@ A typical test s mentioned, a test has three phases:
 
 So, in order for `customTest()`, it needs to know. 1) What files are needed? 2) Which file should be requested? 3) How should the response be interpreted?
 
-Here is how you could implement the `rewriteWorks` functionality yourself:
+Here is how you could implement the `headerSetWorks` functionality yourself.
 
 ```php
 $htaccessFile = <<<'EOD'
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteRule ^0\.txt$ 1\.txt [L]
+<IfModule mod_headers.c>
+Header set X-Response-Header-Test: test
 </IfModule>
 EOD;
 
 $test = [
-    'subdir' => 'our-own-rewrite-test',
+    'subdir' => 'header-set',
     'files' => [
         ['.htaccess', $htaccessFile],
-        ['0.txt', "0"],
-        ['1.txt', "1"]
+        ['request-me.txt', "hi"],
     ],
-    'request' => '0.txt',
+    'request' => 'request-me.txt',
     'interpretation' => [
-        ['success', 'body', 'equals', '1'],
-        ['failure', 'body', 'equals', '0'],
+        ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
 
         // the next three mappings are actually not necessary, as customTest() does standard
         // error handling automatically (can be turned off)
@@ -79,7 +76,7 @@ $test = [
 ];
 
 if ($hct->customTest($test)) {
-    // rewriting works!
+    // setting a header in the .htaccess works!
 }
 ```
 
@@ -94,7 +91,6 @@ The test definition has the following sub-definitions:
 For more info, look in the API (below). For real examples, check out the classes in the "Testers" dir - most of them are defined in this "language"
 
 # API overview
-This document is under development...
 
 ## Test methods in HtaccessCapabilityTester:
 
