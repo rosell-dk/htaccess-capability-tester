@@ -306,7 +306,6 @@ class HtaccessCapabilityTester
      *
      * Possible reasons for failure:
      * - A .htaccess in a parent folder has forbidden tags / syntax errors
-     * -
      *
      * Possible reasons for inconclusive (= test could not be run)
      * - 403 Forbidden
@@ -317,11 +316,6 @@ class HtaccessCapabilityTester
      */
     public function innocentRequestWorks()
     {
-        // TODO:
-        // We are interested in other status codes. For example a 404 probably means that the URL supplied was wrong.
-        // 403 is also interesting.
-        // But we do not want to make separate tests for each. So make sure the innocent request is only made once and
-        // the status is cached.
         return $this->runTest(new InnocentRequestTester());
     }
 
