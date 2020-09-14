@@ -377,8 +377,7 @@ EOD;
         $htaccessEnabledTest = $hct->htaccessEnabled();
         if ($htaccessEnabledTest === false) {
             return new TestResult(false, '.htaccess files are ignored');
-        }
-        if ($htaccessEnabledTest === null) {
+        } elseif (is_null($htaccessEnabledTest)) {
             // We happen to know that if that test cannot establish anything,
             // then none of the usual weapons works - we can surrender
             return new TestResult(null, 'no methods available');
