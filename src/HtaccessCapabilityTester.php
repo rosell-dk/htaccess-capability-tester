@@ -249,6 +249,7 @@ class HtaccessCapabilityTester
      *
      * @return bool|null   true=success, false=failure, null=inconclusive
      */
+     /*
     public function callMethod($functionCall)
     {
         switch ($functionCall) {
@@ -275,7 +276,7 @@ class HtaccessCapabilityTester
         }
 
         // TODO:             moduleLoaded($moduleName)
-    }
+    }*/
 
     /**
      * Crash-test some .htaccess rules.

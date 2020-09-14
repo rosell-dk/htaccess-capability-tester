@@ -115,6 +115,9 @@ class CustomTester extends AbstractTester
 
         $result = null;
         foreach ($this->tests as $i => $test) {
+            /*
+            Disabled, as I'm no longer sure if it is that useful
+
             if (isset($test['requirements'])) {
                 $hct = $this->getHtaccessCapabilityTester();
 
@@ -125,7 +128,7 @@ class CustomTester extends AbstractTester
                         continue 2;
                     }
                 }
-            }
+            }*/
             if (isset($test['request'])) {
                 $requestUrl = $this->baseUrl . '/' . $test['subdir'] . '/';
                 if (isset($test['request']['url'])) {
