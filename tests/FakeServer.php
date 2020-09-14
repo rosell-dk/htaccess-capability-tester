@@ -139,7 +139,7 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
      */
     public function runTester($tester)
     {
-        TestResultCache::empty();
+        TestResultCache::clear();
         $tester->setTestFilesLineUpper($this);
         $tester->setHttpRequester($this);
 

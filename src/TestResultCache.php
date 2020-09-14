@@ -15,7 +15,7 @@ class TestResultCache
 {
 
     /* @var array   Array for caching */
-    public static $cache;
+    protected static $cache;
 
     /**
      *
@@ -72,5 +72,10 @@ class TestResultCache
         }
         list($key1, $key2) = $cacheKeys;
         return self::$cache[$key1][$key2];
+    }
+
+    public static function clear()
+    {
+        self::$cache = null;
     }
 }
