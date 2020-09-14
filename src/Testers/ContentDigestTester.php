@@ -19,12 +19,6 @@ class ContentDigestTester extends CustomTester
      */
     public function __construct()
     {
-        $htaccessFile = <<<'EOD'
-<IfModule mod_dir.c>
-    DirectoryIndex index2.html
-</IfModule>
-EOD;
-
         $test = [
             'subdir' => 'content-digest',
             'subtests' => [
