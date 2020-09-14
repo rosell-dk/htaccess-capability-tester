@@ -24,8 +24,9 @@ class TestResult
     /**
      * Constructor.
      *
-     * @param  string  $status
-     * @param  string  $info
+     * @param  bool|null  $status
+     * @param  string     $info
+     * @param  string     $statusCodeOfLastRequest  (optional)
      *
      * @return void
      */
