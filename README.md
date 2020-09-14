@@ -52,8 +52,10 @@ Here is a definition which can be used for implementing the `headerSetWorks` fun
 
 <details><summary><u>Click here to see the PHP example</u></summary>
 <p><br>
+<b>PHP example</b>
 
 ```php
+<?php
 $htaccessFile = <<<'EOD'
 <IfModule mod_headers.c>
 Header set X-Response-Header-Test: test
