@@ -139,6 +139,32 @@ interpretation:
 </p>
 </details>
 
+<details><summary><b>innocentRequestWorks()</b></summary>
+<p><br>
+Tests if an innocent request to a text file works. Most tests use this test when they get a 500 Internal Error, in order to decide if this is a general problem (general problem => inconclusive, specific problem => failure).
+
+Implementation (YAML definition):
+
+```yaml
+subdir: innocent-request
+files:
+  - filename: 'request-me.txt'
+    content: 'thank you my dear'
+
+request:
+  url: 'request-me.txt'
+  bypass-standard-error-handling: 'all'
+
+interpretation:
+  - ['success', 'status-code', 'equals', '200']
+  - ['inconclusive', 'status-code', 'equals', '403']
+  - ['inconclusive', 'status-code', 'equals', '404']
+  - ['failure']
+```
+
+</p>
+</details>
+
 <details><summary><b>passingInfoFromRewriteToScriptThroughEnvWorks()</b></summary>
 <p><br>
 Say you have a rewrite rule that points to a PHP script and you would like to pass some information along to the PHP. Usually, you will just pass it in the query string. But this won't do if the information is sensitive. In that case, there are some tricks available. The trick being tested here tells the RewriteRule directive to set an environment variable, which in many setups can be picked up in the script.
