@@ -92,7 +92,11 @@ class CustomTester extends AbstractTester
     public function run($baseDir, $baseUrl)
     {
         $testResult = $this->realRun($baseDir, $baseUrl);
-        $testResult->statusCodeOfLastRequest = $this->lastHttpResponse->statusCode;
+
+        // A test might not create a request if it has an unfulfilled requirement
+        if (isset($this->lastHttpResponse)) {
+            $testResult->statusCodeOfLastRequest = $this->lastHttpResponse->statusCode;
+        }
         return $testResult;
     }
 
