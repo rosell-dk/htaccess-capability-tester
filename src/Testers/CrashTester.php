@@ -47,6 +47,7 @@ class CrashTester extends CustomTester
                     ],
                     'interpretation' => [
                         ['success', 'status-code', 'not-equals', '500'],
+                        // Otherwise fall through to next subtest
                     ]
                 ],
                 [
