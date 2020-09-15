@@ -122,10 +122,10 @@ interpretation:
 In fact, this is more or less how this library implements it.
 
 The test definition has the following sub-definitions:
-*subdir*: Defines which subdir the test files should reside in
-*files*: Defines the files for the test (filename and content)
-*request*: Defines which file that should be requested
-*interpretation*: Defines how to interprete the response. It consists of a list of mappings is read from the top until one of the conditions is met. The first line for example translates to "Map to success if the body of the response equals '1'". If none of the conditions are met, the result is automatically mapped to 'inconclusive'.
+- *subdir*: Defines which subdir the test files should reside in
+- *files*: Defines the files for the test (filename and content)
+- *request*: Defines which file that should be requested
+- *interpretation*: Defines how to interprete the response. It consists of a list of mappings is read from the top until one of the conditions is met. The first line for example translates to "Map to success if the body of the response equals '1'". If none of the conditions are met, the result is automatically mapped to 'inconclusive'.
 
 For more info, look in the API (below). For real examples, check out the classes in the "Testers" dir - most of them are defined in this "language"
 
