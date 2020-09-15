@@ -86,6 +86,71 @@ class ResponseInterpreter
     }
 
     /**
+     * Interpret line.
+     *
+     * @param HttpResponse    $response
+     * @param array           $line
+     *
+     * @return  TestResult|null  If the condition matches, a TestResult is returned, otherwise null
+     */
+    private static function interpretLine($response, $line)
+    {
+        // ie:
+        // ['inconclusive', 'body', 'is-empty'],
+        // ['failure', 'statusCode', 'equals', '500']
+        // ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
+
+        $status = self::parseStatusString($line[0]);
+
+        if (!isset($line[1])) {
+            return new TestResult($status, '');
+        }
+
+        $propertyToExamine = $line[1];
+        $operator = $line[2];
+        $arg1 = (isset($line[3]) ? $line[3] : '');
+        $arg2 = (isset($line[4]) ? $line[4] : '');
+
+        $valString = '';
+        $valHash = [];
+        $valType = '';
+        switch ($propertyToExamine) {
+            case 'status-code':
+                $valString = $response->statusCode;
+                $valType = 'string';
+                break;
+            case 'body':
+                $valString = $response->body;
+                $valType = 'string';
+                break;
+            case 'headers':
+                $valHash = $response->getHeadersHash();
+                $valType = 'hash';
+                break;
+        }
+
+        $reason = $propertyToExamine . ' ' . $operator;
+        if (isset($line[3])) {
+            $reason .= ' "' . implode('" "', array_slice($line, 3)) . '"';
+        }
+        if (($propertyToExamine == 'status-code') && ($operator == 'not-equals')) {
+            $reason .= ' - it was: ' . $valString;
+        }
+        $result = new TestResult($status, $reason);
+
+        $match = false;
+        if ($valType == 'string') {
+            $match = self::evaluateConditionForString($operator, $valString, $arg1);
+        } elseif ($valType == 'hash') {
+            $match =  self::evaluateConditionForHash($operator, $valHash, $arg1, $arg2);
+        }
+        if ($match) {
+            return $result;
+        }
+        return null;
+    }
+
+    /**
      * Interpret a response using an interpretation table.
      *
      * @param HttpResponse    $response
@@ -96,58 +161,10 @@ class ResponseInterpreter
      */
     public static function interpret($response, $interpretationTable)
     {
-        foreach ($interpretationTable as $i => $entry) {
-            // ie:
-            // ['inconclusive', 'body', 'is-empty'],
-            // ['failure', 'statusCode', 'equals', '500']
-            // ['success', 'headers', 'contains-key-value', 'X-Response-Header-Test', 'test'],
-
-            $status = self::parseStatusString($entry[0]);
-
-            if (!isset($entry[1])) {
-                return new TestResult($status, '');
-            }
-
-            $propertyToExamine = $entry[1];
-            $operator = $entry[2];
-            $arg1 = (isset($entry[3]) ? $entry[3] : '');
-            $arg2 = (isset($entry[4]) ? $entry[4] : '');
-
-            $valString = '';
-            $valHash = [];
-            $valType = '';
-            switch ($propertyToExamine) {
-                case 'status-code':
-                    $valString = $response->statusCode;
-                    $valType = 'string';
-                    break;
-                case 'body':
-                    $valString = $response->body;
-                    $valType = 'string';
-                    break;
-                case 'headers':
-                    $valHash = $response->getHeadersHash();
-                    $valType = 'hash';
-                    break;
-            }
-
-            $reason = $propertyToExamine . ' ' . $operator;
-            if (isset($entry[3])) {
-                $reason .= ' "' . implode('" "', array_slice($entry, 3)) . '"';
-            }
-            if (($propertyToExamine == 'status-code') && ($operator == 'not-equals')) {
-                $reason .= ' - it was: ' . $valString;
-            }
-            $result = new TestResult($status, $reason);
-
-            $match = false;
-            if ($valType == 'string') {
-                $match = self::evaluateConditionForString($operator, $valString, $arg1);
-            } elseif ($valType == 'hash') {
-                $match =  self::evaluateConditionForHash($operator, $valHash, $arg1, $arg2);
-            }
-            if ($match) {
-                return $result;
+        foreach ($interpretationTable as $i => $line) {
+            $testResult = self::interpretLine($response, $line);
+            if (!is_null($testResult)) {
+                return $testResult;
             }
         }
         return new TestResult(null, 'no-match');
