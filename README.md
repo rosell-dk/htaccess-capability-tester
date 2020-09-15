@@ -690,6 +690,10 @@ This allows you to use another object for lining up the test files than the stan
 ## Stable API?
 The 0.7 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes.
 
+Expected changes:
+- TestResult class might be disposed of so the "internal" Tester classes also returns bool|null.
+- Throw custom exception when test file cannot be created
+
 ## Installation
 Require the library with *Composer*, like this:
 
