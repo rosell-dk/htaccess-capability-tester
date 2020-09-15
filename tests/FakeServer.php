@@ -147,6 +147,14 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
         $this->responses = $responses;
     }
 
+    public function connectHCT($hct)
+    {
+        TestResultCache::clear();
+        $hct->setTestFilesLineUpper($this);
+        $hct->setHttpRequester($this);
+    }
+
+
     /**
      * @param  AbstractTester $tester
      * @return TestResult
