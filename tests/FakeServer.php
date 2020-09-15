@@ -59,15 +59,16 @@ class FakeServer implements TestFilesLineUpperInterface, HttpRequesterInterface
         $statusCode = '200';
         $headers = [];
 
+        //echo 'Fakeserver request:' . $url . "\n";
         if (isset($this->responses[$url])) {
-            //echo 'predefined: ' . $url;
+            //echo 'predefined: ' . $url . "\n";
             return $this->responses[$url];
         }
 
         if ($this->crashAll) {
             return new HttpResponse('', '500', []);
         }
-        
+
         if (($this->disallowAllDirectives) && ($this->fatal)) {
 
             $urlToHtaccessInSameFolder = dirname($url) . '/.htaccess';
