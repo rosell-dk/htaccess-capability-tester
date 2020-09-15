@@ -152,7 +152,6 @@ class ResponseInterpreter
         $arg1 = (isset($line[3]) ? $line[3] : '');
         $arg2 = (isset($line[4]) ? $line[4] : '');
 
-        $valType = '';
         list($valType, $val) = self::getPropertyOnResponse($response, $propertyToExamine);
 
         $reason = $propertyToExamine . ' ' . $operator;
