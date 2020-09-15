@@ -132,7 +132,7 @@ class PassInfoFromRewriteToScriptThroughEnvTesterTest extends BasisTestCase
         $fakeServer = new FakeServer();
         $fakeServer->setResponses([
             '/pass-info-from-rewrite-to-script-through-env/test.php' =>
-              new HttpResponse('1', '200', [])
+                new HttpResponse('1', '200', [])
         ]);
         $testResult = $fakeServer->runTester(
           new PassInfoFromRewriteToScriptThroughEnvTester()
