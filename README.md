@@ -673,7 +673,7 @@ subtests:
 </p>
 </details>
 
-## Other methods in HtaccessCapabilityTester
+### Other methods in HtaccessCapabilityTester
 
 <details><summary><b>setHttpRequester($requester)</b></summary>
 <p><br>
@@ -688,7 +688,7 @@ This allows you to use another object for lining up the test files than the stan
 </details>
 
 ## Stable API?
-The 0.7 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes. 
+The 0.7 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes.
 
 ## Installation
 Require the library with *Composer*, like this:
