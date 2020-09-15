@@ -140,7 +140,7 @@ The tests have the following in common:
 - If the server has been set up to disallow the directive being tested (AllowOverride), the result is *failure* (both when configured to ignore and when configured to go fatal)
 - A *403 Forbidden* results in *inconclusive*. Why? Because it could be that the server has been set up to forbid access to files matching a pattern that our test file unluckily matches. In most cases, this is unlikely, as most tests requests files with harmless-looking file extensions (often a "request-me.txt"). A few of the tests however requests a "test.php", which is more likely to be denied.
 
-Most tests are implemented as a definition such as the one accepted in *customTest()*. This means that if you want it to work slightly differently, you can easily grab the code in the corresponding class in the *Testers* directory, make your modification and call *customTest()*. Those definitions are also available in this document, in YAML format (more readable).
+Most tests are implemented as a definition such as the one accepted in *customTest()*. This means that if you want one of the tests provided by this library to work slightly differently, you can easily grab the code in the corresponding class in the *Testers* directory, make your modification and call *customTest()*.
 
 <details><summary><b>addTypeWorks()</b></summary>
 <p><br>
