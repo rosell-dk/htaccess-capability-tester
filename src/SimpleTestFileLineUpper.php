@@ -41,7 +41,7 @@ class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
     private function writeMissingAndChangedFiles($files)
     {
         foreach ($files as $file) {
-            $this->writeFileIfMissingOrChanged();
+            $this->writeFileIfMissingOrChanged($file);
         }
     }
 
