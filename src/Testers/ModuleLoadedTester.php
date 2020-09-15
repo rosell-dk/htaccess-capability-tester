@@ -81,8 +81,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
-            'requirements' => ['htaccessEnabled()'],
-            'subdir' => 'server-signature',
+            'subdir' => $this->getSubDir() . '/server-signature',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['test.php', $php],
@@ -123,8 +122,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
-            'requirements' => ['rewriteWorks()'],
-            'subdir' => 'rewrite',
+            'subdir' => $this->getSubDir() . '/rewrite',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['0.txt', '0'],
@@ -166,8 +164,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
-            'requirements' => ['headerSetWorks()'],
-            'subdir' => 'response-header',
+            'subdir' => $this->getSubDir() . '/header-set',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['request-me.txt', 'thanks'],
@@ -206,8 +203,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
-            'requirements' => ['contentDigestWorks()'],
-            'subdir' => 'content-digest',
+            'subdir' => $this->getSubDir() . '/content-digest',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['request-me.txt', 'thanks'],
@@ -246,8 +242,7 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
-            'requirements' => ['directoryIndexWorks()'],
-            'subdir' => 'directory-index',
+            'subdir' => $this->getSubDir() . '/directory-index',
             'files' => [
                 ['.htaccess', $htaccess],
                 ['0.html', '0'],
@@ -288,11 +283,10 @@ EOD;
         $htaccess = str_replace('mod_xxx', 'mod_' . $this->moduleName, $htaccess);
 
         return [
-            'requirements' => ['addTypeWorks()'],
-            'subdir' => 'add-type',
+            'subdir' => $this->getSubDir() . '/add-type',
             'files' => [
                 ['.htaccess', $htaccess],
-                ['request-me.test', '0'],
+                ['request-me.test', 'hi'],
             ],
             'request' => 'request-me.test',
             'interpretation' => [
@@ -308,8 +302,7 @@ EOD;
     private function getLastTest()
     {
         return [
-            'requirements' => ['htaccessEnabled()'],
-            'subdir' => 'last-test',
+            'subdir' => $this->getSubDir() . '/last-test',
             'files' => [
                 ['request-me.test', '0'],
             ],
@@ -380,12 +373,12 @@ EOD;
         } elseif (is_null($htaccessEnabledTest)) {
             // We happen to know that if that test cannot establish anything,
             // then none of the usual weapons works - we can surrender
-            return new TestResult(null, 'no methods available');
+            return new TestResult(null, 'no methods available - we surrender early');
         }
 
         $status = $this->run2();
         if (is_null($status)) {
-            return new TestResult(null, 'no methods available');
+            return new TestResult(null, 'no methods worked');
         } else {
             return new TestResult($status, '');
         }
