@@ -86,6 +86,47 @@ class ResponseInterpreter
     }
 
     /**
+     * Evaluate condition
+     *
+     * @param  array  $val
+     * @param  string $valType  (string | hash)
+     * @param  string $arg1  (only required for some operators)
+     * @param  string $arg2  (only required for some operators)
+     * @return bool
+     */
+    private static function evaluateCondition($operator, $valType, $val, $arg1, $arg2)
+    {
+        if ($valType == 'string') {
+            return self::evaluateConditionForString($operator, $val, $arg1);
+        } elseif ($valType == 'hash') {
+            return self::evaluateConditionForHash($operator, $val, $arg1, $arg2);
+        }
+        return false;
+    }
+
+
+    /**
+     * Get property
+     *
+     * @param HttpResponse  $response
+     * @param string        $property  (status-code | body | headers)
+     *
+     * @return array|null   [variable type, value] or null if invalid property
+     */
+    private static function getPropertyOnResponse($response, $property)
+    {
+        switch ($property) {
+            case 'status-code':
+                return ['string', $response->statusCode];
+            case 'body':
+                return ['string', $response->body];
+            case 'headers':
+                return ['hash', $response->getHeadersHash()];
+        }
+        return null;
+    }
+
+    /**
      * Interpret line.
      *
      * @param HttpResponse    $response
@@ -111,41 +152,19 @@ class ResponseInterpreter
         $arg1 = (isset($line[3]) ? $line[3] : '');
         $arg2 = (isset($line[4]) ? $line[4] : '');
 
-        $valString = '';
-        $valHash = [];
         $valType = '';
-        switch ($propertyToExamine) {
-            case 'status-code':
-                $valString = $response->statusCode;
-                $valType = 'string';
-                break;
-            case 'body':
-                $valString = $response->body;
-                $valType = 'string';
-                break;
-            case 'headers':
-                $valHash = $response->getHeadersHash();
-                $valType = 'hash';
-                break;
-        }
+        list($valType, $val) = self::getPropertyOnResponse($response, $propertyToExamine);
 
         $reason = $propertyToExamine . ' ' . $operator;
         if (isset($line[3])) {
             $reason .= ' "' . implode('" "', array_slice($line, 3)) . '"';
         }
         if (($propertyToExamine == 'status-code') && ($operator == 'not-equals')) {
-            $reason .= ' - it was: ' . $valString;
+            $reason .= ' - it was: ' . $val;
         }
-        $result = new TestResult($status, $reason);
 
-        $match = false;
-        if ($valType == 'string') {
-            $match = self::evaluateConditionForString($operator, $valString, $arg1);
-        } elseif ($valType == 'hash') {
-            $match =  self::evaluateConditionForHash($operator, $valHash, $arg1, $arg2);
-        }
-        if ($match) {
-            return $result;
+        if (self::evaluateCondition($operator, $valType, $val, $arg1, $arg2)) {
+            return new TestResult($status, $reason);
         }
         return null;
     }
