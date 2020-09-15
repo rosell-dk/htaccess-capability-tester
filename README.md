@@ -10,8 +10,6 @@
 
 Detect `.htaccess` capabilities through live tests.
 
-NOTE: the API in the master branch has been dramatically changed in comparison to the 0.6 release. It is stabilizing and I expect a 0.7 release in a few days.
-
 There are cases where the only way to to learn if a given `.htaccess` capability is enabled / supported on a system is by examining it "from the outside" through a HTTP request. This library is build to handle such testing easily.
 
 This is what happens behind the scenes:
@@ -689,6 +687,8 @@ This allows you to use another object for lining up the test files than the stan
 </p>
 </details>
 
+## Stable API?
+The 0.7 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes. 
 
 ## Installation
 Require the library with *Composer*, like this:
