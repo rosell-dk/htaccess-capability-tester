@@ -5,6 +5,32 @@ namespace HtaccessCapabilityTester;
 class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
 {
 
+    private function writeFileIfMissingOrChanged($file)
+    {
+        $success = true;
+        list($filename, $content) = $file;
+        $dir = dirname($filename);
+        if (!is_dir($dir)) {
+            if (!mkdir($dir, 0777, true)) {
+                // TODO: Use custom exception
+                throw new \Exception('Failed creating dir: ' . $dir);
+            }
+        }
+        if (file_exists($filename)) {
+            // file already exists, now check if content is the same
+            $existingContent = file_get_contents($filename);
+            if (($existingContent === false) || ($content != $existingContent)) {
+                $success = file_put_contents($filename, $content);
+            }
+        } else {
+            $success = file_put_contents($filename, $content);
+        }
+        if (!$success) {
+            // TODO: Use custom exception
+            throw new \Exception('Failed creating file: ' . $filename);
+        }
+    }
+
     /**
      * Write missing and changed files.
      *
@@ -15,28 +41,7 @@ class SimpleTestFileLineUpper implements TestFilesLineUpperInterface
     private function writeMissingAndChangedFiles($files)
     {
         foreach ($files as $file) {
-            $success = true;
-            list($filename, $content) = $file;
-            $dir = dirname($filename);
-            if (!is_dir($dir)) {
-                if (!mkdir($dir, 0777, true)) {
-                    // TODO: Use custom exception
-                    throw new \Exception('Failed creating dir: ' . $dir);
-                }
-            }
-            if (file_exists($filename)) {
-                // file already exists, now check if content is the same
-                $existingContent = file_get_contents($filename);
-                if (($existingContent === false) || ($content != $existingContent)) {
-                    $success = file_put_contents($filename, $content);
-                }
-            } else {
-                $success = file_put_contents($filename, $content);
-            }
-            if (!$success) {
-                // TODO: Use custom exception
-                throw new \Exception('Failed creating file: ' . $filename);
-            }
+            $this->writeFileIfMissingOrChanged();
         }
     }
 
