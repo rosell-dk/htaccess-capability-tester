@@ -129,9 +129,9 @@ The test definition has the following sub-definitions:
 
 For more info, look in the API (below). For real examples, check out the classes in the "Testers" dir - most of them are defined in this "language"
 
-# API overview
+## API overview
 
-## Test methods in HtaccessCapabilityTester
+### Test methods in HtaccessCapabilityTester
 
 All the test methods returns a test result, which is *true* for success, *false* for failure or *null* for inconclusive.
 
