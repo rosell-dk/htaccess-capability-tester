@@ -79,7 +79,7 @@ class CustomTester extends AbstractTester
     }
 
     /**
-     *  Error handling
+     *  Standard Error handling
      *
      * @param  array         $test      the subtest
      * @param  HttpResponse  $response
@@ -88,17 +88,6 @@ class CustomTester extends AbstractTester
      */
     private function standardErrorHandling($test, $response)
     {
-        $bypassErrors = [];
-        $byPass = false;
-        if (isset($test['request']['bypass-standard-error-handling'])) {
-            $bypassErrors = $test['request']['bypass-standard-error-handling'];
-        }
-        if (in_array($response->statusCode, $bypassErrors) || in_array('all', $bypassErrors)) {
-            $byPass = true;
-        }
-        if ($byPass) {
-            return null;
-        }
         switch ($response->statusCode) {
             case '403':
                 return new TestResult(null, '403 Forbidden');
@@ -124,6 +113,28 @@ class CustomTester extends AbstractTester
     }
 
     /**
+     * Checks if standard error handling should be bypassed on the test.
+     *
+     *
+     * @param  array         $test      the subtest
+     * @param  HttpResponse  $response
+     *
+     * @return bool          true if it should be bypassed
+     */
+    private function bypassStandardErrorHandling($test, $response)
+    {
+        $bypassErrors = [];
+        $byPass = false;
+        if (isset($test['request']['bypass-standard-error-handling'])) {
+            $bypassErrors = $test['request']['bypass-standard-error-handling'];
+        }
+        if (in_array($response->statusCode, $bypassErrors) || in_array('all', $bypassErrors)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      *  Run single test
      *
      * @param  array  $test  the subtest to run
@@ -142,9 +153,11 @@ class CustomTester extends AbstractTester
         $response = $this->makeHttpRequest($requestUrl);
 
         // Standard error handling
-        $errorResult = $this->standardErrorHandling($test, $response);
-        if (!is_null($errorResult)) {
-            return $errorResult;
+        if (!($this->bypassStandardErrorHandling($test, $response))) {
+            $errorResult = $this->standardErrorHandling($test, $response);
+            if (!is_null($errorResult)) {
+                return $errorResult;
+            }
         }
         return ResponseInterpreter::interpret($response, $test['interpretation']);
     }
