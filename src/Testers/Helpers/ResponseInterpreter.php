@@ -158,7 +158,7 @@ class ResponseInterpreter
         if (isset($line[3])) {
             $reason .= ' "' . implode('" "', array_slice($line, 3)) . '"';
         }
-        if (($propertyToExamine == 'status-code') && ($operator == 'not-equals')) {
+        if (($propertyToExamine == 'status-code') && ($operator == 'not-equals') && (gettype($val) == 'string')) {
             $reason .= ' - it was: ' . $val;
         }
 
