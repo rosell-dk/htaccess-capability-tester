@@ -89,17 +89,16 @@ class ResponseInterpreter
      * Evaluate condition
      *
      * @param  array         $operator
-     * @param  string        $valType  (string | hash)
      * @param  string|array  $val
      * @param  string        $arg1  (only required for some operators)
      * @param  string        $arg2  (only required for some operators)
      * @return bool
      */
-    private static function evaluateCondition($operator, $valType, $val, $arg1, $arg2)
+    private static function evaluateCondition($operator, $val, $arg1, $arg2)
     {
-        if ($valType == 'string') {
+        if (gettype($val) == 'string') {
             return self::evaluateConditionForString($operator, $val, $arg1);
-        } elseif ($valType == 'hash') {
+        } elseif (gettype($val) == 'array') {
             return self::evaluateConditionForHash($operator, $val, $arg1, $arg2);
         }
         return false;
@@ -112,17 +111,17 @@ class ResponseInterpreter
      * @param HttpResponse  $response
      * @param string        $property  (status-code | body | headers)
      *
-     * @return array|null   [variable type, value] or null if invalid property
+     * @return array|string|null   Value or null if invalid property
      */
     private static function getPropertyOnResponse($response, $property)
     {
         switch ($property) {
             case 'status-code':
-                return ['string', $response->statusCode];
+                return $response->statusCode;
             case 'body':
-                return ['string', $response->body];
+                return $response->body;
             case 'headers':
-                return ['hash', $response->getHeadersHash()];
+                return $response->getHeadersHash();
         }
         return null;
     }
@@ -153,7 +152,7 @@ class ResponseInterpreter
         $arg1 = (isset($line[3]) ? $line[3] : '');
         $arg2 = (isset($line[4]) ? $line[4] : '');
 
-        list($valType, $val) = self::getPropertyOnResponse($response, $propertyToExamine);
+        $val = self::getPropertyOnResponse($response, $propertyToExamine);
 
         $reason = $propertyToExamine . ' ' . $operator;
         if (isset($line[3])) {
@@ -163,7 +162,7 @@ class ResponseInterpreter
             $reason .= ' - it was: ' . $val;
         }
 
-        if (self::evaluateCondition($operator, $valType, $val, $arg1, $arg2)) {
+        if (self::evaluateCondition($operator, $val, $arg1, $arg2)) {
             return new TestResult($status, $reason);
         }
         return null;
