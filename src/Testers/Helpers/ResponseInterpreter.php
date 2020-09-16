@@ -88,10 +88,11 @@ class ResponseInterpreter
     /**
      * Evaluate condition
      *
-     * @param  array  $val
-     * @param  string $valType  (string | hash)
-     * @param  string|array $arg1  (only required for some operators)
-     * @param  string $arg2  (only required for some operators)
+     * @param  array         $operator
+     * @param  string        $valType  (string | hash)
+     * @param  string|array  $val
+     * @param  string        $arg1  (only required for some operators)
+     * @param  string        $arg2  (only required for some operators)
      * @return bool
      */
     private static function evaluateCondition($operator, $valType, $val, $arg1, $arg2)
