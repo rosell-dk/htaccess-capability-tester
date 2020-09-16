@@ -81,12 +81,11 @@ class CustomTester extends AbstractTester
     /**
      *  Standard Error handling
      *
-     * @param  array         $test      the subtest
      * @param  HttpResponse  $response
      *
      * @return TestResult|null  If no errors, null is returned, otherwise a TestResult
      */
-    private function standardErrorHandling($test, $response)
+    private function standardErrorHandling($response)
     {
         switch ($response->statusCode) {
             case '403':
@@ -115,19 +114,22 @@ class CustomTester extends AbstractTester
     /**
      * Checks if standard error handling should be bypassed on the test.
      *
+     * This stuff is controlled in the test definition. More precisely, by the "bypass-standard-error-handling"
+     * property bellow the "request" property. If this property is set to ie ['404', '500'], the standard error
+     * handler will be bypassed for those codes (but still be in effect for ie '403'). If set to ['all'], all
+     * standard error handling will be bypassed.
      *
      * @param  array         $test      the subtest
-     * @param  HttpResponse  $response
+     * @param  HttpResponse  $response  the response
      *
-     * @return bool          true if it should be bypassed
+     * @return bool          true if error handling should be bypassed
      */
     private function bypassStandardErrorHandling($test, $response)
     {
-        $bypassErrors = [];
-        $byPass = false;
-        if (isset($test['request']['bypass-standard-error-handling'])) {
-            $bypassErrors = $test['request']['bypass-standard-error-handling'];
+        if (!(isset($test['request']['bypass-standard-error-handling']))) {
+            return false;
         }
+        $bypassErrors = $test['request']['bypass-standard-error-handling'];
         if (in_array($response->statusCode, $bypassErrors) || in_array('all', $bypassErrors)) {
             return true;
         }
@@ -154,7 +156,7 @@ class CustomTester extends AbstractTester
 
         // Standard error handling
         if (!($this->bypassStandardErrorHandling($test, $response))) {
-            $errorResult = $this->standardErrorHandling($test, $response);
+            $errorResult = $this->standardErrorHandling($response);
             if (!is_null($errorResult)) {
                 return $errorResult;
             }
