@@ -90,7 +90,7 @@ class ResponseInterpreter
      *
      * @param  array  $val
      * @param  string $valType  (string | hash)
-     * @param  string $arg1  (only required for some operators)
+     * @param  string|array $arg1  (only required for some operators)
      * @param  string $arg2  (only required for some operators)
      * @return bool
      */
