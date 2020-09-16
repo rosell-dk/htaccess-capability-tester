@@ -79,6 +79,51 @@ class CustomTester extends AbstractTester
     }
 
     /**
+     *  Error handling
+     *
+     * @param  array         $test      the subtest
+     * @param  HttpResponse  $response
+     *
+     * @return TestResult|null  If no errors, null is returned, otherwise a TestResult
+     */
+    private function standardErrorHandling($test, $response)
+    {
+        $bypassErrors = [];
+        $byPass = false;
+        if (isset($test['request']['bypass-standard-error-handling'])) {
+            $bypassErrors = $test['request']['bypass-standard-error-handling'];
+        }
+        if (in_array($response->statusCode, $bypassErrors) || in_array('all', $bypassErrors)) {
+            $byPass = true;
+        }
+        if ($byPass) {
+            return null;
+        }
+        switch ($response->statusCode) {
+            case '403':
+                return new TestResult(null, '403 Forbidden');
+            case '404':
+                return new TestResult(null, '404 Not Found');
+            case '500':
+                $hct = $this->getHtaccessCapabilityTester();
+
+                // Run innocent request / get it from cache. This sets
+                // $statusCodeOfLastRequest, which we need now
+                $hct->innocentRequestWorks();
+                if ($hct->statusCodeOfLastRequest == '500') {
+                    return new TestResult(null, 'Errored with 500. Everything errors with 500.');
+                } else {
+                    return new TestResult(
+                        false,
+                        'Errored with 500. ' .
+                        'Not all goes 500, so it must be a forbidden directive in the .htaccess'
+                    );
+                }
+        }
+        return null;
+    }
+
+    /**
      *  Run single test
      *
      * @param  array  $test  the subtest to run
@@ -97,36 +142,9 @@ class CustomTester extends AbstractTester
         $response = $this->makeHttpRequest($requestUrl);
 
         // Standard error handling
-        $bypassErrors = [];
-        $byPass = false;
-        if (isset($test['request']['bypass-standard-error-handling'])) {
-            $bypassErrors = $test['request']['bypass-standard-error-handling'];
-        }
-        if (in_array($response->statusCode, $bypassErrors) || in_array('all', $bypassErrors)) {
-            $byPass = true;
-        }
-
-        if (!$byPass) {
-            if ($response->statusCode == '403') {
-                return new TestResult(null, '403 Forbidden');
-            } elseif ($response->statusCode == '404') {
-                return new TestResult(null, '404 Not Found');
-            } elseif ($response->statusCode == '500') {
-                $hct = $this->getHtaccessCapabilityTester();
-
-                // Run innocent request / get it from cache. This sets
-                // $statusCodeOfLastRequest, which we need now
-                $hct->innocentRequestWorks();
-                if ($hct->statusCodeOfLastRequest == '500') {
-                    return new TestResult(null, 'Errored with 500. Everything errors with 500.');
-                } else {
-                    return new TestResult(
-                        false,
-                        'Errored with 500. ' .
-                        'Not all goes 500, so it must be a forbidden directive in the .htaccess'
-                    );
-                }
-            }
+        $errorResult = $this->standardErrorHandling($test, $response);
+        if (!is_null($errorResult)) {
+            return $errorResult;
         }
         return ResponseInterpreter::interpret($response, $test['interpretation']);
     }
@@ -150,15 +168,15 @@ class CustomTester extends AbstractTester
             Disabled, as I'm no longer sure if it is that useful
 
             if (isset($test['requirements'])) {
-                $hct = $this->getHtaccessCapabilityTester();
+            $hct = $this->getHtaccessCapabilityTester();
 
-                foreach ($test['requirements'] as $requirement) {
-                    $requirementResult = $hct->callMethod($requirement);
-                    if (!$requirementResult) {
-                        // Skip test
-                        continue 2;
-                    }
+            foreach ($test['requirements'] as $requirement) {
+                $requirementResult = $hct->callMethod($requirement);
+                if (!$requirementResult) {
+                    // Skip test
+                    continue 2;
                 }
+            }
             }*/
             if (isset($test['request'])) {
                 $result = $this->realRunSubTest($test);
