@@ -9,7 +9,8 @@ class SimpleHttpRequester implements HttpRequesterInterface
      *
      * @param  string  $url  The URL to make the HTTP request to
      *
-     * @return  HttpResponse  A HttpResponse object, which simply contains body and status code.
+     * @return  HttpResponse  A HttpResponse object, which simply contains body, status code
+     *                        and response headers
      */
     public function makeHttpRequest($url)
     {
