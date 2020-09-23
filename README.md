@@ -688,10 +688,10 @@ This allows you to use another object for lining up the test files than the stan
 </details>
 
 ## Stable API?
-The 0.7 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes.
+The 0.8 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes.
 
-Changes in the upcoming 0.8 release:
-- HttpResponse now takes a map of headers rather than a numeric array
+Changes in the new 0.8 release:
+- HttpResponse now takes a map of headers rather than a numeric array. If you have implemented your own HttpRequester rather than using the default, you need to update it.
 
 Expected changes in the 1.0 release:
 - TestResult class might be disposed off so the "internal" Tester classes also returns bool|null.
