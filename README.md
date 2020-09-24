@@ -8,18 +8,18 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/rosell-dk/htaccess-capability-tester/blob/master/LICENSE)
 
 
-Detect `.htaccess` capabilities through live tests.
+Detect *.htaccess* capabilities through live tests.
 
-There are cases where the only way to to learn if a given `.htaccess` capability is enabled / supported on a system is by examining it "from the outside" through a HTTP request. This library is build to handle such testing easily.
+There are cases where the only way to to learn if a given *.htaccess* capability is enabled / supported on a system is by examining it "from the outside" through a HTTP request. This library is build to handle such testing easily.
 
 This is what happens behind the scenes:
-1. Some test files for a given test are put on the server (at least an `.htaccess` file)
+1. Some test files for a given test are put on the server (at least an *.htaccess* file)
 2. The test is triggered by doing a HTTP request
 3. The response is interpreted
 
 ## Usage
 
-To use the library, you must provide a path to where the test files are going to be put and an URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run.
+To use the library, you must provide a path to where the test files are going to be put and the corresponding URL that they can be reached. Besides that, you just need to pick one of the tests that you want to run.
 
 ```php
 require 'vendor/autoload.php';
@@ -28,7 +28,7 @@ use HtaccessCapabilityTester\HtaccessCapabilityTester;
 $hct = new HtaccessCapabilityTester($baseDir, $baseUrl);
 
 if ($hct->moduleLoaded('headers')) {
-    // mod_headers has been tested functional in a real .htaccess
+    // mod_headers is loaded (tested in a real .htaccess by using the "IfModule" directive)
 }
 if ($hct->rewriteWorks()) {    
     // rewriting works
@@ -40,7 +40,7 @@ if ($hct->htaccessEnabled() === false) {
 
 // A bunch of other tests are available - see API
 ```
-While having a reliable `moduleLoaded` method is a great improvement over current state of affairs, beware that it is possible that the server has ie `mod_rewrite` enabled, but at the same time has disallowed using ie the "RewriteRule" directive in `.htaccess` files. This is why the library has the `rewriteWorks()` method and similar methods for testing various capabilites fully. Providing tests for all kinds of functionality, would however be too much for any library. Instead this library makes it a breeze to define a custom test and run it through the `customTest($def)` method.
+While having a reliable *moduleLoaded()* method is a great improvement over current state of affairs, beware that it is possible that the server has ie *mod_rewrite* enabled, but at the same time has disallowed using ie the "RewriteRule" directive in *.htaccess* files. This is why the library has the *rewriteWorks()* method and similar methods for testing various capabilites fully. Providing tests for all kinds of functionality, would however be too much for any library. Instead this library makes it a breeze to define a custom test and run it through the *customTest($def)* method.
 
 
 ## Running your own custom tests using the *customTest* method
@@ -50,9 +50,9 @@ A typical test s mentioned, a test has three phases:
 2. Doing a request (in advanced cases, more)
 3. Interpreting the request
 
-So, in order for `customTest()`, it needs to know. 1) What files are needed? 2) Which file should be requested? 3) How should the response be interpreted?
+So, in order for *customTest()*, it needs to know. 1) What files are needed? 2) Which file should be requested? 3) How should the response be interpreted?
 
-Here is a definition which can be used for implementing the `headerSetWorks` functionality yourself. It's in YAML because it is more readable like this.
+Here is a definition which can be used for implementing the *headerSetWorks()* functionality yourself. It's in YAML because it is more readable like this.
 
 <details><summary><u>Click here to see the PHP example</u></summary>
 <p><br>
@@ -136,7 +136,7 @@ For more info, look in the API (below). For real examples, check out the classes
 All the test methods returns a test result, which is *true* for success, *false* for failure or *null* for inconclusive.
 
 The tests have the following in common:
-- If the server has been set up to ignore `.htaccess` files, the result will be *failure*.
+- If the server has been set up to ignore *.htaccess* files, the result will be *failure*.
 - If the server has been set up to disallow the directive being tested (AllowOverride), the result is *failure* (both when configured to ignore and when configured to go fatal)
 - A *403 Forbidden* results in *inconclusive*. Why? Because it could be that the server has been set up to forbid access to files matching a pattern that our test file unluckily matches. In most cases, this is unlikely, as most tests requests files with harmless-looking file extensions (often a "request-me.txt"). A few of the tests however requests a "test.php", which is more likely to be denied.
 
@@ -343,12 +343,12 @@ interpretation:
 
 <details><summary><b>htaccessEnabled()</b></summary>
 <p><br>
-Apache can be configured to ignore `.htaccess` files altogether. This method tests if the `.htaccess` file is processed at all
+Apache can be configured to ignore *.htaccess* files altogether. This method tests if the *.htaccess* file is processed at all
 
 The method works by trying out a series of subtests until a conclusion is reached. It will never come out inconclusive.
 
 How does it work?
-- The first strategy is testing a series of features, such as `rewriteWorks()`. If any of them works, well, then the `.htaccess` must have been processed.
+- The first strategy is testing a series of features, such as `rewriteWorks()`. If any of them works, well, then the *.htaccess* must have been processed.
 - Secondly, the `serverSignatureWorks()` is tested. The "ServerSignature" directive is special because it is in core and cannot be disabled with AllowOverride. If this test comes out as a failure, it is so *highly likely* that the .htaccess has not been processed, that we conclude that it has not.
 - Lastly, if all other methods failed, we try calling `crashTest()` on an .htaccess file that we on purpose put syntax errors in. If it crashes, the .htaccess file must have been proccessed. If it does not crash, it has not. This last method is bulletproof - so why not do it first? Because it might generate an entry in the error log.
 
