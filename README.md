@@ -49,9 +49,12 @@ While having a reliable *moduleLoaded()* method is a great improvement over curr
 All the test methods returns a test result, which is *true* for success, *false* for failure or *null* for inconclusive.
 
 The tests have the following in common:
-- If the server has been set up to ignore *.htaccess* files, the result will be *failure*.
+- If the server has been set up to ignore *.htaccess* files entirely, the result will be *failure*.
 - If the server has been set up to disallow the directive being tested (AllowOverride), the result is *failure* (both when configured to ignore and when configured to go fatal)
 - A *403 Forbidden* results in *inconclusive*. Why? Because it could be that the server has been set up to forbid access to files matching a pattern that our test file unluckily matches. In most cases, this is unlikely, as most tests requests files with harmless-looking file extensions (often a "request-me.txt"). A few of the tests however requests a "test.php", which is more likely to be denied.
+- A *404 Not Found* results in *inconclusive*
+- If the request fails completely (ie timeout), the result is *inconclusive*
+
 
 Most tests are implemented as a definition such as the one accepted in *customTest()*. This means that if you want one of the tests provided by this library to work slightly differently, you can easily grab the code in the corresponding class in the *Testers* directory, make your modification and call *customTest()*.
 
@@ -601,10 +604,11 @@ This allows you to use another object for lining up the test files than the stan
 </details>
 
 ## Stable API?
-The 0.8 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes.
+The 0.9 release is just about right. I do not expect any changes in the part of the API that is mentioned above. So, if you stick to that, it should still work, when the 1.0 release comes.
 
-Changes in the new 0.8 release:
-- HttpResponse now takes a map of headers rather than a numeric array. If you have implemented your own HttpRequester rather than using the default, you need to update it.
+Changes in the new 0.9 release:
+- Request failures (such as timeout) results in *inconclusive*.
+- If you have implemented your own HttpRequester rather than using the default, you need to update it. It must now return status code "0" if the request failed (ie timeout)
 
 Expected changes in the 1.0 release:
 - TestResult class might be disposed off so the "internal" Tester classes also returns bool|null.
