@@ -48,7 +48,7 @@
     }
   ],
   "require": {
-      "php": "^5.6 | ^7.0"
+      "php": "^5.6 | ^7.0 | ^8.0"
   },
   "suggest": {
       "php-stan/php-stan": "Suggested for dev, in order to analyse code before committing"
