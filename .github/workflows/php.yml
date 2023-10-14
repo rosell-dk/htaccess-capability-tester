@@ -38,7 +38,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: ${{ env.XDEBUG }}
-        extensions: mbstring
+        extensions: exif, mbstring, fileinfo, gd
 
     - name: Validate composer.json
       run: composer validate --strict
