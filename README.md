@@ -2,7 +2,7 @@
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/rosell-dk/htaccess-capability-tester.svg?style=flat-square)](https://packagist.org/packages/rosell-dk/htaccess-capability-tester)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg?style=flat-square)](https://php.net)
-[![Build Status](https://img.shields.io/github/workflow/status/rosell-dk/webp-convert/PHP?logo=GitHub&style=flat-square)](https://github.com/rosell-dk/webp-convert/actions/workflows/php.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/rosell-dk/htaccess-capability-tester/php.yml?branch=master&logo=GitHub&style=flat-square)](https://github.com/rosell-dk/htaccess-capability-tester/actions/workflows/php.yml)
 [![Coverage](https://img.shields.io/endpoint?url=https://little-b.it/htaccess-capability-tester/code-coverage/coverage-badge.json)](http://little-b.it/htaccess-capability-tester/code-coverage/coverage/index.html)
 [![Quality Score](https://img.shields.io/scrutinizer/g/rosell-dk/htaccess-capability-tester.svg?style=flat-square)](https://scrutinizer-ci.com/g/rosell-dk/htaccess-capability-tester/)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/rosell-dk/htaccess-capability-tester/blob/master/LICENSE)
