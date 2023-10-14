@@ -11,7 +11,7 @@
       "@phpstan-global",
       "@test-no-cov"
     ],
-    "test": "phpunit --coverage-text",
+    "test": "phpunit --coverage-text=build/coverage.txt --coverage-clover=build/coverage.clover --coverage-html=build/coverage --whitelist=src tests",
     "phpunit": "phpunit --coverage-text",
     "test-no-cov": "phpunit --no-coverage",
     "cs-fix-all": [
