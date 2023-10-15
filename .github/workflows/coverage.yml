@@ -39,7 +39,6 @@ jobs:
         key: php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           php-${{ hashFiles('**/composer.lock') }}
-          php-${{ matrix.php }}
           php-
 
     - name: Composer install
