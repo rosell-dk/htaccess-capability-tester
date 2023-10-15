@@ -25,16 +25,14 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Determine which version of xdebug to use
-      if: (matrix.php == '7.2') || (matrix.php == '7.3') || (matrix.php != '7.4')
-      env:
-        XDEBUG: xdebug2
-    - name: Use "xdebug" for all other PHP versions
-      if: !((matrix.php == '7.2') || (matrix.php == '7.3') || (matrix.php != '7.4'))
-      env:
-        XDEBUG: xdebug
 
-    - name: Show us the result
       run: |
+        # Set XDEBUG to "xdebug2" for PHP 7.2-7.4, but to "xdebug" for
+        if (grep -oP '^7.[234]' <<< "$PHP" > /dev/null); then XDEBUG=xdebug2; else XDEBUG=xdebug; fi
+
+        # Store XDEBUG in github env, so we can access it later through env.XDEBUG
+        echo "XDEBUG=$XDEBUG" >> $GITHUB_ENV
+
         echo "Result: ${{ env.XDEBUG }}"
 
     - name: Setup PHP
