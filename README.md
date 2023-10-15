@@ -616,8 +616,8 @@ Expected changes in the 1.0 release:
 
 # Platforms
 Works on (at least):
-OS: Ubuntu (22.04, 20.04), Windows (2022, 2019), Mac OS (11, 10.15)
-PHP: 5.6 - 8.2 (also tested 8.3 and 8.4 development versions in October 2023)
+- OS: Ubuntu (22.04, 20.04), Windows (2022, 2019), Mac OS (11, 10.15)
+- PHP: 5.6 - 8.2 (also tested 8.3 and 8.4 development versions in October 2023)
 
 Each new release will be tested on all combinations of OSs and PHP versions that are [supported](https://github.com/marketplace/actions/setup-php-action) by GitHub-hosted runners. Except that we do not below PHP 5.6.
 
