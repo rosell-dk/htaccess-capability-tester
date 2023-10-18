@@ -2,7 +2,7 @@
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/rosell-dk/htaccess-capability-tester.svg?style=flat-square)](https://packagist.org/packages/rosell-dk/htaccess-capability-tester)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg?style=flat-square)](https://php.net)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/rosell-dk/htaccess-capability-tester/ci.yml?branch=master&logo=GitHub&style=flat-square)](https://github.com/rosell-dk/htaccess-capability-tester/actions/workflows/ci.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/rosell-dk/htaccess-capability-tester/ci.yml?branch=master&logo=GitHub&style=flat-square&label=build)](https://github.com/rosell-dk/htaccess-capability-tester/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/endpoint?url=https://little-b.it/htaccess-capability-tester/code-coverage/coverage-badge.json)](http://little-b.it/htaccess-capability-tester/code-coverage/coverage/index.html)
 [![Quality Score](https://img.shields.io/scrutinizer/g/rosell-dk/htaccess-capability-tester.svg?style=flat-square)](https://scrutinizer-ci.com/g/rosell-dk/htaccess-capability-tester/)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/rosell-dk/htaccess-capability-tester/blob/master/LICENSE)
@@ -617,11 +617,17 @@ Expected changes in the 1.0 release:
 # Platforms
 Works on (at least):
 - OS: Ubuntu (22.04, 20.04), Windows (2022, 2019), Mac OS (13, 12, 11, 10.15)
-- PHP: 5.6 - 8.2 (also tested 8.3 and 8.4 development versions in October 2023)
+- PHP: 5.6 - 8.2
 
-Each new release will be tested on all combinations of OSs and PHP versions that are [supported](https://github.com/marketplace/actions/setup-php-action) by GitHub-hosted runners. Except that we do not below PHP 5.6. Status is here: [![Build Status](https://img.shields.io/github/actions/workflow/status/rosell-dk/htaccess-capability-tester/release.yml?branch=master&logo=GitHub&style=flat-square&label=Giant%20test)](https://github.com/rosell-dk/htaccess-capability-tester/actions/workflows/release.yml)
+Each new release will be tested on all combinations of OSs and PHP versions that are [supported](https://github.com/marketplace/actions/setup-php-action) by GitHub-hosted runners. Except that we do not below PHP 5.6. Status is here: [![Giant test](https://img.shields.io/github/actions/workflow/status/rosell-dk/htaccess-capability-tester/release.yml?branch=master&logo=GitHub&style=flat-square&label=Giant%20test)](https://github.com/rosell-dk/htaccess-capability-tester/actions/workflows/release.yml)
 
 Testing consists of running the unit tests. The code in this library has pretty good code coverage (~90% coverage).
+
+We also test future versions of PHP monthly, in order to catch problems early.
+Status:
+[![PHP 8.3](https://img.shields.io/github/actions/workflow/status/rosell-dk/htaccess-capability-tester/php83.yml?branch=master&logo=GitHub&style=flat-square&label=PHP%208.3)](https://github.com/rosell-dk/htaccess-capability-tester/actions/workflows/php83.yml)
+[![PHP 8.4](https://img.shields.io/github/actions/workflow/status/rosell-dk/htaccess-capability-tester/php84.yml?branch=master&logo=GitHub&style=flat-square&label=PHP%208.4)](https://github.com/rosell-dk/htaccess-capability-tester/actions/workflows/php84.yml)
+
 
 
 ## Installation
